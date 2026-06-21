@@ -1,9 +1,17 @@
+import { Footer } from "./components/Footer"
+import { Navbar } from "./components/Navbar"
 
 
 
 function App() {
   return (
-   <h1 className="text-9xl grid place-items-center h-full">Initial Setup</h1>
+   <>
+    <Navbar/>
+    <main>
+    <h1>main content will goes here</h1>
+    </main>
+    <Footer/>
+   </>
   )
 }
 
