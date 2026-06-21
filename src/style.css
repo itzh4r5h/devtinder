@@ -14,3 +14,9 @@ body,
   height: 100%;
   width: 100%;
 }
+
+#root{
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: 1fr 10fr 1fr;
+}
