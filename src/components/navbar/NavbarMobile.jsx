@@ -39,7 +39,7 @@ export const NavbarMobile = ({isLoggedIn}) => {
         }
       />
 
-      <DrawerContent className="bg-card border-[oklch(0.627_0.265_303.9/.35)] text-foreground">
+      <DrawerContent className="card border-l border-border text-foreground">
         {/* header begins */}
         <DrawerHeader className="flex flex-row items-center justify-between">
           <Logo />
