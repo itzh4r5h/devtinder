@@ -4,9 +4,9 @@ import { Home } from "./pages/home/Home";
 
 function App() {
   return (
-    <div className="grid grid-cols-1 grid-rows-[1fr_10fr_1fr] main-background w-full h-full">
+    <div className="flex flex-col main-bg w-full h-full">
       <Navbar />
-      <main className="container mx-auto px-5">
+      <main className="container mx-auto px-5 flex-1">
        <Home/>
       </main>
       <Footer />
