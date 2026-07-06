@@ -5,9 +5,9 @@ import {
   useTransform,
   useAnimationControls,
 } from "motion/react";
-import { UserCard } from "./UserCard";
+import { UserCard } from "../UserCard";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 
 export const SwipeCards = ({ users }) => {
@@ -35,9 +35,6 @@ export const SwipeCards = ({ users }) => {
   useEffect(() => {
     const preloadAllImages = async () => {
       await Promise.all(cards.map((card) => preloadImage(card.imageUrl)));
-
-      // Optional: Let the loading animation play a bit longer
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
       setImagesReady(true);
     };
