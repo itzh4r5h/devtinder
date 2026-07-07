@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { LoadingBars } from "./LoadingBars";
 import { LoadingProgress } from "./LoadingProgress";
-import { useLoadingAnimation } from "./useLoadingAnimation";
+import { useLoadingAnimation } from "./animation/useLoadingAnimation";
 
 export const LoadingScreen = () => {
   const loaderRefs = useRef({
