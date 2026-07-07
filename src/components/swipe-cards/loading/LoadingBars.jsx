@@ -1,14 +1,13 @@
-import { forwardRef } from 'react'
 import { BAR_COUNT,BAR_HEIGHTS } from './constants'
 
-export const LoadingBars = forwardRef((_, barsRef)=> {
+export const LoadingBars = ({loaderRefs})=> {
   return (
     <div className="flex items-end justify-center gap-3">
       {Array.from({ length: BAR_COUNT }).map((_, index) => (
         <div
           key={index}
           ref={(el)=>{
-            barsRef.current[index] = el
+            loaderRefs.current.bars[index] = el
           }}
            style={{
             height: `${BAR_HEIGHTS[index]}px`,
@@ -23,4 +22,4 @@ export const LoadingBars = forwardRef((_, barsRef)=> {
       ))}
     </div>
   )
-})
+}

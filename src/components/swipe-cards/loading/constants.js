@@ -1,12 +1,7 @@
+import gsap from "gsap";
+
 export const BAR_COUNT = 7;
 
-export const MIN_LOADING_DURATION = 2500;
-
-/**
- * Initial visual heights (px)
- * These define the silhouette before
- * the equalizer animation starts.
- */
 export const BAR_HEIGHTS = [
   80,
   120,
@@ -17,12 +12,33 @@ export const BAR_HEIGHTS = [
   80,
 ];
 
-/**
- * Equalizer limits
- * (used in Milestone 2)
- */
-export const MIN_SCALE = 0.45;
+export const TIMINGS = {
+  BAR_ENTER: 0.75,
+  BAR_STAGGER: 0.08,
 
-export const MAX_SCALE = 1.15;
+  PROGRESS_FADE: 0.45,
 
-export const BAR_STAGGER = 0.08;
+  PAUSE_BEFORE_EQUALIZER: 0.15,
+
+  EQUALIZER_DURATION: {
+    MIN: 0.25,
+    MAX: 0.55,
+  },
+
+  EQUALIZER_DELAY: {
+    MIN: 0.18,
+    MAX: 0.35,
+  },
+
+  PAUSE_BEFORE_EXIT: 0.2,
+};
+
+export const EASES = {
+  BAR_ENTER: "back.out(1.8)",
+  PROGRESS: "power2.out",
+  BAR: "sine.inOut",
+};
+
+export const random = gsap.utils.random;
+
+export const clamp = gsap.utils.clamp;

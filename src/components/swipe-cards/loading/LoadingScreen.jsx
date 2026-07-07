@@ -1,24 +1,27 @@
 import { useRef } from "react";
 import { LoadingBars } from "./LoadingBars";
 import { LoadingProgress } from "./LoadingProgress";
+import { useLoadingAnimation } from "./useLoadingAnimation";
 
 export const LoadingScreen = () => {
-  const containerRef = useRef(null);
+  const loaderRefs = useRef({
+    overlay: null,
+    bars: [],
+    progress: {
+      container: null,
+      track: null,
+      fill: null,
+      percentage: null,
+    },
+  });
 
-  const overlayRef = useRef(null);
-
-  const barsRef = useRef([]);
-
-  const progressRefs = {
-    container: useRef(null),
-    track: useRef(null),
-    fill: useRef(null),
-    percentage: useRef(null),
-  };
+  useLoadingAnimation(loaderRefs);
 
   return (
     <div
-      ref={containerRef}
+      ref={(el) => {
+        loaderRefs.current.overlay = el;
+      }}
       className="
         absolute
         inset-0
@@ -30,12 +33,9 @@ export const LoadingScreen = () => {
         h-140
       "
     >
-      <div
-        ref={overlayRef}
-        className="flex w-full max-w-md flex-col items-center px-6"
-      >
-        <LoadingBars ref={barsRef} />
-        <LoadingProgress progressRefs={progressRefs} />
+      <div className="flex w-full max-w-md flex-col items-center px-6">
+        <LoadingBars loaderRefs={loaderRefs} />
+        <LoadingProgress loaderRefs={loaderRefs} />
       </div>
     </div>
   );

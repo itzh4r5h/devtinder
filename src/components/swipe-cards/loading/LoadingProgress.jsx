@@ -1,9 +1,11 @@
-import {forwardRef} from 'react'
 
-export const LoadingProgress = ({progressRefs}) =>{
+
+export const LoadingProgress = ({loaderRefs}) =>{
   return (
      <div
-      ref={progressRefs.container}
+      ref={(el) => {
+        loaderRefs.current.progress.container = el;
+      }}
       className="
         mt-5
         flex
@@ -15,7 +17,9 @@ export const LoadingProgress = ({progressRefs}) =>{
     >
       {/* Track */}
       <div
-        ref={progressRefs.track}
+        ref={(el) => {
+        loaderRefs.current.progress.track = el;
+      }}
         className="
           relative
           h-1
@@ -27,7 +31,9 @@ export const LoadingProgress = ({progressRefs}) =>{
       >
         {/* Fill */}
         <div
-          ref={progressRefs.fill}
+          ref={(el) => {
+        loaderRefs.current.progress.fill = el;
+      }}
           className="
             absolute
             inset-y-0
@@ -42,7 +48,9 @@ export const LoadingProgress = ({progressRefs}) =>{
 
       {/* Percentage */}
       <span
-        ref={progressRefs.percentage}
+        ref={(el) => {
+        loaderRefs.current.progress.percentage = el;
+      }}
         className="
           min-w-12
           text-right
