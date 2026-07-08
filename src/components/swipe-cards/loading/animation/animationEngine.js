@@ -10,24 +10,21 @@ export const createAnimationEngine = (
     paused: true,
   });
   const { bars, progress } = loaderRefs.current;
-  
+  const { BAR } = TIMINGS;
+
   /**
    * ----------------------------------------
    * Set Initial State
    * ----------------------------------------
    */
   const setInitialState = () => {
-
     gsap.set(bars, {
-      yPercent: 140,
-      opacity: 1,
-      scaleY: 1,
+      yPercent: 300,
       transformOrigin: "bottom center",
     });
 
     gsap.set(progress.container, {
       opacity: 0,
-      y: 20,
     });
 
     gsap.set(progress.fill, {
@@ -41,30 +38,28 @@ export const createAnimationEngine = (
    * ----------------------------------------
    */
   const buildEntrance = () => {
-
     timeline.clear();
 
     timeline.to(bars, {
       yPercent: 0,
 
-      duration: TIMINGS.BAR_ENTER,
+      duration: BAR.ENTER,
 
       ease: EASES.BAR_ENTER,
 
-      stagger: TIMINGS.BAR_STAGGER,
+      stagger: {
+        each: BAR.STAGGER,
+      },
     });
 
     timeline.to(
       progress.container,
       {
         opacity: 1,
-        y: 0,
-
         duration: TIMINGS.PROGRESS_FADE,
-
         ease: EASES.PROGRESS,
       },
-      "-=0.2",
+      "-=0.4",
     );
 
     timeline.call(() => {
@@ -80,7 +75,7 @@ export const createAnimationEngine = (
    * ----------------------------------------
    */
   const playEntrance = () => {
-    timeline.restart();
+    timeline.play(0);
   };
 
   /**

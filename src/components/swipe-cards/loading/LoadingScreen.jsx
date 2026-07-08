@@ -33,7 +33,7 @@ export const LoadingScreen = () => {
         h-140
       "
     >
-      <div className="flex w-full max-w-md flex-col items-center px-6">
+      <div className="flex w-full max-w-md flex-col items-center px-6 pt-20 overflow-hidden">
         <LoadingBars loaderRefs={loaderRefs} />
         <LoadingProgress loaderRefs={loaderRefs} />
       </div>
