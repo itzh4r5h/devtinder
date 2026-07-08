@@ -75,7 +75,7 @@ export const createAnimationEngine = (
    * ----------------------------------------
    */
   const playEntrance = () => {
-    timeline.play(0);
+    timeline.play(-0.1);
   };
 
   /**
