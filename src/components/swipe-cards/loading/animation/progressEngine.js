@@ -8,14 +8,14 @@ export const createProgressEngine = (loaderRefs) => {
 
     gsap.to(progress.fill, {
       width: `${value}%`,
-      duration: 0.3,
+      duration: 1,
       ease: "power1.out",
       overwrite: true,
     });
 
     gsap.to(progress.percentage, {
       innerText: `${value}%`,
-      duration: 0.3,
+      duration: 1,
       snap: {
         innerText: 1,
       },

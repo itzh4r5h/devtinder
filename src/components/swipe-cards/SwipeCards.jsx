@@ -6,7 +6,7 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
@@ -20,48 +20,68 @@ export const SwipeCards = ({ users }) => {
 
   const refreshCards = () => {
     if (cards.length > 0) return;
-    setLoading(true)
+    setLoading(true);
     setCards(users);
   };
 
-  
   return (
-    <div className="grid place-items-center my-10 relative">
-
-      {loading && <LoadingScreen imageUrls={imageUrls} loadingFinish={()=>{setLoading(false)}}/>}
-
-
-      {!loading && (cards.length > 0 ? (
-        <AnimatePresence>
-          {cards.map((user, index) => {
-            return (
-              <MotionCard
-                key={user._id}
-                user={user}
-                index={index}
-                cards={cards}
-                setCards={setCards}
-              />
-            );
-          })}
-        </AnimatePresence>
-      ) : (
-        <div className=" capitalize h-140 w-fit text-center flex items-center flex-col justify-center tracking-wide">
-          <h2 className="text-muted-foreground text-5xl leading-15">
-            you have swiped all devs
-          </h2>
-          <p className="text-secondary text-lg">
-            click on refresh button to experience it again!
-          </p>
-        </div>
-      ))}
-      {!loading && <Button
-        onClick={refreshCards}
-        variant="outline"
-        className={`${cards.length < 1 ? "button-bg cursor-pointer" : "bg-card cursor-not-allowed"} font-bold capitalize rounded-full size-10 absolute z-100 -bottom-13`}
+    <div className="my-10 relative">
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: loading ? 0 : 1,
+        }}
+        transition={{
+          opacity: { duration: loading ? 0 : 0.9, ease: "easeOut" },
+        }}
+        style={{
+          visibility: loading ? "hidden" : "visible",
+        }}
+        className="grid place-items-center"
       >
-        <RotateCcw strokeWidth={3} className="size-6" />
-      </Button>}
+        {cards.length > 0 ? (
+          <AnimatePresence>
+            {cards.map((user, index) => {
+              return (
+                <MotionCard
+                  key={user._id}
+                  user={user}
+                  index={index}
+                  cards={cards}
+                  setCards={setCards}
+                />
+              );
+            })}
+          </AnimatePresence>
+        ) : (
+          <div className=" capitalize h-140 w-fit text-center flex items-center flex-col justify-center tracking-wide">
+            <h2 className="text-muted-foreground text-5xl leading-15">
+              you have swiped all devs
+            </h2>
+            <p className="text-secondary text-lg">
+              click on refresh button to experience it again!
+            </p>
+          </div>
+        )}
+        <Button
+          onClick={refreshCards}
+          variant="outline"
+          className={`${cards.length < 1 ? "button-bg cursor-pointer" : "bg-card cursor-not-allowed"} font-bold capitalize rounded-full size-10 absolute z-100 -bottom-13`}
+        >
+          <RotateCcw strokeWidth={3} className="size-6" />
+        </Button>
+      </motion.div>
+
+      {loading && (
+        <LoadingScreen
+          imageUrls={imageUrls}
+          loadingFinish={() => {
+            setLoading(false);
+          }}
+        />
+      )}
     </div>
   );
 };
