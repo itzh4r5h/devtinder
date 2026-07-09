@@ -10,14 +10,14 @@ export const createProgressEngine = (loaderRefs) => {
 
     gsap.to(progress.fill, {
       width: `${value}%`,
-      duration: 0.25,
+      duration: 0.3,
       ease: "power1.out",
       overwrite: true,
     });
 
     gsap.to(progress.percentage, {
       innerText: `${value}%`,
-      duration: 0.25,
+      duration: 0.3,
       snap: {
         innerText: 1,
       },
@@ -27,10 +27,6 @@ export const createProgressEngine = (loaderRefs) => {
   };
 
   return {
-    update,
-
-    get value() {
-      return current;
-    },
+    update
   };
 };

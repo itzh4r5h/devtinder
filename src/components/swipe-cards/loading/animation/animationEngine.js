@@ -2,10 +2,7 @@ import gsap from "gsap";
 
 import { EASES, TIMINGS } from "./constants";
 
-export const createAnimationEngine = (
-  loaderRefs,
-  { onEntranceComplete } = {},
-) => {
+export const createAnimationEngine = (loaderRefs) => {
   const timeline = gsap.timeline({
     paused: true,
   });
@@ -61,12 +58,6 @@ export const createAnimationEngine = (
       },
       "-=0.4",
     );
-
-    timeline.call(() => {
-      onEntranceComplete?.();
-    });
-
-    return timeline;
   };
 
   /**
@@ -76,6 +67,18 @@ export const createAnimationEngine = (
    */
   const playEntrance = () => {
     timeline.play(-0.1);
+  };
+
+  /**
+   * ----------------------------------------
+   * On Completion of Entrance
+   * ----------------------------------------
+   */
+  const onEntranceComplete = (startEqualizer,startImagesPreloader) => {
+    timeline.call(() => {
+      startEqualizer();
+      startImagesPreloader()
+    });
   };
 
   /**
@@ -94,7 +97,7 @@ export const createAnimationEngine = (
    * Destroy
    * ----------------------------------------
    */
-  const destroy = () => {
+  const stop = () => {
     timeline.kill();
   };
 
@@ -105,8 +108,10 @@ export const createAnimationEngine = (
 
     playEntrance,
 
+    onEntranceComplete,
+
     reset,
 
-    destroy,
+    stop,
   };
 };

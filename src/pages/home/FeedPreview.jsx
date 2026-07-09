@@ -1,4 +1,4 @@
-import { LoadingScreen } from "@/components/swipe-cards/loading/LoadingScreen";
+import { SwipeCards } from "@/components/swipe-cards/SwipeCards";
 
 export const FeedPreview = ({ mock_users }) => {
   return (
@@ -10,10 +10,7 @@ export const FeedPreview = ({ mock_users }) => {
         swipe right for interested, swipe left to ignore
       </h3>
 
-      {/* <SwipeCards users={mock_users} /> */}
-      <div className="h-140 relative">
-        <LoadingScreen/>
-      </div>
+      <SwipeCards users={mock_users} />
     </section>
   );
 };

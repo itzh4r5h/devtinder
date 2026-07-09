@@ -7,72 +7,50 @@ import { createProgressEngine } from "./progressEngine";
 
 gsap.registerPlugin(useGSAP);
 
-export const useLoadingAnimation = (
-  loaderRefs,
-  { onEntranceComplete, onProgressEngine },
-) => {
-  const animationRef = useRef(null);
-  const equalizerRef = useRef(null);
-  const progressRef = useRef(null);
+export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
+  const progress = useRef(null)
+  const equalizer = useRef(null)
+  const animation = useRef(null)
+
+
+
+  /**
+   * Called when loading reaches 100%
+   */
+  const finish = () => {
+    //todo here instead of stop i have to use exit
+    equalizer.current?.stop();
+    animation.current?.stop();
+    loadingFinish()
+  };
+
 
   useGSAP(
     () => {
-      /**
-       * Create Engines
-       */
-      animationRef.current = createAnimationEngine(loaderRefs, {
-        onEntranceComplete: () => {
-          equalizerRef.current.start();
+      
+      progress.current = createProgressEngine(loaderRefs);
+      equalizer.current = createEqualizerEngine(loaderRefs);
+      animation.current = createAnimationEngine(loaderRefs);
+      preloader.setProgressEngine(progress.current)
+      preloader.getLoader(finish);
 
-          onEntranceComplete?.();
-        },
-      });
+      animation.current.setInitialState();
+   
+      animation.current.buildEntrance();
+    
+      animation.current.playEntrance();
 
-      equalizerRef.current = createEqualizerEngine(loaderRefs);
 
-      progressRef.current = createProgressEngine(loaderRefs);
+      animation.current.onEntranceComplete(equalizer.current.start,preloader?.start)
 
-      /**
-       * Expose progress engine
-       */
-      onProgressEngine?.(progressRef.current);
-
-      /**
-       * Initial State
-       */
-      animationRef.current.setInitialState();
-
-      /**
-       * Build Timeline
-       */
-      animationRef.current.buildEntrance();
-
-      /**
-       * Play Entrance
-       */
-      animationRef.current.playEntrance();
 
       return () => {
-        equalizerRef.current.destroy();
-
-        animationRef.current.destroy();
+        equalizer.current.stop();
+        animation.current.stop();
       };
     },
     {
       scope: loaderRefs.current.overlay,
     },
   );
-
-  /**
-   * Called when loading reaches 100%
-   */
-  const finish = () => {
-    equalizerRef.current.stop();
-
-    animationRef.current.playExit();
-  };
-
-  return {
-    finish,
-  };
 };

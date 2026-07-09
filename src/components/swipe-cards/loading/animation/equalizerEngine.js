@@ -79,10 +79,14 @@ export const createEqualizerEngine = (loaderRefs) => {
     state.delayedCall = null;
   };
 
+<<<<<<< HEAD
   const destroy = () => {
     stop();
   };
 
   return { start, stop, destroy };
 >>>>>>> cc934be (feature(loader):equalizer completed)
+=======
+  return { start, stop };
+>>>>>>> 2c591d9 (refactor: simplify loading screen animation orchestration)
 };

@@ -4,7 +4,7 @@ import { LoadingProgress } from "./LoadingProgress";
 import { useLoadingAnimation } from "./animation/useLoadingAnimation";
 import { useImagePreloader } from "./animation/useImagePreloader";
 
-export const LoadingScreen = ({imageUrls=[],onFinished}) => {
+export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
   const loaderRefs = useRef({
     overlay: null,
     bars: [],
@@ -15,30 +15,12 @@ export const LoadingScreen = ({imageUrls=[],onFinished}) => {
     },
   });
 
-  const progressEngine = useRef(null);
-
   const preloader = useImagePreloader({
     imageUrls,
     minimumDuration: 2500,
-
-    onProgress(value) {
-      progressEngine.current?.update(value);
-    },
-
-    onComplete() {
-      loader.finish();
-    },
   });
 
-  const loader = useLoadingAnimation(loaderRefs, {
-    onEntranceComplete() {
-      preloader.start();
-    },
-
-    onProgressEngine(engine) {
-      progressEngine.current = engine;
-    },
-  });
+  const loader = useLoadingAnimation(loaderRefs, { preloader, loadingFinish });
 
   return (
     <div

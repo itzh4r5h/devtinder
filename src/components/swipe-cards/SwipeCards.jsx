@@ -9,56 +9,29 @@ import { UserCard } from "../UserCard";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
+import { LoadingScreen } from "./loading/LoadingScreen";
 
 export const SwipeCards = ({ users }) => {
   const [cards, setCards] = useState(users);
 
-  const [imagesReady, setImagesReady] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const preloadImage = (src) =>
-    new Promise((resolve) => {
-      const img = new Image();
-
-      img.src = src;
-
-      img.onload = async () => {
-        try {
-          await img.decode();
-        } catch {}
-
-        resolve();
-      };
-
-      img.onerror = resolve;
-    });
-
-  useEffect(() => {
-    const preloadAllImages = async () => {
-      await Promise.all(cards.map((card) => preloadImage(card.imageUrl)));
-
-      setImagesReady(true);
-    };
-
-    preloadAllImages();
-  }, [cards]);
+  const imageUrls = cards.map((user) => user.imageUrl);
 
   const refreshCards = () => {
     if (cards.length > 0) return;
-    setImagesReady(false)
+    setLoading(true)
     setCards(users);
   };
 
-  if (!imagesReady) {
-    return (
-      <div className="grid place-items-center my-10 h-145 text-5xl">
-        Loading...
-      </div>
-    );
-  }
-
+  
   return (
     <div className="grid place-items-center my-10 relative">
-      {cards.length > 0 ? (
+
+      {loading && <LoadingScreen imageUrls={imageUrls} loadingFinish={()=>{setLoading(false)}}/>}
+
+
+      {!loading && (cards.length > 0 ? (
         <AnimatePresence>
           {cards.map((user, index) => {
             return (
@@ -81,14 +54,14 @@ export const SwipeCards = ({ users }) => {
             click on refresh button to experience it again!
           </p>
         </div>
-      )}
-      <Button
+      ))}
+      {!loading && <Button
         onClick={refreshCards}
         variant="outline"
         className={`${cards.length < 1 ? "button-bg cursor-pointer" : "bg-card cursor-not-allowed"} font-bold capitalize rounded-full size-10 absolute z-100 -bottom-13`}
       >
         <RotateCcw strokeWidth={3} className="size-6" />
-      </Button>
+      </Button>}
     </div>
   );
 };
