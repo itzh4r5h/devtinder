@@ -1,6 +1,10 @@
 import gsap from "gsap";
 
+<<<<<<< HEAD
 import { BAR_PERSONALITIES, TIMINGS, random, clamp } from "../constants";
+=======
+import { BAR_PERSONALITIES, TIMINGS, random, clamp, EASES } from "../constants";
+>>>>>>> cc934be (feature(loader):equalizer completed)
 
 export const createEqualizerEngine = (loaderRefs) => {
   const state = {
@@ -31,5 +35,50 @@ export const createEqualizerEngine = (loaderRefs) => {
     return next;
   };
 
+<<<<<<< HEAD
   return {};
+=======
+  const animateWave = () => {
+    if (!state.running) return;
+
+    getBars().forEach((bar, index) => {
+      gsap.to(bar, {
+        scaleY: getNextScale(index),
+
+        duration: gsap.utils.random(
+          EQUALIZER.MIN_DURATION,
+          EQUALIZER.MAX_DURATION,
+        ),
+
+        ease: "none",
+      });
+    });
+
+    state.delayedCall = gsap.delayedCall(EQUALIZER.STEP, animateWave);
+  };
+
+  const start = () => {
+    if (state.running) return;
+
+    state.running = true;
+
+    initialize();
+
+    animateWave();
+  };
+
+  const stop = () => {
+    state.running = false;
+
+    state.delayedCall?.kill();
+
+    state.delayedCall = null;
+  };
+
+  const destroy = () => {
+    stop();
+  };
+
+  return { start, stop, destroy };
+>>>>>>> cc934be (feature(loader):equalizer completed)
 };

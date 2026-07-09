@@ -18,11 +18,11 @@ export const TIMINGS = {
   PAUSE_BEFORE_EQUALIZER: 0.15,
 
   EQUALIZER: {
-    STEP: 0.18,
-    MIN_DURATION: 0.22,
-    MAX_DURATION: 0.45,
-    MIN_DELTA: -0.25,
-    MAX_DELTA: 0.25,
+    STEP: 0.08,
+    MIN_DURATION: 0.02,
+    MAX_DURATION: 0.12,
+    MIN_DELTA: -0.5,
+    MAX_DELTA: 0.5,
   },
 
   PAUSE_BEFORE_EXIT: 0.2,
@@ -31,14 +31,13 @@ export const TIMINGS = {
 export const EASES = {
   BAR_ENTER: "back.out",
   PROGRESS: "power2.out",
-  BAR: "sine.inOut",
 };
 
 export const BAR_PERSONALITIES = [
   { min: 0.55, max: 0.9 },
   { min: 0.65, max: 1.0 },
   { min: 0.55, max: 1.1 },
-  { min: 0.8, max: 1.25 },
+  { min: 0.7, max: 1.25 },
   { min: 0.55, max: 1.1 },
   { min: 0.65, max: 1.0 },
   { min: 0.55, max: 0.9 },

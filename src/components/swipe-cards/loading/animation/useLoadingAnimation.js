@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
 import { createAnimationEngine } from "./animationEngine";
+import { createEqualizerEngine } from "./equalizerEngine";
 
 gsap.registerPlugin(useGSAP);
 
@@ -19,9 +20,11 @@ export const useLoadingAnimation = (loaderRefs) => {
 
   useGSAP(
     () => {
+      const equalizer = createEqualizerEngine(loaderRefs);
+
       const animation = createAnimationEngine(loaderRefs, {
         onEntranceComplete() {
-          console.log("entrance finished");
+          equalizer.start();
         },
       });
 
@@ -33,6 +36,7 @@ export const useLoadingAnimation = (loaderRefs) => {
 
       return () => {
         animation.destroy();
+        equalizer.destroy()
       };
     },
     { scope: loaderRefs.current.overlay },
