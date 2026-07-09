@@ -21,12 +21,9 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
       animation.current = createAnimationEngine(loaderRefs);
       preloader.setProgressEngine(progress.current)
 
-      animation.current.setInitialState();
-   
-      animation.current.buildEntrance();
+      animation.current.init();
     
       animation.current.playEntrance();
-
 
       animation.current.onEntranceComplete(equalizer.current.start,preloader?.start)
 
@@ -46,10 +43,8 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
    * Called when loading reaches 100%
    */
   const finish = () => {
-    //todo here instead of stop i have to use exit
     equalizer.current.stop();
-    animation.current.stop();
-    loadingFinish()
+    animation.current.playExit(loadingFinish)
   };
 
   return {

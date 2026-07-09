@@ -14,9 +14,7 @@ export const TIMINGS = {
   // loading progress
   PROGRESS_FADE: 0.45,
 
-  // for equalizer
-  PAUSE_BEFORE_EQUALIZER: 0.15,
-
+  
   EQUALIZER: {
     STEP: 0.08,
     MIN_DURATION: 0.02,
@@ -24,8 +22,6 @@ export const TIMINGS = {
     MIN_DELTA: -0.5,
     MAX_DELTA: 0.5,
   },
-
-  PAUSE_BEFORE_EXIT: 0.2,
 };
 
 export const EASES = {

@@ -3,10 +3,13 @@ import gsap from "gsap";
 import { EASES, TIMINGS } from "./constants";
 
 export const createAnimationEngine = (loaderRefs) => {
-  const timeline = gsap.timeline({
+  const entranceTimeline = gsap.timeline({
     paused: true,
   });
-  const { bars, progress } = loaderRefs.current;
+  const exitTimeline = gsap.timeline({
+    paused: true,
+  });
+  const { bars, progress, overlay } = loaderRefs.current;
   const { BAR } = TIMINGS;
 
   /**
@@ -35,9 +38,9 @@ export const createAnimationEngine = (loaderRefs) => {
    * ----------------------------------------
    */
   const buildEntrance = () => {
-    timeline.clear();
+    entranceTimeline.clear();
 
-    timeline.to(bars, {
+    entranceTimeline.to(bars, {
       yPercent: 0,
 
       duration: BAR.ENTER,
@@ -49,7 +52,7 @@ export const createAnimationEngine = (loaderRefs) => {
       },
     });
 
-    timeline.to(
+    entranceTimeline.to(
       progress.container,
       {
         opacity: 1,
@@ -60,13 +63,18 @@ export const createAnimationEngine = (loaderRefs) => {
     );
   };
 
+  const init = () => {
+    setInitialState();
+    buildEntrance();
+  };
+
   /**
    * ----------------------------------------
    * Play Entrance
    * ----------------------------------------
    */
   const playEntrance = () => {
-    timeline.play(-0.1);
+    entranceTimeline.play(-0.1);
   };
 
   /**
@@ -74,43 +82,93 @@ export const createAnimationEngine = (loaderRefs) => {
    * On Completion of Entrance
    * ----------------------------------------
    */
-  const onEntranceComplete = (startEqualizer,startImagesPreloader) => {
-    timeline.call(() => {
+  const onEntranceComplete = (startEqualizer, startImagesPreloader) => {
+    entranceTimeline.call(() => {
       startEqualizer();
-      startImagesPreloader()
+      startImagesPreloader();
     });
   };
 
-  /**
-   * ----------------------------------------
-   * Reset
-   * ----------------------------------------
-   */
-  const reset = () => {
-    timeline.pause(0);
+  const playExit = (loadingFinish) => {
+    exitTimeline.clear();
 
-    setInitialState();
+    // ---------------------------------
+    // Normalize Bars
+    // ---------------------------------
+    exitTimeline.to(bars, {
+      scaleY: 1,
+      duration: 0.08,
+      ease: "power1.out",
+      overwrite: true,
+    });
+
+    // ---------------------------------
+    // Fade Progress
+    // ---------------------------------
+    exitTimeline.to(progress.container, {
+      opacity: 0,
+      y: 12,
+      duration: 0.25,
+      ease: "power2.in",
+    },"+=0.2");
+
+    // ---------------------------------
+    // Bars Exit
+    // ---------------------------------
+    exitTimeline.to(
+      bars,
+      {
+        yPercent: 300,
+
+        duration: 0.45,
+
+        ease: "power3.in",
+
+        stagger: {
+          each: BAR.STAGGER,
+          from: "end",
+        },
+      },
+    );
+
+    // ---------------------------------
+    // Overlay Fade
+    // ---------------------------------
+    exitTimeline.to(
+      overlay,
+      {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      },
+    );
+
+    exitTimeline.call(() => {
+      stop()
+      loadingFinish();
+    });
+
+    exitTimeline.play(0);
   };
 
   /**
    * ----------------------------------------
-   * Destroy
+   * stop
    * ----------------------------------------
    */
   const stop = () => {
-    timeline.kill();
+    entranceTimeline.kill();
+    exitTimeline.kill();
   };
 
   return {
-    setInitialState,
-
-    buildEntrance,
+    init,
 
     playEntrance,
 
     onEntranceComplete,
 
-    reset,
+    playExit,
 
     stop,
   };

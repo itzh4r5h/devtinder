@@ -1,10 +1,8 @@
 import gsap from "gsap";
 
 export const createProgressEngine = (loaderRefs) => {
-  let current = 0;
 
   const update = (value) => {
-    current = value;
 
     const { progress } = loaderRefs.current;
 
