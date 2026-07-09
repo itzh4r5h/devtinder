@@ -13,18 +13,6 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
   const animation = useRef(null)
 
 
-
-  /**
-   * Called when loading reaches 100%
-   */
-  const finish = () => {
-    //todo here instead of stop i have to use exit
-    equalizer.current?.stop();
-    animation.current?.stop();
-    loadingFinish()
-  };
-
-
   useGSAP(
     () => {
       
@@ -32,7 +20,6 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
       equalizer.current = createEqualizerEngine(loaderRefs);
       animation.current = createAnimationEngine(loaderRefs);
       preloader.setProgressEngine(progress.current)
-      preloader.getLoader(finish);
 
       animation.current.setInitialState();
    
@@ -53,4 +40,19 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
       scope: loaderRefs.current.overlay,
     },
   );
+
+
+  /**
+   * Called when loading reaches 100%
+   */
+  const finish = () => {
+    //todo here instead of stop i have to use exit
+    equalizer.current.stop();
+    animation.current.stop();
+    loadingFinish()
+  };
+
+  return {
+    finish
+  };
 };
