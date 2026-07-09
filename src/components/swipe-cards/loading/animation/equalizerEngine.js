@@ -1,14 +1,6 @@
 import gsap from "gsap";
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { BAR_PERSONALITIES, TIMINGS, random, clamp } from "../constants";
-=======
-import { BAR_PERSONALITIES, TIMINGS, random, clamp, EASES } from "../constants";
->>>>>>> cc934be (feature(loader):equalizer completed)
-=======
 import { BAR_PERSONALITIES, TIMINGS, random, clamp } from "./constants";
->>>>>>> 58e96c2 (feat(loader): progress update based on images loading done)
+
 
 export const createEqualizerEngine = (loaderRefs) => {
   const state = {
@@ -39,9 +31,7 @@ export const createEqualizerEngine = (loaderRefs) => {
     return next;
   };
 
-<<<<<<< HEAD
-  return {};
-=======
+
   const animateWave = () => {
     if (!state.running) return;
 
@@ -79,14 +69,5 @@ export const createEqualizerEngine = (loaderRefs) => {
     state.delayedCall = null;
   };
 
-<<<<<<< HEAD
-  const destroy = () => {
-    stop();
-  };
-
-  return { start, stop, destroy };
->>>>>>> cc934be (feature(loader):equalizer completed)
-=======
   return { start, stop };
->>>>>>> 2c591d9 (refactor: simplify loading screen animation orchestration)
 };
