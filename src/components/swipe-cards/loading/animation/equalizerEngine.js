@@ -1,10 +1,14 @@
 import gsap from "gsap";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { BAR_PERSONALITIES, TIMINGS, random, clamp } from "../constants";
 =======
 import { BAR_PERSONALITIES, TIMINGS, random, clamp, EASES } from "../constants";
 >>>>>>> cc934be (feature(loader):equalizer completed)
+=======
+import { BAR_PERSONALITIES, TIMINGS, random, clamp } from "./constants";
+>>>>>>> 58e96c2 (feat(loader): progress update based on images loading done)
 
 export const createEqualizerEngine = (loaderRefs) => {
   const state = {

@@ -3,42 +3,76 @@ import gsap from "gsap";
 import { useRef } from "react";
 import { createAnimationEngine } from "./animationEngine";
 import { createEqualizerEngine } from "./equalizerEngine";
+import { createProgressEngine } from "./progressEngine";
 
 gsap.registerPlugin(useGSAP);
 
-export const useLoadingAnimation = (loaderRefs) => {
-  const timelines = useRef({
-    entrance: null,
-    exit: null,
-  });
-
-  const equalizer = useRef({
-    running: false,
-    delayedCall: null,
-    previousScales: [],
-  });
+export const useLoadingAnimation = (
+  loaderRefs,
+  { onEntranceComplete, onProgressEngine },
+) => {
+  const animationRef = useRef(null);
+  const equalizerRef = useRef(null);
+  const progressRef = useRef(null);
 
   useGSAP(
     () => {
-      const equalizer = createEqualizerEngine(loaderRefs);
+      /**
+       * Create Engines
+       */
+      animationRef.current = createAnimationEngine(loaderRefs, {
+        onEntranceComplete: () => {
+          equalizerRef.current.start();
 
-      const animation = createAnimationEngine(loaderRefs, {
-        onEntranceComplete() {
-          equalizer.start();
+          onEntranceComplete?.();
         },
       });
 
-      animation.setInitialState();
+      equalizerRef.current = createEqualizerEngine(loaderRefs);
 
-      animation.buildEntrance();
+      progressRef.current = createProgressEngine(loaderRefs);
 
-      animation.playEntrance();
+      /**
+       * Expose progress engine
+       */
+      onProgressEngine?.(progressRef.current);
+
+      /**
+       * Initial State
+       */
+      animationRef.current.setInitialState();
+
+      /**
+       * Build Timeline
+       */
+      animationRef.current.buildEntrance();
+
+      /**
+       * Play Entrance
+       */
+      animationRef.current.playEntrance();
 
       return () => {
-        animation.destroy();
-        equalizer.destroy()
+        equalizerRef.current.destroy();
+
+        animationRef.current.destroy();
       };
     },
-    { scope: loaderRefs.current.overlay },
+    {
+      scope: loaderRefs.current.overlay,
+    },
   );
+
+  /**
+   * Called when loading reaches 100%
+   */
+  const finish = () => {
+    equalizerRef.current.stop();
+
+    animationRef.current.playExit();
+  };
+
+  return {
+    finish,
+  };
 };

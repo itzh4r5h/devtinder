@@ -1,4 +1,4 @@
-import { BAR_COUNT,BAR_HEIGHTS } from './constants'
+import { BAR_COUNT,BAR_HEIGHTS } from './animation/constants'
 
 export const LoadingBars = ({loaderRefs})=> {
   return (

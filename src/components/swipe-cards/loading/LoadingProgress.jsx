@@ -17,9 +17,6 @@ export const LoadingProgress = ({loaderRefs}) =>{
     >
       {/* Track */}
       <div
-        ref={(el) => {
-        loaderRefs.current.progress.track = el;
-      }}
         className="
           relative
           h-1

@@ -1,6 +1,6 @@
 import gsap from "gsap";
 
-import { EASES, TIMINGS } from "../constants";
+import { EASES, TIMINGS } from "./constants";
 
 export const createAnimationEngine = (
   loaderRefs,
