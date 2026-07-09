@@ -21,6 +21,7 @@ export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
   });
 
   const loader = useLoadingAnimation(loaderRefs, { preloader, loadingFinish });
+  preloader.getLoader(loader);
 
   return (
     <div

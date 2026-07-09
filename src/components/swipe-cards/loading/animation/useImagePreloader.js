@@ -9,8 +9,8 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
 
   const progressEngine = useRef(null);
 
-  const getLoader = (finish) => {
-    finish.current = finish;
+  const getLoader = (loader) => {
+    finish.current = loader.finish;
   };
 
   const setProgressEngine = (engine) => {
