@@ -1,0 +1,53 @@
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef } from "react";
+import { createAnimationEngine } from "./animationEngine";
+import { createEqualizerEngine } from "./equalizerEngine";
+import { createProgressEngine } from "./progressEngine";
+
+gsap.registerPlugin(useGSAP);
+
+export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
+  const progress = useRef(null)
+  const equalizer = useRef(null)
+  const animation = useRef(null)
+
+
+  useGSAP(
+    () => {
+      
+      progress.current = createProgressEngine(loaderRefs);
+      equalizer.current = createEqualizerEngine(loaderRefs);
+      animation.current = createAnimationEngine(loaderRefs);
+      preloader.setProgressEngine(progress.current)
+
+      animation.current.init();
+    
+      animation.current.playEntrance();
+
+      animation.current.onEntranceComplete(equalizer.current.start,preloader?.start)
+
+
+      return () => {
+        equalizer.current.stop();
+        animation.current.stop();
+      };
+    },
+    {
+      scope: loaderRefs.current.overlay,
+    },
+  );
+
+
+  /**
+   * Called when loading reaches 100%
+   */
+  const finish = () => {
+    equalizer.current.stop();
+    animation.current.playExit(loadingFinish)
+  };
+
+  return {
+    finish
+  };
+};

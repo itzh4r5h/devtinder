@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Circle, Flame } from "lucide-react";
 import { UserCard } from "../../components/UserCard";
 
-export const Hero = () => {
+
+export const Hero = ({user}) => {
   return (
     <section className="flex flex-col gap-10 lg:flex-row">
       <div className="space-y-10 flex-2">
@@ -15,7 +16,7 @@ export const Hero = () => {
         </div>
         {/* tag line ends */}
 
-        <h1 className="capitalize font-extrabold text-7xl tracking-wide leading-20">
+        <h1 className="capitalize font-extrabold text-6xl leading-15 sm:text-7xl tracking-wide sm:leading-20">
           find your <span className="text-bg">dev soulmate</span> <br /> 💻️{" "}
           <span className="inline-block translate-y-1.5">❤️</span>
         </h1>
@@ -34,25 +35,33 @@ export const Hero = () => {
         </Button>
 
         <div className="flex flex-wrap flex-row items-center justify-center gap-10 w-fit mt-5">
-
           <div>
             <h3 className="text-3xl tracking-wide font-bold leading-6">50k+</h3>
-            <span className="capitalize text-muted-foreground tracking-wide text-sm">active devs</span>
+            <span className="capitalize text-muted-foreground tracking-wide text-sm">
+              active devs
+            </span>
           </div>
           <div>
-            <h3 className="text-3xl tracking-wide font-bold leading-6">120k+</h3>
-            <span className="capitalize text-muted-foreground tracking-wide text-sm">matches made</span>
+            <h3 className="text-3xl tracking-wide font-bold leading-6">
+              120k+
+            </h3>
+            <span className="capitalize text-muted-foreground tracking-wide text-sm">
+              matches made
+            </span>
           </div>
           <div>
             <h3 className="text-3xl tracking-wide font-bold leading-6">98%</h3>
-            <span className="capitalize text-muted-foreground tracking-wide text-sm">code vibes</span>
+            <span className="capitalize text-muted-foreground tracking-wide text-sm">
+              code vibes
+            </span>
           </div>
-          
         </div>
       </div>
 
       <div className="flex justify-center flex-1">
-        <UserCard />
+        <span className="-rotate-3">
+          <UserCard user={user}/>
+        </span>
       </div>
     </section>
   );
