@@ -6,12 +6,14 @@ import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
 import { motion } from "motion/react";
 
-export const UserCard = ({ user, boxShadow }) => {
-
+export const UserCard = ({ user, boxShadow, onInterested, onIgnore }) => {
   return (
     <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-80 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
-        <motion.div style={{boxShadow,transition:" box-shadow 0.3s ease-out"}} className="relative rounded-2xl w-full h-72 sm:h-95 overflow-hidden">
+        <motion.div
+          style={{ boxShadow, transition: " box-shadow 0.3s ease-out" }}
+          className="relative rounded-2xl w-full h-72 sm:h-95 overflow-hidden"
+        >
           <img
             src={user.imageUrl}
             alt={user.name}
@@ -50,6 +52,7 @@ export const UserCard = ({ user, boxShadow }) => {
       </CardContent>
       <CardFooter className="grid grid-cols-2 p-0 pb-4 gap-4 bg-transparent border-0">
         <Button
+          onClick={onIgnore}
           variant="outline"
           size="lg"
           className="bg-transparent rounded-full sm:text-lg text-foreground border-white/10 border-0 border-solid cursor-pointer capitalize h-11"
@@ -58,6 +61,7 @@ export const UserCard = ({ user, boxShadow }) => {
           Ignore
         </Button>
         <Button
+          onClick={onInterested}
           variant="outline"
           size="lg"
           className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground h-11"

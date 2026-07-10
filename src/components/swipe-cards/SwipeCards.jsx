@@ -6,7 +6,7 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
@@ -101,22 +101,37 @@ const MotionCard = ({ user, index, cards, setCards }) => {
     ["0 0 0px rgba(0,0,0,0)", "0 0 40px var(--primary)"],
   );
 
-  const handleDragEnd = async () => {
-    if (Math.abs(x.get()) < 200) return;
+  const [isAnimating,setIsAnimating] = useState(false);
+
+  const swipeCard = async (direction, source = "button") => {
+    // to prevent double clicks, clicked but then dragged back, double taps on mobile
+    if (isAnimating) return;
+
+    setIsAnimating(true)
+
     const currentX = x.get();
+    const targetX = direction === "right" ? currentX + 600 : currentX - 600;
 
     x.stop();
 
     await controls.start({
-      x: currentX > 0 ? currentX + 600 : currentX - 600,
-      opacity: 0,
+      x: targetX,
       transition: {
-        duration: 0.25,
+        duration: source === "drag" ? 0.25 : 1,
         ease: "easeOut",
       },
     });
 
     setCards((prev) => prev.filter((cardUser) => cardUser._id !== user._id));
+
+     setIsAnimating(false)
+  };
+
+  const handleDragEnd = async () => {
+    if (Math.abs(x.get()) < 200) return;
+
+    const direction = x.get() > 0 ? "right" : "left"
+    await swipeCard(direction, "drag");
   };
 
   return (
@@ -146,6 +161,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
       style={{
         gridRow: 1,
         gridColumn: 1,
+         pointerEvents: isAnimating?'none':'auto'
       }}
       exit={{
         opacity: 0,
@@ -154,6 +170,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
       className="cursor-grab active:cursor-grabbing origin-bottom"
     >
       <motion.div
+        animate={controls}
         drag={isFront ? "x" : false}
         dragConstraints={{
           left: 0,
@@ -164,10 +181,15 @@ const MotionCard = ({ user, index, cards, setCards }) => {
         style={{
           x,
           opacity,
-          rotate,
+          rotate
         }}
       >
-        <UserCard user={user} boxShadow={boxShadow} />
+        <UserCard
+          user={user}
+          boxShadow={boxShadow}
+          onInterested={() => swipeCard("right")}
+          onIgnore={() => swipeCard("left")}
+        />
       </motion.div>
     </motion.article>
   );
