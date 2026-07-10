@@ -16,7 +16,7 @@ export const Hero = ({user}) => {
         </div>
         {/* tag line ends */}
 
-        <h1 className="capitalize font-extrabold text-7xl tracking-wide leading-20">
+        <h1 className="capitalize font-extrabold text-6xl leading-15 sm:text-7xl tracking-wide sm:leading-20">
           find your <span className="text-bg">dev soulmate</span> <br /> 💻️{" "}
           <span className="inline-block translate-y-1.5">❤️</span>
         </h1>
