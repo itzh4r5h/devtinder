@@ -2,7 +2,7 @@ import { SwipeCards } from "@/components/swipe-cards/SwipeCards";
 
 export const FeedPreview = ({ mock_users }) => {
   return (
-    <section>
+    <section className="overflow-hidden">
       <h1 className="text-foreground text-4xl font-semibold capitalize text-center tracking-wide leading-11">
         see feed in action
       </h1>

@@ -1,6 +1,9 @@
 import { useCallback, useRef } from "react";
 
+const decodedImages = new Set();
+
 export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
+
   const loadedCount = useRef(0);
 
   const startTime = useRef(0);
@@ -14,7 +17,7 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
   };
 
   const setProgressEngine = (engine) => {
-    progressEngine.current = engine
+    progressEngine.current = engine;
   };
 
   const onProgress = (value) => {
@@ -36,24 +39,35 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
 
     loadedCount.current = 0;
 
+    const complete = (resolve) => {
+      loadedCount.current++;
+
+      const progress = Math.round(
+        (loadedCount.current / imageUrls.length) * 100,
+      );
+
+      onProgress(progress);
+
+      resolve?.();
+    };
+
     const promises = imageUrls.map((url) => {
+
+      if (decodedImages.has(url)) {
+        complete();
+        return Promise.resolve();
+      }
+
       return new Promise((resolve) => {
         const image = new Image();
 
-        const complete = () => {
-          loadedCount.current++;
-
-          const progress = Math.round(
-            (loadedCount.current / imageUrls.length) * 100,
-          );
-
-          onProgress(progress);
-
-          resolve();
+        const handleComplete = () => {
+          decodedImages.add(url);
+          complete(resolve);
         };
 
-        image.onload = complete;
-        image.onerror = complete;
+        image.onload = handleComplete;
+        image.onerror = handleComplete;
 
         image.src = url;
       });
@@ -73,6 +87,6 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
   return {
     start,
     getLoader,
-    setProgressEngine
+    setProgressEngine,
   };
 };

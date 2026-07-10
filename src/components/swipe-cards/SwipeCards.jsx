@@ -6,7 +6,7 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
@@ -25,7 +25,7 @@ export const SwipeCards = ({ users }) => {
   };
 
   return (
-    <div className="my-10 relative">
+    <div className="my-10 relative select-none">
       <motion.div
         initial={{
           opacity: 0,
@@ -57,21 +57,21 @@ export const SwipeCards = ({ users }) => {
           </AnimatePresence>
         ) : (
           <div className=" capitalize h-140 w-fit text-center flex items-center flex-col justify-center tracking-wide">
-            <h2 className="text-muted-foreground text-5xl leading-15">
+            <h2 className="text-muted-foreground text-3xl leading-10">
               you have swiped all devs
             </h2>
             <p className="text-secondary text-lg">
               click on refresh button to experience it again!
             </p>
+            <Button
+              onClick={refreshCards}
+              variant="outline"
+              className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
+            >
+              <RotateCcw strokeWidth={3} className="size-6" />
+            </Button>
           </div>
         )}
-        <Button
-          onClick={refreshCards}
-          variant="outline"
-          className={`${cards.length < 1 ? "button-bg cursor-pointer" : "bg-card cursor-not-allowed"} font-bold capitalize rounded-full size-10 absolute z-100 -bottom-13`}
-        >
-          <RotateCcw strokeWidth={3} className="size-6" />
-        </Button>
       </motion.div>
 
       {loading && (
@@ -89,8 +89,13 @@ export const SwipeCards = ({ users }) => {
 const MotionCard = ({ user, index, cards, setCards }) => {
   const x = useMotionValue(0);
   const controls = useAnimationControls();
-  const opacity = useTransform(x, [-200, -20, 0, 20, 200], [0, 1, 1, 1, 0]);
-  const rotate = useTransform(x, [-200, 200], [-20, 20]);
+  const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.15, 200));
+  const opacity = useTransform(
+    x,
+    [-swipeDistance, -20, 0, 20, swipeDistance],
+    [0, 1, 1, 1, 0],
+  );
+  const rotate = useTransform(x, [-swipeDistance, swipeDistance], [-20, 20]);
   const isFront = user._id === cards[cards.length - 1]._id;
   const stackScale = isFront ? 1 : 0.95;
   const stackRotate = isFront ? 0 : index % 2 ? 10 : -10;
@@ -101,36 +106,37 @@ const MotionCard = ({ user, index, cards, setCards }) => {
     ["0 0 0px rgba(0,0,0,0)", "0 0 40px var(--primary)"],
   );
 
-  const [isAnimating,setIsAnimating] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const swipeCard = async (direction, source = "button") => {
     // to prevent double clicks, clicked but then dragged back, double taps on mobile
     if (isAnimating) return;
 
-    setIsAnimating(true)
+    setIsAnimating(true);
 
     const currentX = x.get();
-    const targetX = direction === "right" ? currentX + 600 : currentX - 600;
+    const targetX =
+      direction === "right" ? currentX + swipeDistance : currentX - swipeDistance;
 
     x.stop();
 
     await controls.start({
       x: targetX,
       transition: {
-        duration: source === "drag" ? 0.25 : 1,
+        duration: 0.25,
         ease: "easeOut",
       },
     });
 
     setCards((prev) => prev.filter((cardUser) => cardUser._id !== user._id));
 
-     setIsAnimating(false)
+    setIsAnimating(false);
   };
 
   const handleDragEnd = async () => {
-    if (Math.abs(x.get()) < 200) return;
+    if (Math.abs(x.get()) < swipeDistance) return;
 
-    const direction = x.get() > 0 ? "right" : "left"
+    const direction = x.get() > 0 ? "right" : "left";
     await swipeCard(direction, "drag");
   };
 
@@ -161,11 +167,10 @@ const MotionCard = ({ user, index, cards, setCards }) => {
       style={{
         gridRow: 1,
         gridColumn: 1,
-         pointerEvents: isAnimating?'none':'auto'
+        pointerEvents: isAnimating ? "none" : "auto",
       }}
       exit={{
         opacity: 0,
-        scale: 1.05,
       }}
       className="cursor-grab active:cursor-grabbing origin-bottom"
     >
@@ -181,7 +186,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
         style={{
           x,
           opacity,
-          rotate
+          rotate,
         }}
       >
         <UserCard

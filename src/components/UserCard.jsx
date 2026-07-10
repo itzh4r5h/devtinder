@@ -5,19 +5,20 @@ import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 
 import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
 import { motion } from "motion/react";
+import { memo } from "react";
 
-export const UserCard = ({ user, boxShadow, onInterested, onIgnore }) => {
+export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, onIgnore }) {
   return (
-    <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-80 sm:w-100">
+    <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-72 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
         <motion.div
-          style={{ boxShadow, transition: " box-shadow 0.3s ease-out" }}
-          className="relative rounded-2xl w-full h-72 sm:h-95 overflow-hidden"
+          style={{ boxShadow, transition: "box-shadow 0.3s ease-out" }}
+          className="relative rounded-2xl w-full h-64 sm:h-95 overflow-hidden"
         >
           <img
             src={user.imageUrl}
-            alt={user.name}
-            className="object-cover w-full h-full"
+            alt={user.name} 
+            className="object-cover w-full h-full will-change-transform"
             draggable={false}
             loading="eager"
             decoding="async"
@@ -72,4 +73,4 @@ export const UserCard = ({ user, boxShadow, onInterested, onIgnore }) => {
       </CardFooter>
     </Card>
   );
-};
+});

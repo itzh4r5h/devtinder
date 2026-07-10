@@ -38,7 +38,7 @@ export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
         bg-background/10 backdrop-blur-md
       "
     >
-      <div className="flex w-full max-w-md flex-col items-center px-6 pt-20 overflow-hidden">
+      <div className="flex w-full max-w-md flex-col items-center px-6 pt-20 overflow-hidden -mt-20">
         <LoadingBars loaderRefs={loaderRefs} />
         <LoadingProgress loaderRefs={loaderRefs} />
       </div>

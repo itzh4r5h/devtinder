@@ -6,6 +6,12 @@ body{
   cursor: default
 }
 
+/* for layout debug purpose */
+/* *{
+  border: 1px solid red;
+} */
+
+
 @import "tailwindcss";
 
 @import "tw-animate-css";
@@ -147,3 +153,4 @@ body{
 .card {
   @apply bg-neutral-900/90 border-solid backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
 }
+
