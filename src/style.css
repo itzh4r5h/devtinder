@@ -135,7 +135,7 @@ body{
 
 .active-bar {
   background-color: var(--secondary);
-  box-shadow: 0 0 10px oklch(0.627 0.265 303.9);
+  box-shadow: 0 0 10px var(--secondary);
 }
 
 .active-icon {

@@ -89,11 +89,17 @@ export const SwipeCards = ({ users }) => {
 const MotionCard = ({ user, index, cards, setCards }) => {
   const x = useMotionValue(0);
   const controls = useAnimationControls();
-  const opacity = useTransform(x, [-200, 0, 200], [0, 1, 0]);
+  const opacity = useTransform(x, [-200, -20, 0, 20, 200], [0, 1, 1, 1, 0]);
   const rotate = useTransform(x, [-200, 200], [-20, 20]);
   const isFront = user._id === cards[cards.length - 1]._id;
   const stackScale = isFront ? 1 : 0.95;
   const stackRotate = isFront ? 0 : index % 2 ? 10 : -10;
+
+  const boxShadow = useTransform(
+    x,
+    [20, 200],
+    ["0 0 0px rgba(0,0,0,0)", "0 0 40px var(--primary)"],
+  );
 
   const handleDragEnd = async () => {
     if (Math.abs(x.get()) < 200) return;
@@ -161,7 +167,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
           rotate,
         }}
       >
-        <UserCard user={user} />
+        <UserCard user={user} boxShadow={boxShadow} />
       </motion.div>
     </motion.article>
   );

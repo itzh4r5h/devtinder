@@ -4,12 +4,14 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 
 import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
+import { motion } from "motion/react";
 
-export const UserCard = ({ user }) => {
+export const UserCard = ({ user, boxShadow }) => {
+
   return (
     <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-80 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
-        <div className="relative rounded-2xl w-full h-72 sm:h-95 overflow-hidden">
+        <motion.div style={{boxShadow,transition:" box-shadow 0.3s ease-out"}} className="relative rounded-2xl w-full h-72 sm:h-95 overflow-hidden">
           <img
             src={user.imageUrl}
             alt={user.name}
@@ -31,7 +33,7 @@ export const UserCard = ({ user }) => {
               {user.title}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="flex flex-wrap gap-2 h-18">
           {user.tags.map((tag) => {
