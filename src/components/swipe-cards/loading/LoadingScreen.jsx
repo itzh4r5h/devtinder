@@ -35,7 +35,6 @@ export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
         flex
         items-center
         justify-center
-        bg-background/10 backdrop-blur-md
       "
     >
       <div className="flex w-full max-w-md flex-col items-center px-6 pt-20 overflow-hidden -mt-20">
