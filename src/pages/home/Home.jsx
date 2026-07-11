@@ -4,11 +4,17 @@ import { Hero } from "./Hero";
 import { HowItWorks } from "./HowItWorks";
 
 export const Home = () => {
+
+    const modified_mock_users = MOCK_USERS.map((user)=>{
+    const firstName = user.name.split(" ")[0].toLowerCase()
+    return {...user,imageUrl:`/images/${firstName}.webp`}
+  })
+
   return (
     <div className="space-y-20 mt-15">
-      <Hero user={MOCK_USERS[8]} />
+      <Hero user={modified_mock_users[8]} />
       <HowItWorks />
-      <FeedPreview mock_users={MOCK_USERS} />
+      <FeedPreview mock_users={modified_mock_users} />
 
       <section className="flex flex-col justify-center text-6xl font-medium leading-[1.05] tracking-tight">
   <p className="self-start">
