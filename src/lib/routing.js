@@ -1,17 +1,62 @@
 import App from "@/App";
+import { authMiddleware } from "@/middlewares/authMiddleware";
+import { Auth } from "@/pages/Auth";
+import { Connections } from "@/pages/Connections";
+import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
+import { Profile } from "@/pages/Profile";
+import { Requests } from "@/pages/Requests";
+import { Settings } from "@/pages/Settings";
+
 import { createBrowserRouter } from "react-router";
 
-
 export const router = createBrowserRouter([
-    {
-        path: '/',
-        Component: App,
+  {
+    path: "/",
+    Component: App,
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        middleware: [authMiddleware],
         children: [
-            {
-                index: true,
-                Component: Home
-            }
-        ]
-    }
-])
+          {
+            path: "/signin",
+            Component: Auth,
+          },
+          {
+            path: "/signup",
+            Component: Auth,
+          },
+        ],
+      },
+      {
+        middleware: [authMiddleware],
+        children: [
+          {
+            path: "/feed",
+            Component: Feed,
+          },
+          {
+            path: "/requests",
+            Component: Requests,
+          },
+          {
+            path: "/connections",
+            Component: Connections,
+          },
+          {
+            path: "/profile",
+            Component: Profile,
+          },
+          {
+            path: "/settings",
+            Component: Settings,
+          },
+        ],
+      },
+    ],
+  },
+]);

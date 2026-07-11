@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Circle, Flame } from "lucide-react";
 import { UserCard } from "../../components/UserCard";
+import { Link } from "react-router";
 
 
 export const Hero = ({user}) => {
@@ -26,6 +27,7 @@ export const Hero = ({user}) => {
           Swipe right on collaboration.
         </p>
 
+        <Link to="/feed">
         <Button
           variant="outline"
           size="lg"
@@ -33,6 +35,7 @@ export const Hero = ({user}) => {
         >
           <Flame className="size-6" /> start swiping
         </Button>
+        </Link>
 
         <div className="flex flex-wrap flex-row items-center justify-center gap-10 w-fit mt-5">
           <div>

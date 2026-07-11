@@ -3,9 +3,11 @@ import { Footer } from "./components/Footer";
 import { Navbar } from "./components/navbar/Navbar";
 
 function App() {
+  const isLoggedIn = false
+
   return (
     <div className="flex flex-col main-bg w-full h-full">
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn}/>
       <main className="container mx-auto px-5 flex-1">
        <Outlet/>
       </main>

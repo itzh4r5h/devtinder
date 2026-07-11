@@ -3,8 +3,7 @@ import { NavbarMobile } from "./NavbarMobile";
 import { NavLinks } from "./NavLinks";
 
 
-export const Navbar = () => {
-  const isLoggedIn = false
+export const Navbar = ({isLoggedIn}) => {
 
   return (
     <nav className="bg-background border-white/10 border-solid border-t-0 border-b border-l-0 border-r-0 backdrop-blur-md tex-white py-5">
@@ -12,9 +11,9 @@ export const Navbar = () => {
         <Logo />
         <NavLinks forDrawer={false} isLoggedIn={isLoggedIn}/>
         
-        <span className="flex items-center md:hidden">
+        {isLoggedIn && <span className="flex items-center md:hidden">
           <NavbarMobile isLoggedIn={isLoggedIn}/>
-        </span>
+        </span>}
       </div>
     </nav>
   );
