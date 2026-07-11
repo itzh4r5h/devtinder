@@ -89,10 +89,10 @@ export const SwipeCards = ({ users }) => {
 const MotionCard = ({ user, index, cards, setCards }) => {
   const x = useMotionValue(0);
   const controls = useAnimationControls();
-  const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.15, 200));
+  const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.19, 200));
   const opacity = useTransform(
     x,
-    [-swipeDistance, -20, 0, 20, swipeDistance],
+    [-swipeDistance, -50, 0, 50, swipeDistance],
     [0, 1, 1, 1, 0],
   );
   const rotate = useTransform(x, [-swipeDistance, swipeDistance], [-20, 20]);
