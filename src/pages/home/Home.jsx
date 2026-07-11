@@ -21,7 +21,7 @@ export const Home = () => {
     <span className="text-bg tracking-wider">One swipe</span>
   </p>
 
-  <p className="self-center text-5xl text-muted-foreground my-5">
+  <p className="self-start text-end text-5xl text-muted-foreground my-5 w-fit pl-20">
     could lead to your next
   </p>
 
