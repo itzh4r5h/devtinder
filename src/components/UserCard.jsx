@@ -20,7 +20,8 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
             alt={user.name} 
             className="object-cover w-full h-full will-change-transform"
             draggable={false}
-            loading="eager"
+            loading="lazy"
+            fetchPriority="high"
             decoding="async"
           />
           <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
