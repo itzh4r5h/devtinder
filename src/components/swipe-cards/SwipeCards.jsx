@@ -25,62 +25,59 @@ export const SwipeCards = ({ users }) => {
   };
 
   return (
-    <div className="my-10 relative select-none">
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: loading ? 0 : 1,
-        }}
-        transition={{
-          opacity: { duration: loading ? 0 : 0.9, ease: "easeOut" },
-        }}
-        style={{
-          visibility: loading ? "hidden" : "visible",
-        }}
-        className="grid place-items-center"
-      >
-        {cards.length > 0 ? (
-          <AnimatePresence>
-            {cards.map((user, index) => {
-              return (
-                <MotionCard
-                  key={user._id}
-                  user={user}
-                  index={index}
-                  cards={cards}
-                  setCards={setCards}
-                />
-              );
-            })}
-          </AnimatePresence>
-        ) : (
-          <div className=" capitalize h-140 w-fit text-center flex items-center flex-col justify-center tracking-wide">
-            <h2 className="text-muted-foreground text-3xl leading-10">
-              you have swiped all devs
-            </h2>
-            <p className="text-secondary text-lg">
-              click on refresh button to experience it again!
-            </p>
-            <Button
-              onClick={refreshCards}
-              variant="outline"
-              className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
-            >
-              <RotateCcw strokeWidth={3} className="size-6" />
-            </Button>
-          </div>
-        )}
-      </motion.div>
-
-      {loading && (
+    <div className="relative select-none flex-1">
+      {loading ? (
         <LoadingScreen
           imageUrls={imageUrls}
           loadingFinish={() => {
             setLoading(false);
           }}
         />
+      ) : (
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            opacity: { duration: 0.8, ease: "easeOut" },
+          }}
+          className="grid place-items-center h-full"
+        >
+          {cards.length > 0 ? (
+            <AnimatePresence>
+              {cards.map((user, index) => {
+                return (
+                  <MotionCard
+                    key={user._id}
+                    user={user}
+                    index={index}
+                    cards={cards}
+                    setCards={setCards}
+                  />
+                );
+              })}
+            </AnimatePresence>
+          ) : (
+            <div className=" capitalize h-full w-fit text-center flex items-center flex-col justify-center tracking-wide">
+              <h2 className="text-muted-foreground text-3xl leading-10">
+                you have swiped all devs
+              </h2>
+              <p className="text-secondary text-lg">
+                click on refresh button to experience it again!
+              </p>
+              <Button
+                onClick={refreshCards}
+                variant="outline"
+                className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
+              >
+                <RotateCcw strokeWidth={3} className="size-6" />
+              </Button>
+            </div>
+          )}
+        </motion.div>
       )}
     </div>
   );
@@ -89,10 +86,10 @@ export const SwipeCards = ({ users }) => {
 const MotionCard = ({ user, index, cards, setCards }) => {
   const x = useMotionValue(0);
   const controls = useAnimationControls();
-  const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.15, 200));
+  const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.19, 200));
   const opacity = useTransform(
     x,
-    [-swipeDistance, -20, 0, 20, swipeDistance],
+    [-swipeDistance, -50, 0, 50, swipeDistance],
     [0, 1, 1, 1, 0],
   );
   const rotate = useTransform(x, [-swipeDistance, swipeDistance], [-20, 20]);
@@ -116,7 +113,9 @@ const MotionCard = ({ user, index, cards, setCards }) => {
 
     const currentX = x.get();
     const targetX =
-      direction === "right" ? currentX + swipeDistance : currentX - swipeDistance;
+      direction === "right"
+        ? currentX + swipeDistance
+        : currentX - swipeDistance;
 
     x.stop();
 

@@ -17,12 +17,10 @@ export const FeedPreview = ({ mock_users }) => {
       once: true,
       onEnter: () => setStartLoader(true),
     });
-
-    ScrollTrigger.refresh();
   }, []);
 
   return (
-    <section ref={feedSectionRef} className={`overflow-hidden ${!startLoader && 'h-145'}`}>
+    <section ref={feedSectionRef} className="overflow-hidden h-160 sm:h-180 md:h-190 flex flex-col">
       <h1 className="text-foreground text-4xl font-semibold capitalize text-center tracking-wide leading-11">
         see feed in action
       </h1>

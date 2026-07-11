@@ -12,7 +12,7 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
     <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-72 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
         <motion.div
-          style={{ boxShadow, transition: "box-shadow 0.3s ease-out" }}
+          style={{ boxShadow, transition: "box-shadow 0.15s ease-out" }}
           className="relative rounded-2xl w-full h-64 sm:h-95 overflow-hidden"
         >
           <img
@@ -20,7 +20,8 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
             alt={user.name} 
             className="object-cover w-full h-full will-change-transform"
             draggable={false}
-            loading="eager"
+            loading="lazy"
+            fetchPriority="high"
             decoding="async"
           />
           <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
