@@ -17,8 +17,6 @@ export const FeedPreview = ({ mock_users }) => {
       once: true,
       onEnter: () => setStartLoader(true),
     });
-
-    ScrollTrigger.refresh();
   }, []);
 
   return (
