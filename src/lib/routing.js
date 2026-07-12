@@ -4,6 +4,7 @@ import { Auth } from "@/pages/Auth";
 import { Connections } from "@/pages/Connections";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
+import { NotFound } from "@/pages/not-found/NotFound";
 import { Profile } from "@/pages/Profile";
 import { Requests } from "@/pages/Requests";
 import { Settings } from "@/pages/Settings";
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "/*",
+        Component: NotFound
+      }
     ],
   },
 ]);
