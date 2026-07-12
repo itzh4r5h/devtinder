@@ -9,9 +9,7 @@ export const Piece = ({ piece, breakPoints }) => {
     width,
     height,
     color,
-    direction,
     delay,
-    distance,
     duration,
   } = piece;
 
