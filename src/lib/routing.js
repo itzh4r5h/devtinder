@@ -1,6 +1,6 @@
 import App from "@/App";
 import { authMiddleware } from "@/middlewares/authMiddleware";
-import { Auth } from "@/pages/Auth";
+import { Auth } from "@/pages/auth/Auth";
 import { Connections } from "@/pages/Connections";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";

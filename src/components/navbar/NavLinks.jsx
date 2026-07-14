@@ -1,18 +1,16 @@
 import {
   Cable,
-  House,
-  Sparkles,
-  Workflow,
   Flame,
   Heart,
   Users,
   LogOutIcon,
   SettingsIcon,
   UserIcon,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileMenu } from "./ProfileMenu";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 
 const NavLi = ({ Icon, name }) => {
   return (
@@ -45,6 +43,8 @@ const NavLi = ({ Icon, name }) => {
 export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   const drawer = "flex flex-col gap-y-4 p-4 pt-6 h-full pb-8";
   const forNav = `${isLoggedIn && "hidden"} md:flex gap-x-5 items-center`;
+  const location = useLocation();
+  const activeRoute = location.pathname;
 
   const linksAfterSignin = [
     {
@@ -76,15 +76,16 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   return (
     <ul className={`${forDrawer ? drawer : forNav}`}>
       {!isLoggedIn && (
-       <Link to="/signup">
-         <Button
-          variant="outline"
-          size="lg"
-          className={`button-bg font-bold text-lg cursor-pointer capitalize ${forDrawer && "w-full mt-auto"}`}
-        >
-          <Cable /> Get Started
-        </Button>
-       </Link>
+        <Link to={activeRoute !== "/" ? "/" : "/signup"}>
+          <Button
+            variant="outline"
+            size="lg"
+            className="button-bg font-bold text-lg cursor-pointer capitalize"
+          >
+            {activeRoute !== "/" ? <ArrowLeft strokeWidth={2.5} className="size-5" /> : <Cable />}
+            {activeRoute !== "/" ? "Back" : "Get Started"}
+          </Button>
+        </Link>
       )}
 
       {isLoggedIn &&
