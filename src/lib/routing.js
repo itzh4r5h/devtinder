@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
             Component: Feed,
           },
           {
-            path: "/requests",
+            path: "/requests/:status",
             Component: Requests,
           },
           {
@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "/*",
+        path: "*",
         Component: NotFound
       }
     ],

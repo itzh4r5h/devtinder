@@ -16,7 +16,7 @@ import { motion } from "motion/react";
 const NavLi = ({ Icon, name }) => {
   return (
     <NavLink
-      to={`/${name}`}
+      to={`/${name === 'requests'?name+'/received':name}`}
       className={({ isActive }) =>
         isActive ? "text-foreground" : "text-muted-foreground"
       }
