@@ -12,7 +12,7 @@ export const LeftContent = () => {
           ease: "backOut",
         },
       }}
-      className="hidden sm:flex relative bg-transparent p-12 flex-col justify-center overflow-hidden flex-1"
+      className="hidden md:flex relative bg-transparent md:py-5 md:px-0 lg:p-12 flex-col justify-center overflow-hidden flex-1"
     >
       <Icons />
       {/* circle begin */}
@@ -61,7 +61,7 @@ const Icons = () => {
     },
     {
       Icon: Cpu,
-      boxCss: "top-[28%] right-[16%] size-12",
+      boxCss: "md:top-[20%] lg:top-[28%] right-[16%] size-12",
       iconCss: "size-6 text-[oklch(0.769_0.188_70.08)]",
     },
     {
@@ -71,7 +71,7 @@ const Icons = () => {
     },
     {
       Icon: Braces,
-      boxCss: "bottom-[34%] right-[22%] size-10",
+      boxCss: "md:bottom-[28%] lg:bottom-[32%] right-[22%] size-10",
       iconCss: "size-5 text-secondary",
     },
   ];

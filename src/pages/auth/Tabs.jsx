@@ -20,7 +20,7 @@ export const Tabs = ({ activeRoute }) => {
     <div className="grid grid-cols-2 items-center justify-center rounded-full bg-neutral-800 p-1.5 gap-10">
       {tabs.map(({ name, Icon, route }) => {
         return (
-          <motion.div className="relative">
+          <motion.div className="relative" key={name}>
             {activeRoute === route && (
               <motion.div
                 layoutId="auth-tab"
@@ -35,7 +35,7 @@ export const Tabs = ({ activeRoute }) => {
 
             <Link
               to={route}
-              className={`relative z-10 font-semibold rounded-full ${activeRoute === route ? "text-foreground" : "text-muted-foreground"} text-lg cursor-pointer flex justify-center items-center gap-2 py-0.5`}
+              className={`relative z-10 font-semibold rounded-full ${activeRoute === route ? "text-foreground" : "text-muted-foreground"} text-lg cursor-pointer flex justify-center items-center gap-2 py-0.5 capitalize`}
             >
               <Icon className="size-5" />
               {name}

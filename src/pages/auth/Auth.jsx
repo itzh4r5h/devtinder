@@ -21,7 +21,7 @@ export const Auth = () => {
     <section className="flex flex-wrap h-full">
       <LeftContent />
 
-      <div className="flex p-12 justify-center items-center flex-1">
+      <div className="flex px-0 py-5 sm:p-12 md:py-5 md:px-0 justify-center items-center flex-1">
         <Card className="max-w-md card rounded-2xl border border-white/10 p-6 gap-5 w-full">
           <Tabs activeRoute={activeRoute} />
           <CardHeader className="text-center p-0 items-center gap-2">
@@ -44,7 +44,7 @@ export const Auth = () => {
               transition={{
                 layout: {
                   duration: 0.35,
-                  ease: "easeInOut",
+                  ease: "backOut",
                 },
               }}
             >

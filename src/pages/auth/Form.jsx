@@ -1,7 +1,7 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { EyeOff, Flame, Lock, Mail, AtSign,User } from "lucide-react";
+import { EyeOff, Flame, Lock, Mail, AtSign, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 
@@ -12,7 +12,10 @@ export const Form = ({ activeRoute }) => {
         {activeRoute === "/signup" && (
           <>
             <Field>
-              <FieldLabel htmlFor="username" className="text-foreground text-base">
+              <FieldLabel
+                htmlFor="username"
+                className="text-foreground text-base"
+              >
                 Username
               </FieldLabel>
               <div className="relative">
@@ -84,14 +87,14 @@ export const Form = ({ activeRoute }) => {
         <Button
           variant="outline"
           size="lg"
-          className="button-bg font-bold text-lg cursor-pointer capitalize rounded-full py-4 w-full text-foreground"
+          className={`${activeRoute === "/signup" && 'mt-2'} button-bg font-bold text-lg cursor-pointer capitalize rounded-full py-4 w-full text-foreground`}
         >
-          <Flame className="size-6" /> sign{" "}
-          {activeRoute === "/signin" ? "in" : "up"}
+          <Flame className="size-6" /> sign
+          {activeRoute === "/signin" ? " in" : " up"}
         </Button>
         <div className="flex items-center gap-4">
           <Separator className="bg-white/10 flex-1" />
-          <span className="whitespace-nowrap text-muted-foreground text-xs leading-4">
+          <span className="whitespace-nowrap text-muted-foreground text-sm leading-4">
             Or continue with
           </span>
           <Separator className="bg-white/10 flex-1" />
