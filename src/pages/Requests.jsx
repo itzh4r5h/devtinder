@@ -21,11 +21,11 @@ export const Requests = () => {
   return (
     <section className="mt-6">
   
-      <div className="md:w-2/3 lg:w-1/2 mx-auto">
+      <div className="md:w-2/3 lg:w-1/2 mx-auto"> 
         <Tabs activeRoute={activeRoute} tabs={tabs}/>
       </div>
 
-      
+
     </section>
   );
 };

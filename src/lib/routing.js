@@ -1,7 +1,9 @@
 import App from "@/App";
+import { requestsLoader } from "@/loaders/requestsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { Auth } from "@/pages/auth/Auth";
 import { Connections } from "@/pages/Connections";
+import { Error } from "@/pages/Error";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
 import { NotFound } from "@/pages/not-found/NotFound";
@@ -15,6 +17,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    ErrorBoundary: Error,
     children: [
       {
         index: true,
@@ -42,6 +45,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/requests/:status",
+            loader: requestsLoader,
             Component: Requests,
           },
           {
