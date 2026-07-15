@@ -13,36 +13,30 @@ import { Logo } from "../Logo";
 import { NavLinks } from "./NavLinks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const NavbarMobile = ({isLoggedIn}) => {
+export const NavbarMobile = ({ isLoggedIn }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <Drawer open={open} onOpenChange={setOpen} swipeDirection="right">
       <DrawerTrigger
         render={
-          isLoggedIn ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full cursor-pointer"
-            >
-              <Avatar size="lg">
-                <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-                <AvatarFallback>LR</AvatarFallback>
-              </Avatar>
-            </Button>
-          ) : (
-            <Button variant="ghost" className="px-0">
-              <Menu className="size-9 cursor-pointer outline-none" />
-            </Button>
-          )
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full cursor-pointer"
+          >
+            <Avatar size="lg">
+              <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+              <AvatarFallback>LR</AvatarFallback>
+            </Avatar>
+          </Button>
         }
       />
 
       <DrawerContent className="card border-l border-border text-foreground">
         {/* header begins */}
         <DrawerHeader className="flex flex-row items-center justify-between">
-          <Logo />
+          <Logo/>
           <DrawerClose
             render={
               <Button variant="ghost" className="px-0">
@@ -53,7 +47,7 @@ export const NavbarMobile = ({isLoggedIn}) => {
         </DrawerHeader>
         {/* header ends */}
 
-        <NavLinks forDrawer={true} isLoggedIn={isLoggedIn}/>
+        <NavLinks forDrawer={true} isLoggedIn={isLoggedIn} />
       </DrawerContent>
     </Drawer>
   );

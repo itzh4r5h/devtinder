@@ -6,7 +6,7 @@ export const Footer = () => {
   const username = "itzh4r5h";
 
   return (
-    <footer className="border-t border-white/10 container mx-auto px-5 flex flex-col items-center md:flex-row justify-between gap-6 py-8 mt-10">
+    <footer className="border-t border-white/10 container mx-auto px-5 flex flex-col items-center md:flex-row justify-between gap-6 py-5">
       <Logo />
 
       {/* Copyright */}
