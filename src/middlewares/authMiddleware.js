@@ -6,7 +6,7 @@ export const authMiddleware = async ({ request }) => {
   const authRoutes = ["/signin", "/signup"];
   const protectedRoutes = ["/feed", "/requests", "/connections", "/profile", "/settings"];
 
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   // Guest trying to access protected page
   if (!isLoggedIn && protectedRoutes.includes(url.pathname)) {

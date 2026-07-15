@@ -3,7 +3,7 @@ import { Footer } from "./components/Footer";
 import { Navbar } from "./components/navbar/Navbar";
 
 function App() {
-  const isLoggedIn = false
+  const isLoggedIn = true
 
   return (
     <div className="flex flex-col main-bg w-full h-full">
