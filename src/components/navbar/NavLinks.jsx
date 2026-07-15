@@ -14,9 +14,12 @@ import { Link, NavLink, useLocation } from "react-router";
 import { motion } from "motion/react";
 
 const NavLi = ({ Icon, name }) => {
+  const location = useLocation();
+  const activeRoute = location.pathname;
+
   return (
     <NavLink
-      to={`/${name === 'requests'?name+'/received':name}`}
+      to={`/${name === "requests" ? activeRoute : name}`}
       className={({ isActive }) =>
         isActive ? "text-foreground" : "text-muted-foreground"
       }
