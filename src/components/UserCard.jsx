@@ -4,20 +4,26 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 
 import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { memo } from "react";
 
-export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, onIgnore }) {
+export const UserCard = memo(function UserCard({ user, variant, actions,expanded }) {
+  const { primary, secondary } = actions ?? {};
+
+  const buttonStyles = {
+    primary:
+      "button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground h-11",
+    secondary:
+      "bg-transparent rounded-full sm:text-lg text-foreground border-white/10 border-0 border-solid cursor-pointer capitalize h-11",
+  };
+
   return (
     <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-72 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
-        <motion.div
-          style={{ boxShadow, transition: "box-shadow 0.15s ease-out" }}
-          className="relative rounded-2xl w-full h-64 sm:h-95 overflow-hidden"
-        >
+        <ImageContainer variant={variant}>
           <img
             src={user.imageUrl}
-            alt={user.name} 
+            alt={user.name}
             className="object-cover w-full h-full will-change-transform"
             draggable={false}
             loading="lazy"
@@ -37,41 +43,108 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
               {user.title}
             </div>
           </div>
-        </motion.div>
+        </ImageContainer>
 
-        <div className="flex flex-wrap gap-2 h-18">
-          {user.tags.map((tag) => {
-            return (
-              <Badge
-                key={tag.toLowerCase()}
-                className={`text-foreground ${TAG_COLORS[tag.toLowerCase()] ?? "bg-neutral-500 text-foreground"} leading-4 sm:text-sm h-7 px-3`}
-              >
-                {TAG_LABELS[tag.toLowerCase()] ?? tag}
-              </Badge>
-            );
-          })}
-        </div>
+        <AnimatePresence>
+          {expanded && (
+            <div className="flex flex-wrap gap-2 h-18">
+              {user.tags.map((tag) => {
+                return (
+                  <Badge
+                    key={tag.toLowerCase()}
+                    className={`text-foreground ${TAG_COLORS[tag.toLowerCase()] ?? "bg-neutral-500 text-foreground"} leading-4 sm:text-sm h-7 px-3`}
+                  >
+                    {TAG_LABELS[tag.toLowerCase()] ?? tag}
+                  </Badge>
+                );
+              })}
+            </div>
+          )}
+        </AnimatePresence>
       </CardContent>
-      <CardFooter className="grid grid-cols-2 p-0 pb-4 gap-4 bg-transparent border-0">
-        <Button
-          onClick={onIgnore}
-          variant="outline"
-          size="lg"
-          className="bg-transparent rounded-full sm:text-lg text-foreground border-white/10 border-0 border-solid cursor-pointer capitalize h-11"
-        >
-          <X className="size-4 sm:size-5" />
-          Ignore
-        </Button>
-        <Button
-          onClick={onInterested}
-          variant="outline"
-          size="lg"
-          className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground h-11"
-        >
-          <Heart className="size-4 sm:size-5" />
-          Interested
-        </Button>
-      </CardFooter>
+
+      <AnimatePresence>
+        {expanded && (
+          <CardFooter className="grid grid-cols-2 p-0 pb-4 gap-4 bg-transparent border-0">
+            {actions ? (
+              <>
+                <Button
+                  onClick={secondary.onClick}
+                  variant="outline"
+                  size="lg"
+                  className={buttonStyles.secondary}
+                >
+                  <secondary.icon className="size-4 sm:size-5" />
+                  {secondary.label}
+                </Button>
+                <Button
+                  onClick={primary.onClick}
+                  variant="outline"
+                  size="lg"
+                  className={buttonStyles.primary}
+                >
+                  <primary.icon className="size-4 sm:size-5" />
+                  {primary.label}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className={buttonStyles.secondary}
+                >
+                  <X className="size-4 sm:size-5" />
+                  ignore
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className={buttonStyles.primary}
+                >
+                  <Heart className="size-4 sm:size-5" />
+                  interested
+                </Button>
+              </>
+            )}
+          </CardFooter>
+        )}
+      </AnimatePresence>
     </Card>
   );
 });
+
+const ImageContainer = ({ children, variant }) => {
+  const styles = "relative rounded-2xl w-full overflow-hidden";
+
+  const variants = {
+    feed: {
+      Component: motion.div,
+      className: "h-64 sm:h-95",
+      style: {
+        boxShadow: variant.boxShadow,
+        transition: "box-shadow 0.15s ease-out",
+      },
+    },
+    default: {
+      Component: "div",
+      className: "h-64 sm:h-95",
+    },
+    compact: {
+      Component: motion.div,
+      className: "h-50",
+    },
+  };
+
+  const config = variants[variant.name];
+
+  if (!config) return null;
+
+  const { Component, className, style } = config;
+
+  return (
+    <Component className={`${styles} ${className}`} style={style}>
+      {children}
+    </Component>
+  );
+};

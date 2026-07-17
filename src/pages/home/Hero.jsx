@@ -63,7 +63,7 @@ export const Hero = ({user}) => {
 
       <div className="flex justify-center flex-1">
         <span className="-rotate-3">
-          <UserCard user={user}/>
+          <UserCard user={user} variant={{name:'default'}} expanded={true}/>
         </span>
       </div>
     </section>

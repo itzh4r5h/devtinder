@@ -8,7 +8,7 @@ import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
 import { NotFound } from "@/pages/not-found/NotFound";
 import { Profile } from "@/pages/Profile";
-import { Requests } from "@/pages/Requests";
+import { Requests } from "@/pages/requests/Requests";
 import { Settings } from "@/pages/Settings";
 
 import { createBrowserRouter } from "react-router";

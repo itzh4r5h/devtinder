@@ -8,7 +8,7 @@ import {
 import { UserCard } from "../UserCard";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { RotateCcw } from "lucide-react";
+import { Heart, RotateCcw, X } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
 
 export const SwipeCards = ({ users }) => {
@@ -190,9 +190,20 @@ const MotionCard = ({ user, index, cards, setCards }) => {
       >
         <UserCard
           user={user}
-          boxShadow={boxShadow}
-          onInterested={() => swipeCard("right")}
-          onIgnore={() => swipeCard("left")}
+          variant={{ name: "feed", boxShadow }}
+          actions={{
+            primary: {
+              label: "Interested",
+              icon: Heart,
+              onClick: () => swipeCard("right"),
+            },
+            secondary: {
+              label: "Ignore",
+              icon: X,
+              onClick: () => swipeCard("left"),
+            },
+          }}
+          expanded={true}
         />
       </motion.div>
     </motion.article>

@@ -1,6 +1,8 @@
 import { Tabs } from "@/components/Tabs";
 import { Inbox, Send } from "lucide-react";
 import { useLocation } from "react-router";
+import { Received } from "./Received";
+import { MOCK_USERS } from "@/mock/user-data";
 
 export const Requests = () => {
   const location = useLocation();
@@ -18,14 +20,19 @@ export const Requests = () => {
     },
   ];
 
+    const modified_mock_users = MOCK_USERS.map((user) => {
+      const firstName = user.name.split(" ")[0].toLowerCase();
+      return { ...user, imageUrl: `/images/${firstName}.webp` };
+    });
+
   return (
-    <section className="mt-6">
+    <section className="my-6">
   
       <div className="md:w-2/3 lg:w-1/2 mx-auto"> 
         <Tabs activeRoute={activeRoute} tabs={tabs}/>
       </div>
 
-
+      <Received users={modified_mock_users}/>
     </section>
   );
 };
