@@ -20,9 +20,9 @@ export const Error = () => {
     //     return <ServerError />;
 
       default:
-        return <div>{error}</div>;
+        return error.data;
     }
   }
 
-  return <div>{error}</div>;
+  return error.data
 };
