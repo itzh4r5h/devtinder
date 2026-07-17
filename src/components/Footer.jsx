@@ -6,7 +6,8 @@ export const Footer = () => {
   const username = "itzh4r5h";
 
   return (
-    <footer className="border-t border-white/10 container mx-auto px-5 flex flex-col items-center md:flex-row justify-between gap-6 py-5">
+    <footer className="bg-background border-white/10 border-solid border-b-0 border-t border-l-0 border-r-0 backdrop-blur-md tex-white">
+    <div className=" container mx-auto px-5 flex flex-col items-center md:flex-row justify-between gap-6 py-5">
       <Logo />
 
       {/* Copyright */}
@@ -56,6 +57,7 @@ export const Footer = () => {
           </Button>
         </a>
       </div>
+    </div>
     </footer>
   );
 };

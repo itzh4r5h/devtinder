@@ -25,7 +25,7 @@ export const SwipeCards = ({ users }) => {
   };
 
   return (
-    <div className="relative select-none flex-1">
+    <div className="relative select-none flex-1 w-full flex items-center justify-center">
       {loading ? (
         <LoadingScreen
           imageUrls={imageUrls}
@@ -44,7 +44,7 @@ export const SwipeCards = ({ users }) => {
           transition={{
             opacity: { duration: 0.8, ease: "easeOut" },
           }}
-          className="grid place-items-center h-full"
+          className="grid place-items-center"
         >
           {cards.length > 0 ? (
             <AnimatePresence>

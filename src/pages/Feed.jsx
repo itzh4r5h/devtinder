@@ -9,7 +9,7 @@ export const Feed = () => {
 
   return (
     <section
-      className="overflow-hidden h-150 sm:h-170 flex flex-col"
+      className="w-full flex-1 flex flex-col overflow-hidden sm:min-h-170"
     >
       <SwipeCards users={modified_mock_users} />
     </section>
