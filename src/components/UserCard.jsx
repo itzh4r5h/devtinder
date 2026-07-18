@@ -7,7 +7,12 @@ import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
 import { AnimatePresence, motion } from "motion/react";
 import { memo } from "react";
 
-export const UserCard = memo(function UserCard({ user, variant, actions,expanded }) {
+export const UserCard = memo(function UserCard({
+  user,
+  variant,
+  actions,
+  expanded,
+}) {
   const { primary, secondary } = actions ?? {};
 
   const buttonStyles = {
@@ -18,32 +23,31 @@ export const UserCard = memo(function UserCard({ user, variant, actions,expanded
   };
 
   return (
-    <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-72 sm:w-100">
-      <CardContent className="flex p-0 flex-col gap-4">
-        <ImageContainer variant={variant}>
-          <img
-            src={user.imageUrl}
-            alt={user.name}
-            className="object-cover w-full h-full will-change-transform"
-            draggable={false}
-            loading="lazy"
-            fetchPriority="high"
-            decoding="async"
-          />
-          <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
-          <div className="absolute inset-x-3 bottom-3">
+    <Card
+      className={`relative card border border-white/10 gap-4 rounded-3xl ${variant.name === "compact" ? "max-w-40 p-2 sm:p-4 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full cursor-pointer hover:scale-[1.1] transition-transform ease-in-out duration-300" : "p-4 w-72 sm:w-100"}`}
+    >
+      <CardContent className={`flex p-0 flex-col ${variant.name === 'compact' ? 'gap-2' :'gap-4'}`}>
+        <Image
+          variant={variant}
+          url={user.imageUrl}
+          name={user.name}
+          title={user.title}
+        />
+
+        {variant.name === "compact" && (
+          <div >
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-lg sm:text-2xl leading-7">
+              <span className="font-bold text-white text-base sm:text-xl md:text-lg lg:text-2xl leading-7 text-ellipsis line-clamp-1 tracking-wide">
                 {user.name}
               </span>
               <BadgeCheck className="size-5 fill-[#a78bfa]/20 text-violet-400" />
             </div>
             <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
               <Briefcase className="size-3 sm:size-3.5" />
-              {user.title}
+              <span className="text-ellipsis line-clamp-1">{user.title}</span>
             </div>
           </div>
-        </ImageContainer>
+        )}
 
         <AnimatePresence>
           {expanded && (
@@ -114,8 +118,9 @@ export const UserCard = memo(function UserCard({ user, variant, actions,expanded
   );
 });
 
-const ImageContainer = ({ children, variant }) => {
+const Image = ({ variant, url, name, title }) => {
   const styles = "relative rounded-2xl w-full overflow-hidden";
+  const commonImageClasses = "object-cover w-full h-full will-change-transform";
 
   const variants = {
     feed: {
@@ -125,14 +130,17 @@ const ImageContainer = ({ children, variant }) => {
         boxShadow: variant.boxShadow,
         transition: "box-shadow 0.15s ease-out",
       },
+      imageClasses: commonImageClasses,
     },
     default: {
       Component: "div",
       className: "h-64 sm:h-95",
+      imageClasses: commonImageClasses,
     },
     compact: {
       Component: motion.div,
-      className: "h-50",
+      className: "h-35 sm:h-50 md:h-40 lg:h-60",
+      imageClasses: commonImageClasses + " object-[50%_15%]",
     },
   };
 
@@ -140,11 +148,36 @@ const ImageContainer = ({ children, variant }) => {
 
   if (!config) return null;
 
-  const { Component, className, style } = config;
+  const { Component, className, style, imageClasses } = config;
 
   return (
     <Component className={`${styles} ${className}`} style={style}>
-      {children}
+      <img
+        src={url}
+        alt={name}
+        className={imageClasses}
+        draggable={false}
+        loading="lazy"
+        fetchPriority="high"
+        decoding="async"
+      />
+      {variant.name !== "compact" && (
+        <>
+          <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
+          <div className="absolute inset-x-3 bottom-3">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-white text-lg sm:text-2xl leading-7">
+                {name}
+              </span>
+              <BadgeCheck className="size-5 fill-[#a78bfa]/20 text-violet-400" />
+            </div>
+            <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
+              <Briefcase className="size-3 sm:size-3.5" />
+              {title}
+            </div>
+          </div>
+        </>
+      )}
     </Component>
   );
 };
