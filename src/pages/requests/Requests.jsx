@@ -32,7 +32,7 @@ export const Requests = () => {
         <Tabs activeRoute={activeRoute} tabs={tabs}/>
       </div>
 
-      <Received users={modified_mock_users}/>
+      {activeRoute === tabs[0].route && <Received users={modified_mock_users}/>}
     </section>
   );
 };
