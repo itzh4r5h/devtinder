@@ -1,22 +1,21 @@
-body,#root{
+body,
+#root {
   min-height: 100vh;
   width: 100%;
 }
 
-
-body::-webkit-scrollbar{
-  display: none
+body::-webkit-scrollbar {
+  display: none;
 }
 
-body{
-  cursor: default
+body {
+  cursor: default;
 }
 
 /* for layout debug purpose */
 /* *{
   border: 1px solid red;
 } */
-
 
 @import "tailwindcss";
 
@@ -155,8 +154,12 @@ body{
   filter: drop-shadow(0 0 10px var(--secondary));
 }
 
-
 .card {
-  @apply bg-neutral-900/90 border-solid backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
+  @apply bg-neutral-900/90 border-solid;
 }
 
+@media (min-width: 768px) {
+  .card {
+    @apply backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
+  }
+}
