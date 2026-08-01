@@ -7,7 +7,7 @@ import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
 import { AnimatePresence, motion } from "motion/react";
 const MotionCard = motion.create(Card);
 
-export const RequestsCardModal = ({ user }) => {
+export const RequestsCardModal = ({ user,onAccept,onReject }) => {
   return (
     <MotionCard
       onClick={(e) => e.stopPropagation()}
@@ -89,6 +89,7 @@ export const RequestsCardModal = ({ user }) => {
         >
           <CardFooter className="grid grid-cols-2 p-0 pb-4 gap-4 bg-transparent border-0">
             <Button
+              onClick={onReject}
               variant="outline"
               size="lg"
               className="bg-transparent rounded-full sm:text-lg text-foreground border-white/10 border-0 border-solid cursor-pointer capitalize h-11"
@@ -97,6 +98,7 @@ export const RequestsCardModal = ({ user }) => {
               reject
             </Button>
             <Button
+              onClick={onAccept}
               variant="outline"
               size="lg"
               className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground h-11"
