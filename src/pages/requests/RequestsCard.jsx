@@ -1,9 +1,10 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { BadgeCheck, Briefcase } from "lucide-react";
-import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { BadgeCheck, Briefcase, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 const MotionCard = motion.create(Card);
 
-export const RequestsCard = ({ user, isSelected }) => {
+export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
   return (
     <motion.div
       animate={{
@@ -19,9 +20,9 @@ export const RequestsCard = ({ user, isSelected }) => {
       <MotionCard
         layout
         layoutId={`card-${user._id}`}
-        className="relative card border border-white/10 gap-4 rounded-3xl w-full p-2 pb-13 sm:p-4 sm:pb-18"
+        className="relative card border border-white/10 gap-4 rounded-3xl w-full p-2  sm:p-4"
       >
-        <CardContent className="flex p-0 flex-col gap-2">
+        <CardContent className="flex p-0 flex-col gap-2 pb-11 sm:pb-14">
           <motion.div
             className="relative w-full rounded-2xl h-35 sm:h-50 md:h-40 lg:h-60"
             layoutId={`image-container-${user._id}`}
@@ -54,6 +55,18 @@ export const RequestsCard = ({ user, isSelected }) => {
             </motion.div>
           </motion.div>
         </CardContent>
+        <AnimatePresence initial={false}>
+          {sentReq && (
+            <Button
+              variant="outline"
+              size="lg"
+              className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground"
+            >
+              <X className="size-4 sm:size-5" />
+              cancel
+            </Button>
+          )}
+        </AnimatePresence>
       </MotionCard>
     </motion.div>
   );

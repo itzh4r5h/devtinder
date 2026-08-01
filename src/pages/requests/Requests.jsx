@@ -3,6 +3,7 @@ import { Inbox, Send } from "lucide-react";
 import { useLocation } from "react-router";
 import { Received } from "./Received";
 import { MOCK_USERS } from "@/mock/user-data";
+import { Sent } from "./Sent";
 
 export const Requests = () => {
   const location = useLocation();
@@ -33,6 +34,7 @@ export const Requests = () => {
       </div>
 
       {activeRoute === tabs[0].route && <Received users={modified_mock_users}/>}
+      {activeRoute === tabs[1].route && <Sent users={modified_mock_users}/>}
     </section>
   );
 };
