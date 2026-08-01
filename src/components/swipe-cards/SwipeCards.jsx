@@ -105,7 +105,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
 
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const swipeCard = async (direction, source = "button") => {
+  const swipeCard = async (direction) => {
     // to prevent double clicks, clicked but then dragged back, double taps on mobile
     if (isAnimating) return;
 
