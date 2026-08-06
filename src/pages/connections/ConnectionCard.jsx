@@ -44,7 +44,7 @@ export const ConnecitonCard = ({ user }) => {
         {/* // for now use user._id instead of connection id later replace it with connection id */}
         <NavLink
           to={`/connections/${user._id}`}
-          className="flex gap-5 items-center"
+          className="flex gap-5 items-center flex-1"
         >
           <Button
             variant="ghost"
