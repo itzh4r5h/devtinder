@@ -1,8 +1,9 @@
 import App from "@/App";
+import { connectionsLoader } from "@/loaders/connectionsLoader";
 import { requestsLoader } from "@/loaders/requestsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { Auth } from "@/pages/auth/Auth";
-import { Connections } from "@/pages/Connections";
+import { Connections } from "@/pages/connections/Connections";
 import { Error } from "@/pages/Error";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
@@ -50,6 +51,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "/connections",
+            Component: Connections,
+          },
+          {
+            path: "/connections/:id",
+            loader: connectionsLoader,
             Component: Connections,
           },
           {
