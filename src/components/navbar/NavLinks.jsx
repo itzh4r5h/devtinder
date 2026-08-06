@@ -16,7 +16,8 @@ import { motion } from "motion/react";
 const NavLi = ({ Icon, name }) => {
   const location = useLocation();
   const activeRoute = location.pathname;
-  const reqStatus = activeRoute.split("/")[2] || "received";
+  const param = activeRoute.split("/")[2];
+  const reqStatus = param === "received" ? param : "received";
 
   return (
     <NavLink
