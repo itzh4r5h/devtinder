@@ -5,7 +5,7 @@ export const appLoader = ({ request }) => {
 
   const { signin, signup, feed, connections, profile, settings } = routes;
 
-  const allowedRoutes = ["/", signin, signup, feed, connections, profile, settings]
+  const allowedRoutes = ["/", signin, signup, feed, '/requests', connections, profile, settings]
 
   if (!allowedRoutes.includes(activeRoute)) {
     throw new Response("Not Found", {
