@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 
-import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
+import { TAG_COLORS, TAG_LABELS } from "@/constants/tag";
 import { motion } from "motion/react";
 import { memo } from "react";
 

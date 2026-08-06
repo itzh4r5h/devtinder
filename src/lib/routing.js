@@ -1,4 +1,6 @@
 import App from "@/App";
+import { routes } from "@/constants/routes";
+import { appLoader } from "@/loaders/appLoader";
 import { connectionsLoader } from "@/loaders/connectionsLoader";
 import { requestsLoader } from "@/loaders/requestsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
@@ -14,10 +16,13 @@ import { Settings } from "@/pages/Settings";
 
 import { createBrowserRouter } from "react-router";
 
+const {signin,signup,feed,requests,connections,connections_with_id,profile,settings} = routes
+
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    loader: appLoader,
     ErrorBoundary: Error,
     children: [
       {
@@ -28,49 +33,40 @@ export const router = createBrowserRouter([
         middleware: [authMiddleware],
         children: [
           {
-            path: "/signin",
+            path: signin,
             Component: Auth,
           },
           {
-            path: "/signup",
+            path: signup,
             Component: Auth,
           },
-        ],
-      },
-      {
-        middleware: [authMiddleware],
-        children: [
           {
-            path: "/feed",
+            path: feed,
             Component: Feed,
           },
           {
-            path: "/requests/:status",
+            path: requests,
             loader: requestsLoader,
             Component: Requests,
           },
           {
-            path: "/connections",
+            path: connections,
             Component: Connections,
           },
           {
-            path: "/connections/:id",
+            path: connections_with_id,
             loader: connectionsLoader,
             Component: Connections,
           },
           {
-            path: "/profile",
+            path: profile,
             Component: Profile,
           },
           {
-            path: "/settings",
+            path: settings,
             Component: Settings,
           },
         ],
-      },
-      {
-        path: "*",
-        Component: NotFound
       }
     ],
   },
