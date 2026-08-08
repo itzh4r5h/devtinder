@@ -1,13 +1,27 @@
 import { routes } from "@/constants/routes";
 
 export const appLoader = ({ request }) => {
-  const activeRoute = `/${request.url.split("/")[3]}`
+  const url = new URL(request.url);
+  const pathname = url.pathname;
 
   const { signin, signup, feed, connections, profile, settings } = routes;
 
-  const allowedRoutes = ["/", signin, signup, feed, '/requests', connections, profile, settings]
+  const allowedRoutes = [
+    "/",
+    signin,
+    signup,
+    feed,
+    "/requests",
+    connections,
+    profile,
+    settings,
+  ];
 
-  if (!allowedRoutes.includes(activeRoute)) {
+  const isAllowed = allowedRoutes.some(
+    (route) => pathname === route
+  );
+
+  if (!isAllowed) {
     throw new Response("Not Found", {
       status: 404,
     });
