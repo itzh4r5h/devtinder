@@ -1,0 +1,17 @@
+export const TAGS = [
+    "react",
+    "node",
+    "mongodb",
+    "express",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "next.js",
+    "react",
+    "node",
+    "mongodb",
+    "express",
+    "html",
+    "css",
+  ];

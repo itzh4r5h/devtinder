@@ -10,7 +10,7 @@ import { Error } from "@/pages/Error";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
 import { NotFound } from "@/pages/not-found/NotFound";
-import { Profile } from "@/pages/Profile";
+import { Profile } from "@/pages/profile/Profile";
 import { Requests } from "@/pages/requests/Requests";
 import { Settings } from "@/pages/Settings";
 
