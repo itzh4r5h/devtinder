@@ -20,7 +20,7 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
       <MotionCard
         layout
         layoutId={`card-${user._id}`}
-        className="relative card border border-white/10 gap-4 rounded-3xl w-full p-2  sm:p-4"
+        className="relative card border border-white/10 gap-4 rounded-xl sm:rounded-3xl w-full p-2  sm:p-4"
       >
         <CardContent className="flex p-0 flex-col gap-2 pb-11 sm:pb-14">
           <motion.div
@@ -31,7 +31,7 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
               layoutId={`image-${user._id}`}
               src={user.imageUrl}
               alt={user.name}
-              className="object-cover w-full h-full will-change-transform object-[50%_15%] rounded-2xl"
+              className="object-cover w-full h-full will-change-transform object-[50%_15%] rounded-lg sm:rounded-2xl"
               draggable={false}
               loading="lazy"
               fetchPriority="high"
