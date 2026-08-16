@@ -12,7 +12,7 @@ import { Home } from "@/pages/home/Home";
 import { NotFound } from "@/pages/not-found/NotFound";
 import { Profile } from "@/pages/profile/Profile";
 import { Requests } from "@/pages/requests/Requests";
-import { Settings } from "@/pages/Settings";
+import { AccountSettings } from "@/pages/settings/AccountSettings";
 
 import { createBrowserRouter } from "react-router";
 
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
           },
           {
             path: settings,
-            Component: Settings,
+            Component: AccountSettings,
           },
         ],
       }
