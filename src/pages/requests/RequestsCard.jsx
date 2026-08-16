@@ -60,9 +60,9 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
             <Button
               variant="outline"
               size="lg"
-              className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground"
+              className="button-bg font-bold text-base sm:text-lg cursor-pointer capitalize rounded-full text-foreground"
             >
-              <X className="size-4 sm:size-5" />
+              <X className="size-4 sm:size-5" strokeWidth={2.5} />
               cancel
             </Button>
           )}
