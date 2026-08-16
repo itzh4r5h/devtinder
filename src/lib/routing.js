@@ -1,7 +1,6 @@
 import App from "@/App";
 import { routes } from "@/constants/routes";
 import { appLoader } from "@/loaders/appLoader";
-import { connectionsLoader } from "@/loaders/connectionsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { Auth } from "@/pages/auth/Auth";
 import { Connections } from "@/pages/connections/Connections";
@@ -53,7 +52,6 @@ export const router = createBrowserRouter([
           },
           {
             path: connections_with_id,
-            loader: connectionsLoader,
             Component: Connections,
           },
           {
