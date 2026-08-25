@@ -90,6 +90,11 @@ export const createAnimationEngine = (loaderRefs) => {
   };
 
   const playExit = (loadingFinish) => {
+    if(!bars[0]){
+      stop()
+      return
+    }
+
     exitTimeline.clear();
 
     // ---------------------------------

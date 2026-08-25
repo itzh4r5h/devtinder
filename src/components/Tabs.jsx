@@ -1,20 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { LogIn, UserPlus } from "lucide-react";
 
-export const Tabs = ({ activeRoute }) => {
-  const tabs = [
-    {
-      name: "sign in",
-      Icon: LogIn,
-      route: "/signin",
-    },
-    {
-      name: "sign up",
-      Icon: UserPlus,
-      route: "/signup",
-    },
-  ];
+export const Tabs = ({ activeRoute, tabs }) => {
 
   return (
     <div className="grid grid-cols-2 items-center justify-center rounded-full bg-neutral-800 p-1.5 gap-10">
@@ -27,7 +14,7 @@ export const Tabs = ({ activeRoute }) => {
                 className="absolute inset-0 rounded-full active-bar border border-solid border-white/50"
                 transition={{
                   type: "spring",
-                  stiffness: 450,
+                  stiffness: 250,
                   damping: 35,
                 }}
               />

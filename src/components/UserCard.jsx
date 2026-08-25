@@ -3,27 +3,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { BadgeCheck, Briefcase, Heart, X } from "lucide-react";
 
-import { TAG_COLORS, TAG_LABELS } from "@/mock/tag";
+import { TAG_COLORS, TAG_LABELS } from "@/constants/tag";
 import { motion } from "motion/react";
 import { memo } from "react";
 
-export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, onIgnore }) {
+export const UserCard = memo(function UserCard({
+  user,
+  style,
+  onInterested,
+  onIgnore
+}) {
+
+
   return (
-    <Card className="relative card border border-white/10 rounded-3xl p-4 gap-4 w-72 sm:w-100">
+    <Card className="relative card border border-white/10 gap-4 rounded-3xl p-4 w-72 sm:w-100">
       <CardContent className="flex p-0 flex-col gap-4">
-        <motion.div
-          style={{ boxShadow, transition: "box-shadow 0.15s ease-out" }}
-          className="relative rounded-2xl w-full h-64 sm:h-95 overflow-hidden"
-        >
+        <motion.div className="relative rounded-2xl w-full overflow-hidden h-64 sm:h-95" style={style}>
           <img
             src={user.imageUrl}
-            alt={user.name} 
+            alt={user.name}
             className="object-cover w-full h-full will-change-transform"
             draggable={false}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
           />
+
           <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
           <div className="absolute inset-x-3 bottom-3">
             <div className="flex items-center gap-2">
@@ -52,6 +57,7 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
           })}
         </div>
       </CardContent>
+
       <CardFooter className="grid grid-cols-2 p-0 pb-4 gap-4 bg-transparent border-0">
         <Button
           onClick={onIgnore}
@@ -60,7 +66,7 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
           className="bg-transparent rounded-full sm:text-lg text-foreground border-white/10 border-0 border-solid cursor-pointer capitalize h-11"
         >
           <X className="size-4 sm:size-5" />
-          Ignore
+          ignore
         </Button>
         <Button
           onClick={onInterested}
@@ -69,9 +75,10 @@ export const UserCard = memo(function UserCard({ user, boxShadow, onInterested, 
           className="button-bg font-bold sm:text-lg cursor-pointer capitalize rounded-full text-foreground h-11"
         >
           <Heart className="size-4 sm:size-5" />
-          Interested
+          interested
         </Button>
       </CardFooter>
     </Card>
   );
 });
+

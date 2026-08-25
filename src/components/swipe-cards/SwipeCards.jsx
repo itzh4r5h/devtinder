@@ -25,7 +25,7 @@ export const SwipeCards = ({ users }) => {
   };
 
   return (
-    <div className="relative select-none flex-1">
+    <div className="relative select-none flex-1 w-full flex items-center justify-center">
       {loading ? (
         <LoadingScreen
           imageUrls={imageUrls}
@@ -44,7 +44,7 @@ export const SwipeCards = ({ users }) => {
           transition={{
             opacity: { duration: 0.8, ease: "easeOut" },
           }}
-          className="grid place-items-center h-full"
+          className="grid place-items-center"
         >
           {cards.length > 0 ? (
             <AnimatePresence>
@@ -105,7 +105,7 @@ const MotionCard = ({ user, index, cards, setCards }) => {
 
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const swipeCard = async (direction, source = "button") => {
+  const swipeCard = async (direction) => {
     // to prevent double clicks, clicked but then dragged back, double taps on mobile
     if (isAnimating) return;
 
@@ -190,9 +190,12 @@ const MotionCard = ({ user, index, cards, setCards }) => {
       >
         <UserCard
           user={user}
-          boxShadow={boxShadow}
-          onInterested={() => swipeCard("right")}
-          onIgnore={() => swipeCard("left")}
+          style={{
+            boxShadow: boxShadow,
+            transition: "box-shadow 0.15s ease-out",
+          }}
+          onInterested = {() => swipeCard("right")}
+          onIgnore = {() => swipeCard("left")}
         />
       </motion.div>
     </motion.article>

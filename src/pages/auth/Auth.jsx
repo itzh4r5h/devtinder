@@ -1,4 +1,4 @@
-import { Terminal } from "lucide-react";
+import { LogIn, Terminal, UserPlus } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,21 +9,33 @@ import {
 
 import { useLocation } from "react-router";
 import { LeftContent } from "./LeftContent";
-import { Tabs } from "./Tabs";
+import { Tabs } from "../../components/Tabs";
 import { Form } from "./Form";
 import { motion } from "motion/react";
 
 export const Auth = () => {
   const location = useLocation();
   const activeRoute = location.pathname;
+   const tabs = [
+    {
+      name: "sign in",
+      Icon: LogIn,
+      route: "/signin",
+    },
+    {
+      name: "sign up",
+      Icon: UserPlus,
+      route: "/signup",
+    },
+  ];
 
   return (
     <section className="flex flex-wrap h-full">
       <LeftContent />
 
-      <div className="flex px-0 py-5 sm:p-12 md:py-5 md:px-0 justify-center items-center flex-1">
+      <div className="flex px-0 py-5 sm:p-12 md:py-5 md:px-0 lg:p-12 justify-center items-center flex-1">
         <Card className="max-w-md card rounded-2xl border border-white/10 p-6 gap-5 w-full">
-          <Tabs activeRoute={activeRoute} />
+          <Tabs activeRoute={activeRoute} tabs={tabs}/>
           <CardHeader className="text-center p-0 items-center gap-2">
             <div className="size-12 rounded-xl bg-neutral-800 border-white/10 border border-solid flex justify-center items-center">
               <Terminal strokeWidth={2.5} className="size-6 active-icon" />

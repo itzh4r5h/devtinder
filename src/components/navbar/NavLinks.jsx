@@ -11,29 +11,45 @@ import {
 import { Button } from "@/components/ui/button";
 import { ProfileMenu } from "./ProfileMenu";
 import { Link, NavLink, useLocation } from "react-router";
+import { motion } from "motion/react";
 
 const NavLi = ({ Icon, name }) => {
+  const location = useLocation();
+  const activeRoute = location.pathname;
+  const param = activeRoute.split("/")[2];
+  const reqStatus = param === "received" ? param : "received";
+
   return (
     <NavLink
-      to={`/${name}`}
+      to={`/${name === "requests" ? `requests/${reqStatus}` : name}`}
       className={({ isActive }) =>
         isActive ? "text-foreground" : "text-muted-foreground"
       }
     >
       {({ isActive }) => {
         return (
-          <>
-            <div className="flex items-center gap-x-2">
+          <motion.div className="relative">
+            <div className="flex items-center gap-x-2 px-1">
               <Icon
                 strokeWidth={2.5}
                 className={`size-5 ${isActive && "active-icon"}`}
               />
               <span className="text-lg capitalize tracking-wide">{name}</span>
             </div>
-            <div className={`${isActive ? "block" : "invisible"} mt-0.5`}>
-              <span className="w-full rounded-full h-0.5 active-bar block"></span>
-            </div>
-          </>
+
+            {isActive ? (
+              <motion.div
+                layoutId="underline"
+                id="underline"
+                className="absolute inset-0 rounded-full active-bar h-0.5 top-7.5"
+                transition={{
+                  type: "spring",
+                  stiffness: 250,
+                  damping: 35,
+                }}
+              />
+            ) : null}
+          </motion.div>
         );
       }}
     </NavLink>
@@ -82,7 +98,11 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
             size="lg"
             className="button-bg font-bold text-lg cursor-pointer capitalize"
           >
-            {activeRoute !== "/" ? <ArrowLeft strokeWidth={2.5} className="size-5" /> : <Cable />}
+            {activeRoute !== "/" ? (
+              <ArrowLeft strokeWidth={2.5} className="size-5" />
+            ) : (
+              <Cable />
+            )}
             {activeRoute !== "/" ? "Back" : "Get Started"}
           </Button>
         </Link>

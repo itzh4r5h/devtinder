@@ -13,11 +13,11 @@ import { Logo } from "../Logo";
 import { NavLinks } from "./NavLinks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const NavbarMobile = ({ isLoggedIn }) => {
+export const NavbarMobile = ({ isLoggedIn,direction="right" }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Drawer open={open} onOpenChange={setOpen} swipeDirection="right">
+    <Drawer open={open} onOpenChange={setOpen} swipeDirection={direction}>
       <DrawerTrigger
         render={
           <Button

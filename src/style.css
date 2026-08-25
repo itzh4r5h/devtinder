@@ -1,22 +1,21 @@
-html,body,#root{
-  height: 100%;
+body,
+#root {
+  min-height: 100dvh;
   width: 100%;
 }
 
-
-body::-webkit-scrollbar{
-  display: none
+body::-webkit-scrollbar {
+  display: none;
 }
 
-body{
-  cursor: default
+body {
+  cursor: default;
 }
 
 /* for layout debug purpose */
 /* *{
   border: 1px solid red;
 } */
-
 
 @import "tailwindcss";
 
@@ -84,7 +83,7 @@ body{
   --muted-foreground: oklch(0.709 0 0);
   --accent: oklch(0.627 0.265 303.9);
   --accent-foreground: oklch(100% 0.00011 271.152);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(59.482% 0.24019 27.987);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -155,8 +154,12 @@ body{
   filter: drop-shadow(0 0 10px var(--secondary));
 }
 
-
 .card {
-  @apply bg-neutral-900/90 border-solid backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
+  @apply bg-neutral-900/90 border-solid;
 }
 
+@media (min-width: 768px) {
+  .card {
+    @apply backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
+  }
+}

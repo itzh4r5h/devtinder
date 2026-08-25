@@ -20,7 +20,7 @@ export const FeedPreview = ({ mock_users }) => {
   }, []);
 
   return (
-    <section ref={feedSectionRef} className="overflow-hidden h-160 sm:h-180 md:h-190 flex flex-col">
+    <section ref={feedSectionRef} className="overflow-hidden h-160 sm:h-180 md:h-190 flex flex-col mb-5">
       <h1 className="text-foreground text-4xl font-semibold capitalize text-center tracking-wide leading-11">
         see feed in action
       </h1>

@@ -1,20 +1,27 @@
 import App from "@/App";
+import { routes } from "@/constants/routes";
+import { appLoader } from "@/loaders/appLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { Auth } from "@/pages/auth/Auth";
-import { Connections } from "@/pages/Connections";
+import { Connections } from "@/pages/connections/Connections";
+import { Error } from "@/pages/Error";
 import { Feed } from "@/pages/Feed";
 import { Home } from "@/pages/home/Home";
 import { NotFound } from "@/pages/not-found/NotFound";
-import { Profile } from "@/pages/Profile";
-import { Requests } from "@/pages/Requests";
-import { Settings } from "@/pages/Settings";
+import { Profile } from "@/pages/profile/Profile";
+import { Requests } from "@/pages/requests/Requests";
+import { AccountSettings } from "@/pages/settings/AccountSettings";
 
 import { createBrowserRouter } from "react-router";
+
+const {signin,signup,feed,requests,connections,connections_with_id,profile,settings} = routes
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    loader: appLoader,
+    ErrorBoundary: Error,
     children: [
       {
         index: true,
@@ -24,43 +31,38 @@ export const router = createBrowserRouter([
         middleware: [authMiddleware],
         children: [
           {
-            path: "/signin",
+            path: signin,
             Component: Auth,
           },
           {
-            path: "/signup",
+            path: signup,
             Component: Auth,
           },
-        ],
-      },
-      {
-        middleware: [authMiddleware],
-        children: [
           {
-            path: "/feed",
+            path: feed,
             Component: Feed,
           },
           {
-            path: "/requests",
+            path: requests,
             Component: Requests,
           },
           {
-            path: "/connections",
+            path: connections,
             Component: Connections,
           },
           {
-            path: "/profile",
+            path: connections_with_id,
+            Component: Connections,
+          },
+          {
+            path: profile,
             Component: Profile,
           },
           {
-            path: "/settings",
-            Component: Settings,
+            path: settings,
+            Component: AccountSettings,
           },
         ],
-      },
-      {
-        path: "/*",
-        Component: NotFound
       }
     ],
   },
