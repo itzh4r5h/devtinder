@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Circle, Flame } from "lucide-react";
 import { UserCard } from "../../components/UserCard";
 import { Link } from "react-router";
+import { useSelector } from "react-redux";
 
 
-export const Hero = ({user}) => {
+export const Hero = ({ user }) => {
+  const { isLoggedIn } = useSelector((state) => state.auth)
   return (
     <section className="flex flex-col gap-10 lg:flex-row">
       <div className="space-y-10 flex-2">
@@ -27,14 +29,14 @@ export const Hero = ({user}) => {
           Swipe right on collaboration.
         </p>
 
-        <Link to="/feed">
-        <Button
-          variant="outline"
-          size="lg"
-          className="button-bg font-bold text-xl cursor-pointer capitalize rounded-full py-6 px-5"
-        >
-          <Flame className="size-6" /> start swiping
-        </Button>
+        <Link to={isLoggedIn ? '/feed' : '/signup'}>
+          <Button
+            variant="outline"
+            size="lg"
+            className="button-bg font-bold text-xl cursor-pointer capitalize rounded-full py-6 px-5"
+          >
+            <Flame className="size-6" /> start swiping
+          </Button>
         </Link>
 
         <div className="flex flex-wrap flex-row items-center justify-center gap-10 w-fit mt-5">
@@ -63,7 +65,7 @@ export const Hero = ({user}) => {
 
       <div className="flex justify-center flex-1">
         <span className="-rotate-3">
-          <UserCard user={user} variant={{name:'default'}} expanded={true}/>
+          <UserCard user={user} variant={{ name: 'default' }} expanded={true} />
         </span>
       </div>
     </section>
