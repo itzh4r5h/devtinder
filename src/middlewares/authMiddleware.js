@@ -1,34 +1,47 @@
-import { redirect } from "react-router";
+import { routes } from "@/constants/routes";
+import { MOCK_USERS } from "@/mock/user-data";
+import { store } from "@/store/store";
 
-export const authMiddleware = async ({ request }) => {
-  const isLoggedIn = true;
-
+export const authMiddleware = ({ request }) => {
+  const { isLoggedIn } = store.getState().auth;
   const url = new URL(request.url);
+  const pathname = url.pathname;
+  const id = request.url.split("/")[4];
 
-  const authRoutes = ["/signin", "/signup"];
-  const protectedRoutes = [
-    "/feed",
-    "/requests",
-    "/connections",
-    "/profile",
-    "/settings",
+  // replace it with real connection ids
+  const connectionIds = MOCK_USERS.map((user) => user._id);
+
+  const { signin, signup, feed, connections, profile, settings } = routes;
+
+  const allowedRoutes = [
+    "/",
+    ...(!isLoggedIn ? [signup, signin] :
+      [feed,
+        "/requests/received",
+        "/requests/sent",
+        connections,
+        profile,
+        settings,
+      ]
+    )
   ];
 
-  // Guest trying to access protected page
-  const isProtectedRoute = protectedRoutes.some(
-    (route) => url.pathname === route || url.pathname.startsWith(`${route}/`),
-  );
+  const isAllowed = allowedRoutes.some((route) => {
+    let modifiedRoute = route;
+    if (isLoggedIn) {
+      const isConnectionRoute = pathname.startsWith("/connections");
+      if (isConnectionRoute && connectionIds.includes(id)) {
+        modifiedRoute += `/${id}`;
+      }
+    }
+    return pathname === modifiedRoute;
+  });
 
-  if (!isLoggedIn && isProtectedRoute) {
+  if (!isAllowed) {
     throw new Response("Not Found", {
       status: 404,
     });
   }
 
-  // Logged-in user trying to access auth pages
-  if (isLoggedIn && authRoutes.includes(url.pathname)) {
-    throw new Response("Not Found", {
-      status: 404,
-    });
-  }
+  return null;
 };
