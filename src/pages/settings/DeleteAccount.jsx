@@ -13,10 +13,10 @@ export const DeleteAccount = () => {
       </CardHeader>
       <CardContent className="p-0 flex flex-col gap-3 text-muted-foreground">
         <p className="text-2xl tracking-wide text-center">Permanently delete your account and all associated data.</p>
-        <p className="text-2xl tracking-wide text-center" text-center>And you will lose access to your profile, connections and chats.</p>
+        <p className="text-2xl tracking-wide text-center">And you will lose access to your profile, connections and chats.</p>
         <p className="text-2xl tracking-wide text-red-500 text-center">This action cannot be undone.</p>
 
-        <Separator/>
+        <Separator />
 
         <Button
           variant="destructive"
