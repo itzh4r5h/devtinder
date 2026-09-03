@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { buildCases } from "../handlers";
+import { getUser } from "../thunks/userThunk";
 
 const userSlice = createSlice({
   name: 'user',
@@ -12,6 +14,19 @@ const userSlice = createSlice({
     clearUser: (state) => {
       state.user = null
     }
+  },
+  extraReducers: (builder) => {
+    buildCases(builder, getUser, {
+      pending: (state) => {
+        state.user = null
+      },
+      fulfilled: (state, action) => {
+        state.user = action.payload
+      },
+      rejected: (state) => {
+        state.user = null
+      }
+    })
   }
 })
 

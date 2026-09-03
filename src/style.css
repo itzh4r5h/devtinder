@@ -107,9 +107,11 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
@@ -118,16 +120,12 @@ body {
 .main-bg {
   background-color: var(--background);
   background-image:
-    radial-gradient(
-      circle at 20% 10%,
+    radial-gradient(circle at 20% 10%,
       var(--primary-foreground),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 85% 30%,
+      transparent 45%),
+    radial-gradient(circle at 85% 30%,
       var(--secondary-foreground),
-      transparent 50%
-    );
+      transparent 50%);
 }
 
 .text-bg {
@@ -161,5 +159,30 @@ body {
 @media (min-width: 768px) {
   .card {
     @apply backdrop-blur-md shadow-[0_20px_60px_oklch(0.145_0_0/.7)];
+  }
+}
+
+@media (max-width: 768px) {
+  .Toastify__toast {
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 1rem auto !important;
+    padding: 10px 12px !important;
+    padding-right: 25px !important;
+    font-size: 1.1rem !important;
+    min-height: auto !important;
+    border-radius: 8px !important;
+  }
+
+  .Toastify__toast-body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .Toastify__close-button {
+    width: 20px !important;
+    height: 20px !important;
+    top: 8px;
+    right: 3px;
   }
 }

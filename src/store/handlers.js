@@ -8,7 +8,7 @@ export const buildCases = (builder, asyncThunk, handlers) => {
 }
 
 export const asyncThunkHandler = (actionType, handler) => {
-  return createAsyncThunk(actionType, async (params, { dispatch }) => {
+  return createAsyncThunk(actionType, async (params, { dispatch, rejectWithValue }) => {
     try {
       const message = await handler(params, dispatch)
       if (message) {
@@ -16,7 +16,10 @@ export const asyncThunkHandler = (actionType, handler) => {
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Something Went Wrong!";
-      dispatch(setErrorMessage(errorMessage))
+      if (params !== 'auth_check') {
+        dispatch(setErrorMessage(errorMessage))
+      }
+      return rejectWithValue(errorMessage)
     }
   })
 }

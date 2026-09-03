@@ -1,8 +1,16 @@
 import { routes } from "@/constants/routes";
 import { MOCK_USERS } from "@/mock/user-data";
 import { store } from "@/store/store";
+import { checkIsUserLoggedIn } from "@/store/thunks/authThunk";
 
-export const authMiddleware = ({ request }) => {
+export const authMiddleware = async ({ request }) => {
+  const { isAuthChecked } = store.getState().auth
+
+  if (!isAuthChecked) {
+    await store.dispatch(checkIsUserLoggedIn("auth_check"))
+  }
+
+
   const { isLoggedIn } = store.getState().auth;
   const url = new URL(request.url);
   const pathname = url.pathname;

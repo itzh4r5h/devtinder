@@ -4,10 +4,38 @@ import { Separator } from "@/components/ui/separator";
 import { EyeOff, Flame, Lock, Mail, AtSign, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { useEffect, useMemo } from "react";
+import { authFormValidator } from "@/joi-validators/authFormValidator";
+import { useForm } from "react-hook-form";
+import { joiResolver } from '@hookform/resolvers/joi'
+import { useValidationErrorToast } from "@/hooks/useValidationErrorToast";
+import { useDispatch } from "react-redux";
+import { signup } from "@/store/thunks/authThunk";
 
 export const Form = ({ activeRoute }) => {
+  const schema = useMemo(() => {
+    return authFormValidator(activeRoute)
+  }, [activeRoute])
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: joiResolver(schema), reValidateMode: 'onSubmit' })
+  const dispatch = useDispatch()
+
+  const submitForm = (data) => {
+    switch (activeRoute) {
+      case '/signup':
+        dispatch(signup(data))
+        break;
+    }
+  }
+
+  useValidationErrorToast(errors)
+
+  useEffect(() => {
+    reset()
+  }, [activeRoute, reset])
+
   return (
-    <form>
+    <form onSubmit={handleSubmit(submitForm)}>
       <FieldGroup>
         {activeRoute === "/signup" && (
           <>
@@ -21,6 +49,7 @@ export const Form = ({ activeRoute }) => {
               <div className="relative">
                 <AtSign className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
                 <Input
+                  {...register("username", { required: true })}
                   id="username"
                   type="text"
                   autoComplete="off"
@@ -36,6 +65,7 @@ export const Form = ({ activeRoute }) => {
               <div className="relative">
                 <User className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
                 <Input
+                  {...register("name", { required: true })}
                   id="name"
                   type="text"
                   placeholder="harsh"
@@ -53,6 +83,7 @@ export const Form = ({ activeRoute }) => {
           <div className="relative">
             <Mail className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
             <Input
+              {...register("email", { required: true })}
               id="email"
               type="email"
               placeholder="harsh@gmail.com"
@@ -68,6 +99,7 @@ export const Form = ({ activeRoute }) => {
           <div className="relative">
             <Lock className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
             <Input
+              {...register("password", { required: true })}
               id="password"
               type="password"
               placeholder="••••••••"
@@ -85,6 +117,7 @@ export const Form = ({ activeRoute }) => {
           </Link>
         )}
         <Button
+          type="submit"
           variant="outline"
           size="lg"
           className={`${activeRoute === "/signup" && 'mt-2'} button-bg font-bold text-lg cursor-pointer capitalize rounded-full py-4 w-full text-foreground`}

@@ -10,12 +10,11 @@ function App() {
   const location = useLocation()
   const route = location.pathname
   const isConnectionPage = route.startsWith("/connections");
-
   useShowMessage()
 
   return (
     <div className="flex flex-col main-bg w-full min-h-dvh select-none">
-      <ToastContainer />
+      <ToastContainer theme="colored" className="lowercase" />
       <Navbar isLoggedIn={isLoggedIn} />
       <main className="container mx-auto px-5 flex-1 flex flex-col">
         <Outlet />
