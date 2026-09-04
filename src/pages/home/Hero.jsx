@@ -29,7 +29,7 @@ export const Hero = ({ user }) => {
           Swipe right on collaboration.
         </p>
 
-        <Link to={isLoggedIn ? '/feed' : '/signup'}>
+        <Link to={isLoggedIn ? '/feed' : '/signin'}>
           <Button
             variant="outline"
             size="lg"

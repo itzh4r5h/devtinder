@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from '@hookform/resolvers/joi'
 import { useValidationErrorToast } from "@/hooks/useValidationErrorToast";
 import { useDispatch } from "react-redux";
-import { signup } from "@/store/thunks/authThunk";
+import { signin, signup } from "@/store/thunks/authThunk";
 
 export const Form = ({ activeRoute }) => {
   const schema = useMemo(() => {
@@ -24,6 +24,9 @@ export const Form = ({ activeRoute }) => {
     switch (activeRoute) {
       case '/signup':
         dispatch(signup(data))
+        break;
+      case '/signin':
+        dispatch(signin(data))
         break;
     }
   }

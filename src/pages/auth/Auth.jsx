@@ -37,10 +37,10 @@ export const Auth = () => {
     if (isLoggedIn) {
       switch (activeRoute) {
         case "/signup":
-          navigate("/profile")
+          navigate("/profile", { replace: true })
           break;
         case "/signin":
-          navigate("/feed")
+          navigate("/feed", { replace: true })
           break;
       }
     }

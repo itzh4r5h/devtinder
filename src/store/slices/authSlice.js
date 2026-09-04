@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buildCases } from "../handlers";
-import { checkIsUserLoggedIn, signup } from "../thunks/authThunk";
+import { checkIsUserLoggedIn, signin, signout, signup } from "../thunks/authThunk";
 
 const authSlice = createSlice({
   name: 'auth',
@@ -35,6 +35,28 @@ const authSlice = createSlice({
       },
       rejected: (state) => {
         state.isLoggedIn = false
+      }
+    })
+    buildCases(builder, signin, {
+      pending: (state) => {
+        state.isLoggedIn = false
+      },
+      fulfilled: (state) => {
+        state.isLoggedIn = true
+      },
+      rejected: (state) => {
+        state.isLoggedIn = false
+      }
+    })
+    buildCases(builder, signout, {
+      pending: (state) => {
+        state.isLoggedIn = true
+      },
+      fulfilled: (state) => {
+        state.isLoggedIn = false
+      },
+      rejected: (state) => {
+        state.isLoggedIn = true
       }
     })
   }
