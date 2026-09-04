@@ -14,7 +14,6 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { useDispatch } from "react-redux";
 import { signout } from "@/store/thunks/authThunk";
-import { useEffect } from "react";
 
 const NavLi = ({ Icon, name }) => {
   const location = useLocation();
@@ -68,13 +67,10 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   const dispatch = useDispatch()
   const handleSignout = () => {
     dispatch(signout())
-  }
-
-  useEffect(() => {
-    if (!isLoggedIn) {
+    setTimeout(() => {
       navigate('/signin', { replace: true })
-    }
-  }, [isLoggedIn, navigate])
+    }, 100)
+  }
 
 
   const linksAfterSignin = [
