@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 
 export const Auth = () => {
   const { isLoggedIn } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.user)
   const navigate = useNavigate()
   const location = useLocation();
   const activeRoute = location.pathname;
@@ -40,11 +41,15 @@ export const Auth = () => {
           navigate("/profile", { replace: true })
           break;
         case "/signin":
-          navigate("/feed", { replace: true })
+          if (user.profileCompletionCount < 100) {
+            navigate("/profile", { replace: true })
+          } else {
+            navigate("/feed", { replace: true })
+          }
           break;
       }
     }
-  }, [isLoggedIn, activeRoute, navigate])
+  }, [isLoggedIn, activeRoute, navigate, user?.profileCompletionCount])
 
   return (
     <section className="flex flex-wrap h-full">

@@ -2,6 +2,8 @@ import { routes } from "@/constants/routes";
 import { MOCK_USERS } from "@/mock/user-data";
 import { store } from "@/store/store";
 import { checkIsUserLoggedIn } from "@/store/thunks/authThunk";
+import { redirect } from "react-router";
+import { toast } from "react-toastify";
 
 export const authMiddleware = async ({ request }) => {
   const { isAuthChecked } = store.getState().auth
@@ -12,8 +14,14 @@ export const authMiddleware = async ({ request }) => {
 
 
   const { isLoggedIn } = store.getState().auth;
+  const { user } = store.getState().user;
   const url = new URL(request.url);
   const pathname = url.pathname;
+  if (isLoggedIn && user?.profileCompletionCount < 100 && pathname !== '/profile') {
+    toast.info("please complete your profile first")
+    throw redirect('/profile')
+  }
+
   const id = request.url.split("/")[4];
 
   // replace it with real connection ids
