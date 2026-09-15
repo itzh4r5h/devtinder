@@ -1,11 +1,11 @@
+import { getFirstErrorMessage } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 const showError = (errors, lastError, toast) => {
   if (!errors || Object.keys(errors).length === 0) return;
 
-  const errMsg = Object.values(errors)[0].message;
-
+  const errMsg = getFirstErrorMessage(errors)
   if (errMsg) {
     const msg = errMsg.replaceAll('"', '');
 

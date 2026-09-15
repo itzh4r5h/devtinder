@@ -16,3 +16,19 @@ export const formatDate = (date) => {
 
   return `${day} ${month}, ${year}`;
 };
+
+export const getFirstErrorMessage = (errors) => {
+  for (const value of Object.values(errors)) {
+    if (value?.message) {
+      return value.message;
+    }
+
+    if (typeof value === "object" && value !== null) {
+      const message = getFirstErrorMessage(value);
+
+      if (message) return message;
+    }
+  }
+
+  return undefined;
+};
