@@ -43,11 +43,13 @@ export const profileFormValidator = () => {
         "string.max": "github username cann't exceed 40 characters",
       }),
       linkedin: Joi.string().trim().min(3).max(100).lowercase().required().messages({
+        "any.required": "linkedin username is required",
         "string.empty": "linkedin username is required",
         "string.min": "linkedin username must be at least 3 characters",
         "string.max": "linkedin username cann't exceed 100 characters",
       }),
       x: Joi.string().trim().min(1).max(15).lowercase().required().messages({
+        "any.required": "x username is required",
         "string.empty": "x username is required",
         "string.min": "x username must be at least 1 characters",
         "string.max": "x username cann't exceed 15 characters",
