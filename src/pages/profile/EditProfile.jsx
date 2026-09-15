@@ -50,9 +50,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SOCIALS } from "@/constants/socials";
 import { profileFormValidator } from "@/joi-validators/profileFormValidator";
 import { Controller, useForm } from "react-hook-form";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useValidationErrorToast } from "@/hooks/useValidationErrorToast";
+import { updateProfile } from "@/store/thunks/userThunk";
 
 export const EditProfile = () => {
   const experiences = [
@@ -87,10 +88,10 @@ export const EditProfile = () => {
     }
   })
   const [open, setOpen] = useState(false)
-  //const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const submitForm = (data) => {
-    console.log(data)
+    dispatch(updateProfile(data))
     setOpen(false)
   }
 
