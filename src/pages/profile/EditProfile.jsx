@@ -50,7 +50,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SOCIALS } from "@/constants/socials";
 import { profileFormValidator } from "@/joi-validators/profileFormValidator";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useValidationErrorToast } from "@/hooks/useValidationErrorToast";
 import { updateProfile } from "@/store/thunks/userThunk";
@@ -80,11 +80,22 @@ export const EditProfile = () => {
     return profileFormValidator()
   }, [])
 
+  const { user } = useSelector(state => state.user)
+
   const { register, control, handleSubmit, formState: { errors } } = useForm({
     resolver: joiResolver(schema), reValidateMode: 'onSubmit', defaultValues: {
-      gender: 'male',
-      experience: "intermediate",
-      tags: []
+      name: user.name,
+      gender: user?.gender || 'male',
+      age: user?.age || '',
+      role: user?.role || '',
+      experience: user?.experience || "intermediate",
+      description: user?.description || '',
+      tags: user.tags ?? [],
+      socials: {
+        github: user?.socials?.github || '',
+        linkedin: user?.socials?.linkedin || '',
+        x: user?.socials?.x || '',
+      }
     }
   })
   const [open, setOpen] = useState(false)
@@ -290,7 +301,7 @@ export const EditProfile = () => {
               </FieldLabel>
               <div className="relative">
                 <Controller name="tags" control={control} render={({ field }) => (
-                  <TagsInput value={field.value} onChange={field.onChange} />
+                  <TagsInput value={field.value ?? []} onChange={field.onChange} />
                 )} />
               </div>
             </Field>
@@ -363,9 +374,9 @@ const SocialInput = ({ Icon, id, placeholder, padding, register }) => {
 
 const TagsInput = ({ value = [], onChange }) => {
   const anchor = useComboboxAnchor();
-  const skills = Object.values(TAG_LABELS);
+  const tags = Object.keys(TAG_LABELS);
   return (
-    <Combobox multiple autoHighlight items={skills} value={value} onValueChange={onChange}>
+    <Combobox multiple autoHighlight items={tags} value={value} onValueChange={onChange}>
       <ComboboxChips ref={anchor} className="w-full border-0 gap-2">
         <Tags className=" size-4 text-foreground" />
 
@@ -375,9 +386,9 @@ const TagsInput = ({ value = [], onChange }) => {
               {values.map((value, index) => (
                 <ComboboxChip
                   key={value + index}
-                  className={`text-foreground ${TAG_COLORS[value.toLowerCase()] ?? "bg-neutral-500 text-foreground"} text-sm h-7`}
+                  className={`text-foreground ${TAG_COLORS[value] ?? "bg-neutral-500 text-foreground"} text-sm h-7`}
                 >
-                  {TAG_LABELS[value.toLowerCase()] ?? value}
+                  {TAG_LABELS[value]}
                 </ComboboxChip>
               ))}
               <ComboboxChipsInput placeholder="add tag..." />
@@ -394,7 +405,7 @@ const TagsInput = ({ value = [], onChange }) => {
               value={item}
               className="cursor-pointer dropdown-item"
             >
-              {item}
+              {TAG_LABELS[item]}
             </ComboboxItem>
           )}
         </ComboboxList>
