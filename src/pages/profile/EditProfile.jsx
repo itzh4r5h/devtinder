@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TAG_COLORS, TAG_LABELS } from "@/constants/tag";
 import {
   Combobox,
@@ -82,7 +82,7 @@ export const EditProfile = () => {
 
   const { user } = useSelector(state => state.user)
 
-  const { register, control, handleSubmit, formState: { errors } } = useForm({
+  const { reset, register, control, handleSubmit, formState: { errors } } = useForm({
     resolver: joiResolver(schema), reValidateMode: 'onSubmit', defaultValues: {
       name: user.name,
       gender: user?.gender || 'male',
@@ -90,7 +90,7 @@ export const EditProfile = () => {
       role: user?.role || '',
       experience: user?.experience || "intermediate",
       description: user?.description || '',
-      tags: user.tags ?? [],
+      tags: user.tags,
       socials: {
         github: user?.socials?.github || '',
         linkedin: user?.socials?.linkedin || '',
@@ -105,6 +105,26 @@ export const EditProfile = () => {
     dispatch(updateProfile(data))
     setOpen(false)
   }
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: user.name,
+        gender: user?.gender || 'male',
+        age: user?.age || '',
+        role: user?.role || '',
+        experience: user?.experience || "intermediate",
+        description: user?.description || '',
+        tags: user.tags,
+        socials: {
+          github: user?.socials?.github || '',
+          linkedin: user?.socials?.linkedin || '',
+          x: user?.socials?.x || '',
+        }
+
+      })
+    }
+  }, [open, user, reset])
 
   useValidationErrorToast(errors)
 
@@ -301,7 +321,7 @@ export const EditProfile = () => {
               </FieldLabel>
               <div className="relative">
                 <Controller name="tags" control={control} render={({ field }) => (
-                  <TagsInput value={field.value ?? []} onChange={field.onChange} />
+                  <TagsInput value={field.value} onChange={field.onChange} />
                 )} />
               </div>
             </Field>
@@ -372,7 +392,7 @@ const SocialInput = ({ Icon, id, placeholder, padding, register }) => {
   );
 };
 
-const TagsInput = ({ value = [], onChange }) => {
+const TagsInput = ({ value, onChange }) => {
   const anchor = useComboboxAnchor();
   const tags = Object.keys(TAG_LABELS);
   return (
