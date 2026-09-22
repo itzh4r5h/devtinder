@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buildCases } from "../handlers";
-import { getUser } from "../thunks/userThunk";
+import { getUser, updateProfilePic } from "../thunks/userThunk";
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
+    uploading: false,
+    uploaded: false
   },
   reducers: {
     setUser: (state, action) => {
@@ -25,6 +27,20 @@ const userSlice = createSlice({
       },
       rejected: (state) => {
         state.user = null
+      }
+    })
+    buildCases(builder, updateProfilePic, {
+      pending: (state) => {
+        state.uploading = true
+        state.uploaded = false
+      },
+      fulfilled: (state) => {
+        state.uploaded = true
+        state.uploading = false
+      },
+      rejected: (state) => {
+        state.uploaded = false
+        state.uploading = false
       }
     })
   }

@@ -14,3 +14,13 @@ export const updateProfile = asyncThunkHandler('user/update_profile', async (use
   dispatch(setUser(data.user))
   return data.message
 })
+
+export const updateProfilePic = asyncThunkHandler('user/update_profile_pic', async ({ pic }, dispatch) => {
+  const formData = new FormData()
+  formData.append('pic', pic)
+  console.log(formData.get("pic"))
+  const res = await httpReq.patch('/users/pic', formData)
+  const data = res.data
+  dispatch(setUser(data.user))
+  return data.message
+})

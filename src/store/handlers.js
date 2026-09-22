@@ -15,6 +15,7 @@ export const asyncThunkHandler = (actionType, handler) => {
         dispatch(setSuccessMessage(message))
       }
     } catch (error) {
+      // console.log(error) //it's just for debug purpose in dev mode
       const errorMessage = error.response?.data?.message || "Something Went Wrong!";
       if (params !== 'auth_check') {
         dispatch(setErrorMessage(errorMessage))

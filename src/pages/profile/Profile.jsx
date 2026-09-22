@@ -1,17 +1,16 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TAG_COLORS, TAG_LABELS } from "@/constants/tag";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { EditProfile } from "./EditProfile";
-import { ChooseFile } from "@/components/ChooseFile";
 import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
-import { useSelector } from "react-redux";
 import { formatDate } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import { ProfilPic } from "./ProfilPic";
 
 export const Profile = () => {
-  const { user } = useSelector(state => state.user)
+  const { user, uploading, uploaded } = useSelector(state => state.user)
 
   return (
     <section className="flex-1 flex flex-col items-center justify-center gap-5 py-5">
@@ -24,12 +23,7 @@ export const Profile = () => {
             <h1 className="text-foreground text-3xl tracking-wide line-clamp-1 text-ellipsis">
               {user.name}
             </h1>
-
-            <Avatar className="size-80 relative">
-              <AvatarImage src={user.profilePic.url} alt="LR" />
-              <AvatarFallback className="text-9xl font-bold">{user.name[0].toUpperCase()}</AvatarFallback>
-              <span className="absolute right-2 bottom-0"><ChooseFile /></span>
-            </Avatar>
+            <ProfilPic uploading={uploading} uploaded={uploaded} user={user} />
 
           </CardContent>
         </Card>
