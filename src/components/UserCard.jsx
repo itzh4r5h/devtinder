@@ -20,7 +20,7 @@ export const UserCard = memo(function UserCard({
       <CardContent className="flex p-0 flex-col gap-4">
         <motion.div className="relative rounded-2xl w-full overflow-hidden h-64 sm:h-95" style={style}>
           <img
-            src={user.imageUrl}
+            src={user.profilePic.url}
             alt={user.name}
             className="object-cover w-full h-full will-change-transform"
             draggable={false}
@@ -39,13 +39,13 @@ export const UserCard = memo(function UserCard({
             </div>
             <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
               <Briefcase className="size-3 sm:size-3.5" />
-              {user.title}
+              {user.role}
             </div>
           </div>
         </motion.div>
 
         <div className="flex flex-wrap gap-2 h-18">
-          {user.tags.map((tag) => {
+          {user.tags.slice(0, 8).map((tag) => {
             return (
               <Badge
                 key={tag.toLowerCase()}

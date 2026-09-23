@@ -10,8 +10,12 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
+import { useLocation } from "react-router";
 
 export const SwipeCards = ({ users }) => {
+  const navigation = useLocation()
+  const activeRoute = navigation.pathname
+
   const [cards, setCards] = useState(users);
 
   const [loading, setLoading] = useState(true);
@@ -66,8 +70,7 @@ export const SwipeCards = ({ users }) => {
                 you have swiped all devs
               </h2>
               <p className="text-secondary text-lg">
-                click on refresh button to experience it again!
-              </p>
+                click on refresh button {activeRoute === '/feed' ? 'for more' : 'to experience it again!'}              </p>
               <Button
                 onClick={refreshCards}
                 variant="outline"
@@ -194,8 +197,8 @@ const MotionCard = ({ user, index, cards, setCards }) => {
             boxShadow: boxShadow,
             transition: "box-shadow 0.15s ease-out",
           }}
-          onInterested = {() => swipeCard("right")}
-          onIgnore = {() => swipeCard("left")}
+          onInterested={() => swipeCard("right")}
+          onIgnore={() => swipeCard("left")}
         />
       </motion.div>
     </motion.article>
