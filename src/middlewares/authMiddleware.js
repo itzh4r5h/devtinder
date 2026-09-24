@@ -17,7 +17,7 @@ export const authMiddleware = async ({ request }) => {
   const { user } = store.getState().user;
   const url = new URL(request.url);
   const pathname = url.pathname;
-  if (isLoggedIn && user?.profileCompletionCount < 100 && pathname !== '/profile') {
+  if (isLoggedIn && !user?.isProfileCompleted && pathname !== '/profile') {
     toast.info("please complete your profile first")
     throw redirect('/profile')
   }
