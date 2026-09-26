@@ -17,7 +17,7 @@ export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
 
   const preloader = useImagePreloader({
     imageUrls,
-    minimumDuration: 2500,
+    minimumDuration: 3000,
   });
 
   const loader = useLoadingAnimation(loaderRefs, { preloader, loadingFinish });

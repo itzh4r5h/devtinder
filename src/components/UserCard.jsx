@@ -32,12 +32,12 @@ export const UserCard = memo(function UserCard({
           <div className="bg-[linear-gradient(to_top,oklch(0.145_0_0/.85),transparent)] absolute inset-x-0 bottom-0 h-24" />
           <div className="absolute inset-x-3 bottom-3">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-lg sm:text-2xl leading-7">
+              <span className="font-bold text-white text-lg sm:text-2xl leading-7 capitalize">
                 {user.name}
               </span>
               <BadgeCheck className="size-5 fill-[#a78bfa]/20 text-violet-400" />
             </div>
-            <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
+            <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1 capitalize">
               <Briefcase className="size-3 sm:size-3.5" />
               {user.role}
             </div>
@@ -45,7 +45,7 @@ export const UserCard = memo(function UserCard({
         </motion.div>
 
         <div className="flex flex-wrap gap-2 h-18">
-          {user.tags.slice(0, 8).map((tag) => {
+          {user.tags.slice(0, 6).map((tag) => {
             return (
               <Badge
                 key={tag.toLowerCase()}

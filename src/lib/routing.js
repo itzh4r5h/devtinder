@@ -9,6 +9,8 @@ import { Home } from "@/pages/home/Home";
 import { Profile } from "@/pages/profile/Profile";
 import { Requests } from "@/pages/requests/Requests";
 import { AccountSettings } from "@/pages/settings/AccountSettings";
+import { store } from "@/store/store";
+import { getUsers } from "@/store/thunks/feedThunk";
 
 import { createBrowserRouter } from "react-router";
 
@@ -36,6 +38,7 @@ export const router = createBrowserRouter([
       {
         path: feed,
         Component: Feed,
+        loader: () => store.dispatch(getUsers())
       },
       {
         path: requests,

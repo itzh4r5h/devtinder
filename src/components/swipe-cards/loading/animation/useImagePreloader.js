@@ -20,15 +20,17 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
     progressEngine.current = engine;
   };
 
-  const onProgress = (value) => {
-    progressEngine.current?.update(value);
-  };
-
-  const onComplete = () => {
-    finish.current();
-  };
 
   const start = useCallback(async () => {
+
+    const onProgress = (value) => {
+      progressEngine.current?.update(value);
+    };
+
+    const onComplete = () => {
+      finish.current();
+    };
+
     if (!imageUrls.length) {
       onProgress(100);
       onComplete();
@@ -82,7 +84,7 @@ export const useImagePreloader = ({ imageUrls, minimumDuration = 2500 }) => {
     await new Promise((resolve) => setTimeout(resolve, remaining));
 
     onComplete();
-  }, [imageUrls, minimumDuration, onProgress, onComplete]);
+  }, [imageUrls, minimumDuration]);
 
   return {
     start,
