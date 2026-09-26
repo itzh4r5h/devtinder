@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buildCases } from "../handlers";
-import { getUser, updateProfilePic } from "../thunks/userThunk";
+import { getUser, updateProfile, updateProfilePic } from "../thunks/userThunk";
 
 const userSlice = createSlice({
   name: 'user',
@@ -29,14 +29,20 @@ const userSlice = createSlice({
         state.user = null
       }
     })
+    buildCases(builder, updateProfile, {
+      fulfilled: (state, action) => {
+        state.user = action.payload
+      },
+    })
     buildCases(builder, updateProfilePic, {
       pending: (state) => {
         state.uploading = true
         state.uploaded = false
       },
-      fulfilled: (state) => {
+      fulfilled: (state, action) => {
         state.uploaded = true
         state.uploading = false
+        state.user = action.payload
       },
       rejected: (state) => {
         state.uploaded = false

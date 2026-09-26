@@ -10,12 +10,15 @@ export const buildCases = (builder, asyncThunk, handlers) => {
 export const asyncThunkHandler = (actionType, handler) => {
   return createAsyncThunk(actionType, async (params, { dispatch, rejectWithValue }) => {
     try {
-      const message = await handler(params, dispatch)
-      if (message) {
-        dispatch(setSuccessMessage(message))
+      const result = await handler(params, dispatch)
+      if (result?.message) {
+        dispatch(setSuccessMessage(result.message))
+      }
+      if (result?.data) {
+        return result.data
       }
     } catch (error) {
-      // console.log(error) //it's just for debug purpose in dev mode
+      console.log(error) //it's just for debug purpose in dev mode
       const errorMessage = error.response?.data?.message || "Something Went Wrong!";
       if (params !== 'auth_check') {
         dispatch(setErrorMessage(errorMessage))

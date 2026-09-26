@@ -6,7 +6,7 @@ export const signup = asyncThunkHandler('auth/signup', async (userInfo, dispatch
   const res = await httpReq.post('/auth/signup', userInfo)
   const data = res.data
   dispatch(setUser(data.user))
-  return data.message
+  return { message: data.message }
 })
 
 export const checkIsUserLoggedIn = asyncThunkHandler('auth/auth_check', async (_, dispatch) => {
@@ -19,12 +19,12 @@ export const signin = asyncThunkHandler('auth/signin', async (userInfo, dispatch
   const res = await httpReq.post('/auth/signin', userInfo)
   const data = res.data
   dispatch(setUser(data.user))
-  return data.message
+  return { message: data.message }
 })
 
 export const signout = asyncThunkHandler('auth/signout', async (_, dispatch) => {
   const res = await httpReq.post('/auth/signout')
   const data = res.data
   dispatch(clearUser())
-  return data.message
+  return { message: data.message }
 })
