@@ -4,16 +4,16 @@ const reqStatusSlice = createSlice({
   name: 'req_status',
   initialState: {
     message: null,
-    isError: null,
+    isError: false,
   },
   reducers: {
     clearMessage: (state) => {
       state.message = null
-      state.isError = null
+      state.isError = false
     },
     setSuccessMessage: (state, action) => {
       state.message = action.payload
-      state.isError = null
+      state.isError = false
     },
     setErrorMessage: (state, action) => {
       state.message = action.payload
