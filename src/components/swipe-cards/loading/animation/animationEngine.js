@@ -90,7 +90,7 @@ export const createAnimationEngine = (loaderRefs) => {
   };
 
   const playExit = (loadingFinish) => {
-    if(!bars[0]){
+    if (!bars[0]) {
       stop()
       return
     }
@@ -115,7 +115,7 @@ export const createAnimationEngine = (loaderRefs) => {
       y: 12,
       duration: 0.25,
       ease: "power2.in",
-    },"+=0.2");
+    }, "+=0.2");
 
     // ---------------------------------
     // Bars Exit

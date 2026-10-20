@@ -7,7 +7,7 @@ import { createProgressEngine } from "./progressEngine";
 
 gsap.registerPlugin(useGSAP);
 
-export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
+export const useLoadingAnimation = (loaderRefs, { preloader, loadingFinish }) => {
   const progress = useRef(null)
   const equalizer = useRef(null)
   const animation = useRef(null)
@@ -15,17 +15,17 @@ export const useLoadingAnimation = (loaderRefs,{preloader,loadingFinish}) => {
 
   useGSAP(
     () => {
-      
+
       progress.current = createProgressEngine(loaderRefs);
       equalizer.current = createEqualizerEngine(loaderRefs);
       animation.current = createAnimationEngine(loaderRefs);
       preloader.setProgressEngine(progress.current)
 
       animation.current.init();
-    
+
       animation.current.playEntrance();
 
-      animation.current.onEntranceComplete(equalizer.current.start,preloader?.start)
+      animation.current.onEntranceComplete(equalizer.current.start, preloader?.start)
 
 
       return () => {

@@ -6,7 +6,7 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
@@ -17,20 +17,20 @@ import { getUsers, sendConnectionReq } from "@/store/thunks/feedThunk";
 export const SwipeCards = ({ users }) => {
   const location = useLocation()
   const activeRoute = location.pathname
-  const { currentPage, totalUsers } = useSelector(state => state.feed)
+  const { userLoading, currentPage, totalUsers } = useSelector(state => state.feed)
   const dispatch = useDispatch()
   const [cards, setCards] = useState(users);
 
   const [loading, setLoading] = useState(true);
 
-  const imageUrls = cards.length > 0 ? cards.map((user) => user.profilePic.url) : [];
+  const imageUrls = useMemo(() => cards.map((user) => user.profilePic.url), [cards])
 
   const refreshCards = async () => {
     if (cards.length > 0) return;
     setLoading(true);
     if (activeRoute === '/feed') {
       const result = await dispatch(getUsers(currentPage + 1))
-      setCards(result?.payload?.users || [])
+      setCards(result.payload.users)
     }
     else {
       setCards(users)
@@ -43,6 +43,8 @@ export const SwipeCards = ({ users }) => {
       {loading ? (
         <LoadingScreen
           imageUrls={imageUrls}
+          userLoading={userLoading}
+          activeRoute={activeRoute}
           loadingFinish={() => {
             setLoading(false);
           }}
