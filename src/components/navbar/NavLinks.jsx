@@ -19,7 +19,7 @@ const NavLi = ({ Icon, name }) => {
   const location = useLocation();
   const activeRoute = location.pathname;
   const param = activeRoute.split("/")[2];
-  const reqStatus = param === "received" ? param : "received";
+  const reqStatus = param === "received" || param === 'sent' ? param : "received";
 
   return (
     <NavLink
