@@ -1,5 +1,6 @@
 import App from "@/App";
 import { routes } from "@/constants/routes";
+import { requestLoader } from "@/loaders/requestsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { Auth } from "@/pages/auth/Auth";
 import { Connections } from "@/pages/connections/Connections";
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       {
         path: requests,
         Component: Requests,
+        loader: requestLoader
       },
       {
         path: connections,

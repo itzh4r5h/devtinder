@@ -63,62 +63,71 @@ export const Received = ({ users }) => {
   };
 
   return (
-    <LayoutGroup>
-      <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 lg:gap-6 mt-10">
-        {cards.map((user) => (
-          <div
-            onClick={() => setSelectedUser(user)}
-            key={user._id}
-            className="max-w-40 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full cursor-pointer"
-          >
-            <RequestsCard
-              user={user}
-              isSelected={selectedUser?._id === user._id}
-            />
-          </div>
-        ))}
-      </div>
-
-      <AnimatePresence>
-        {selectedUser && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                duration: 0.2,
-                delay: 0.05,
-              }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedUser(null)}
-            />
-
-            <div className="fixed inset-0 z-150 flex items-center justify-center pointer-events-none">
-              <motion.div
-                initial={{ opacity: 1, rotate: 0, x: 0 }}
-                animate={controls}
-                dragConstraints={{
-                  left: 0,
-                  right: 0,
-                }}
-                dragElastic={0.5}
-                style={{
-                  x,
-                  opacity,
-                  rotate,
-                }}
-              >
-                <RequestsCardModal
-                  user={selectedUser}
-                  onAccept={() => swipeCard("right")}
-                  onReject={() => swipeCard("left")}
-                />
-              </motion.div>
+    <>
+      {users.length > 0 ? <LayoutGroup>
+        <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 lg:gap-6 mt-10">
+          {cards.map(({ user }) => (
+            <div
+              onClick={() => setSelectedUser(user)}
+              key={user._id}
+              className="max-w-40 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full cursor-pointer"
+            >
+              <RequestsCard
+                user={user}
+                isSelected={selectedUser?._id === user._id}
+              />
             </div>
-          </>
-        )}
-      </AnimatePresence>
-    </LayoutGroup>
+          ))
+          }
+        </div>
+
+        <AnimatePresence>
+          {selectedUser && (
+            <>
+              <motion.div
+                className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 0.2,
+                  delay: 0.05,
+                }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedUser(null)}
+              />
+
+              <div className="fixed inset-0 z-150 flex items-center justify-center pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 1, rotate: 0, x: 0 }}
+                  animate={controls}
+                  dragConstraints={{
+                    left: 0,
+                    right: 0,
+                  }}
+                  dragElastic={0.5}
+                  style={{
+                    x,
+                    opacity,
+                    rotate,
+                  }}
+                >
+                  <RequestsCardModal
+                    user={selectedUser}
+                    onAccept={() => swipeCard("right")}
+                    onReject={() => swipeCard("left")}
+                  />
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>
+      </LayoutGroup> :
+        <div className="flex-1 flex justify-center items-center">
+          <h2 className="text-muted-foreground text-3xl leading-10">
+            You haven't received any request right now!
+          </h2>
+
+        </div>
+      }</>
   );
 };

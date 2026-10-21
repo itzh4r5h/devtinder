@@ -7,7 +7,7 @@ import { TAG_COLORS, TAG_LABELS } from "@/constants/tag";
 import { AnimatePresence, motion } from "motion/react";
 const MotionCard = motion.create(Card);
 
-export const RequestsCardModal = ({ user,onAccept,onReject }) => {
+export const RequestsCardModal = ({ user, onAccept, onReject }) => {
   return (
     <MotionCard
       onClick={(e) => e.stopPropagation()}
@@ -22,7 +22,7 @@ export const RequestsCardModal = ({ user,onAccept,onReject }) => {
         >
           <motion.img
             layoutId={`image-${user._id}`}
-            src={user.imageUrl}
+            src={user.profilePic.url}
             alt={user.name}
             className="object-cover w-full h-full will-change-transform object-[50%_15%]"
             draggable={false}
@@ -37,14 +37,14 @@ export const RequestsCardModal = ({ user,onAccept,onReject }) => {
             className="absolute inset-x-3 bottom-3"
           >
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white tracking-wide text-lg sm:text-2xl">
+              <span className="font-bold text-white capitalize tracking-wide text-lg sm:text-2xl">
                 {user.name}
               </span>
               <BadgeCheck className="size-5 fill-[#a78bfa]/20 text-violet-400" />
             </div>
             <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
               <Briefcase className="size-3 sm:size-3.5" />
-              <span className="text-ellipsis line-clamp-1">{user.title}</span>
+              <span className="text-ellipsis line-clamp-1 capitalize">{user.role}</span>
             </div>
           </motion.div>
         </motion.div>
@@ -61,7 +61,7 @@ export const RequestsCardModal = ({ user,onAccept,onReject }) => {
             }}
           >
             <div className="flex flex-wrap gap-2 h-18">
-              {user.tags.map((tag) => {
+              {user.tags.slice(0, 6).map((tag) => {
                 return (
                   <Badge
                     key={tag.toLowerCase()}

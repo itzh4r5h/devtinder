@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { BadgeCheck, Briefcase, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 const MotionCard = motion.create(Card);
@@ -29,7 +29,7 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
           >
             <motion.img
               layoutId={`image-${user._id}`}
-              src={user.imageUrl}
+              src={user.profilePic.url}
               alt={user.name}
               className="object-cover w-full h-full will-change-transform object-[50%_15%] rounded-lg sm:rounded-2xl"
               draggable={false}
@@ -43,14 +43,14 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
               className="absolute -bottom-11 sm:-bottom-14"
             >
               <div className="flex items-center gap-2">
-                <span className="font-bold text-white tracking-wide text-base sm:text-xl md:text-lg lg:text-2xl text-ellipsis line-clamp-1">
+                <span className="font-bold text-white tracking-wide capitalize text-base sm:text-xl md:text-lg lg:text-2xl text-ellipsis line-clamp-1">
                   {user.name}
                 </span>
                 <BadgeCheck className="size-5 fill-[#a78bfa]/20 text-violet-400" />
               </div>
               <div className="text-white/80 text-xs sm:text-sm leading-4 flex items-center gap-1">
                 <Briefcase className="size-3 sm:size-3.5" />
-                <span className="text-ellipsis line-clamp-1">{user.title}</span>
+                <span className="capitalize text-ellipsis line-clamp-1">{user.role}</span>
               </div>
             </motion.div>
           </motion.div>
