@@ -8,11 +8,13 @@ import {
 import { AnimatePresence, LayoutGroup } from "motion/react";
 import { useEffect, useState } from "react";
 import { RequestsCardModal } from "./RequestsCardModal";
+import { useDispatch } from "react-redux";
+import { reviewRecievedReq } from "@/store/thunks/requestsThunk";
 
 export const Received = ({ users }) => {
   const [cards, setCards] = useState(users);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const dispatch = useDispatch()
   useEffect(() => {
     document.body.style.overflow = selectedUser ? "hidden" : "";
 
@@ -55,20 +57,32 @@ export const Received = ({ users }) => {
       },
     });
 
+
+    switch (direction) {
+      case "right":
+        dispatch(reviewRecievedReq({ status: 'accepted', id: selectedUser.connectionId }))
+        break;
+
+      case "left":
+        dispatch(reviewRecievedReq({ status: 'rejected', id: selectedUser.connectionId }))
+        break;
+    }
     setCards((prev) =>
-      prev.filter((cardUser) => cardUser._id !== selectedUser._id),
+      prev.filter((cardUser) => cardUser.user._id !== selectedUser.user._id),
     );
     setIsAnimating(false);
     setSelectedUser(null);
+
+
   };
 
   return (
     <>
-      {users.length > 0 ? <LayoutGroup>
+      {cards.length > 0 ? <LayoutGroup>
         <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 lg:gap-6 mt-10">
-          {cards.map(({ user }) => (
+          {cards.map(({ user, connectionId }) => (
             <div
-              onClick={() => setSelectedUser(user)}
+              onClick={() => setSelectedUser({ user, connectionId })}
               key={user._id}
               className="max-w-40 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full cursor-pointer"
             >
@@ -112,7 +126,7 @@ export const Received = ({ users }) => {
                   }}
                 >
                   <RequestsCardModal
-                    user={selectedUser}
+                    user={selectedUser.user}
                     onAccept={() => swipeCard("right")}
                     onReject={() => swipeCard("left")}
                   />
