@@ -4,7 +4,7 @@ import { BadgeCheck, Briefcase, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 const MotionCard = motion.create(Card);
 
-export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
+export const RequestsCard = ({ user, isSelected, sentReq = false, cancelReq = null }) => {
   return (
     <motion.div
       animate={{
@@ -58,6 +58,7 @@ export const RequestsCard = ({ user, isSelected, sentReq = false }) => {
         <AnimatePresence initial={false}>
           {sentReq && (
             <Button
+              onClick={cancelReq}
               variant="outline"
               size="lg"
               className="button-bg font-bold text-base sm:text-lg cursor-pointer capitalize rounded-full text-foreground"
