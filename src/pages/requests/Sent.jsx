@@ -7,7 +7,7 @@ export const Sent = ({ users }) => {
       {users.length > 0 ? users.map(({ user }) => (
         <div
           key={user._id}
-          className="max-w-40 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full cursor-pointer"
+          className="max-w-40 sm:max-w-60 md:max-w-50 lg:max-w-70 w-full"
         >
           <RequestsCard
             user={user}
