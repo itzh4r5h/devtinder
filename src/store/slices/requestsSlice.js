@@ -35,6 +35,4 @@ const requestsSlice = createSlice({
   }
 })
 
-// export const { setFeed } = feedSlice.actions
-
 export const requestsReducer = requestsSlice.reducer
