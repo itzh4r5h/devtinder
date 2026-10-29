@@ -1,6 +1,6 @@
 import App from "@/App";
 import { routes } from "@/constants/routes";
-import { connectionLoader } from "@/loaders/connectionLoader";
+import { connectionLoader, getConnectionProfileData } from "@/loaders/connectionLoader";
 import { profileLoader } from "@/loaders/profileLoader";
 import { requestLoader } from "@/loaders/requestsLoader";
 import { authMiddleware } from "@/middlewares/authMiddleware";
@@ -17,7 +17,7 @@ import { getUsers } from "@/store/thunks/feedThunk";
 
 import { createBrowserRouter } from "react-router";
 
-const { signin, signup, feed, requests, connections, connections_with_id, profile, settings } = routes
+const { signin, signup, feed, requests, connections, connection_profile, connections_with_id, profile, settings } = routes
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +52,11 @@ export const router = createBrowserRouter([
         path: connections,
         Component: Connections,
         loader: connectionLoader
+      },
+      {
+        path: connection_profile,
+        Component: Profile,
+        loader: getConnectionProfileData
       },
       {
         path: connections_with_id,

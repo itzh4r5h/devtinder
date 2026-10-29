@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
-import { NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 
 export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
@@ -81,11 +81,13 @@ export const ConnecitonCard = ({ connection }) => {
             align="start"
             side="left"
           >
-            <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
-              <UserIcon className="size-5" />
-              view profile
-            </DropdownMenuItem>
 
+            <Link to={`/connections/profile/${connection.user._id}`}>
+              <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
+                <UserIcon className="size-5" />
+                view profile
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
               <MessageSquareMore className="size-5" />
               clear chat

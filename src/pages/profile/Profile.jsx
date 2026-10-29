@@ -8,29 +8,36 @@ import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
 import { formatDate } from "@/lib/utils";
 import { useSelector } from "react-redux";
 import { ProfilPic } from "./ProfilPic";
+import { useLoaderData, useLocation } from "react-router";
 
 export const Profile = () => {
-  const { user, uploading, uploaded } = useSelector(state => state.user)
+  const location = useLocation()
+  const activeRoute = location.pathname
+  const { user: userProfileData, uploading, uploaded } = useSelector(state => state.user)
+  const isConnectionProfileRoute = activeRoute.includes('/connections/profile')
+  const connectionProfileData = useLoaderData()
+  const user = isConnectionProfileRoute ? connectionProfileData : userProfileData
 
   return (
     <section className="flex-1 flex flex-col items-center justify-center gap-5 py-5">
 
-      <ProfileCompletionProgress completionRate={user.profileCompletionCount} />
+      {!isConnectionProfileRoute && <ProfileCompletionProgress completionRate={user.profileCompletionCount} />}
 
       <div className="flex flex-wrap md:grid md:grid-cols-[4fr_8fr] items-center justify-center gap-5 w-full h-full flex-1">
         <Card className="card border border-white/10 rounded-3xl p-4 w-full h-full">
           <CardContent className="flex flex-col gap-5 p-0 justify-center items-center h-full">
-            <h1 className="text-foreground text-3xl tracking-wide line-clamp-1 text-ellipsis">
+            <h1 className="capitalize text-foreground text-3xl tracking-wide line-clamp-1 text-ellipsis">
               {user.name}
             </h1>
-            <ProfilPic uploading={uploading} uploaded={uploaded} user={user} />
+            <ProfilPic uploading={uploading} uploaded={uploaded} user={user} isConnectionProfileRoute={isConnectionProfileRoute} />
 
           </CardContent>
         </Card>
         <Card className="card border border-white/10 rounded-3xl p-4 w-full h-full relative">
-          <div className="absolute right-5">
+          {!isConnectionProfileRoute && <div className="absolute right-5">
             <EditProfile />
           </div>
+          }
           <CardContent className="flex justify-center flex-col h-full gap-6">
             <div className="flex flex-col gap-4 justify-center md:px-5 pt-4 md:pt-0">
               <div className="flex gap-5 md:gap-10 items-center flex-wrap">

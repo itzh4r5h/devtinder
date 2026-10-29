@@ -12,7 +12,7 @@ import { useValidationErrorToast } from "@/hooks/useValidationErrorToast";
 import { Check, X } from "lucide-react";
 import { updateProfilePic } from "@/store/thunks/userThunk";
 
-export const ProfilPic = ({ user, uploaded, uploading }) => {
+export const ProfilPic = ({ user, uploaded, uploading, isConnectionProfileRoute }) => {
   const schema = useMemo(() => {
     return profilePicValidator()
   }, [])
@@ -52,22 +52,24 @@ export const ProfilPic = ({ user, uploaded, uploading }) => {
     <Avatar className="size-80 relative">
       <AvatarImage src={previewUrl || user.profilePic.url} alt="LR" />
       <AvatarFallback className="text-9xl font-bold">{user.name[0].toUpperCase()}</AvatarFallback>
-      {previewUrl && !uploading ? <div className="absolute -right-12 bottom-0 flex gap-4 items-center text-foreground"  >
-        <Button
-          onClick={handleSubmit((data) => dispatch(updateProfilePic(data)))}
-          variant="outline"
-          className="button-bg cursor-pointer rounded-full size-10"
-        >
-          <Check className="size-5" />
-        </Button>
-        <Button
-          onClick={cancel}
-          variant="outline"
-          className="button-bg cursor-pointer rounded-full size-10"
-        >
-          <X className="size-5" />
-        </Button>
-      </div> : !uploading ? <span className="absolute right-2 bottom-0"><ChooseFile control={control} /></span> : <span className="absolute -right-8 bottom-0 text-foreground text-xl">uploading...</span>}
+      {!isConnectionProfileRoute && <>
+        {previewUrl && !uploading ? <div className="absolute -right-12 bottom-0 flex gap-4 items-center text-foreground"  >
+          <Button
+            onClick={handleSubmit((data) => dispatch(updateProfilePic(data)))}
+            variant="outline"
+            className="button-bg cursor-pointer rounded-full size-10"
+          >
+            <Check className="size-5" />
+          </Button>
+          <Button
+            onClick={cancel}
+            variant="outline"
+            className="button-bg cursor-pointer rounded-full size-10"
+          >
+            <X className="size-5" />
+          </Button>
+        </div> : !uploading ? <span className="absolute right-2 bottom-0"><ChooseFile control={control} /></span> : <span className="absolute -right-8 bottom-0 text-foreground text-xl">uploading...</span>}
+      </>}
     </Avatar>
   )
 }

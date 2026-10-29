@@ -28,9 +28,11 @@ export const authMiddleware = async ({ request }) => {
     throw redirect('/profile')
   }
 
-  const id = request.url.split("/")[4];
+  const connectionId = request.url.split("/")[4];
+  const userId = request.url.split("/")[5];
 
   const connectionIds = connectionsData.map((conn) => conn.connectionId);
+  const connectionUserIds = connectionsData.map((conn) => conn.user._id)
 
   const { signin, signup, feed, connections, profile, settings } = routes;
 
@@ -50,9 +52,14 @@ export const authMiddleware = async ({ request }) => {
   const isAllowed = allowedRoutes.some((route) => {
     let modifiedRoute = route;
     if (isLoggedIn) {
+      const isConnectionProfileRoute = pathname.startsWith("/connections/profile");
+      if (isConnectionProfileRoute && connectionUserIds.includes(userId)) {
+        modifiedRoute += `/profile/${userId}`;
+      }
+
       const isConnectionRoute = pathname.startsWith("/connections");
-      if (isConnectionRoute && connectionIds.includes(id)) {
-        modifiedRoute += `/${id}`;
+      if (isConnectionRoute && connectionIds.includes(connectionId)) {
+        modifiedRoute += `/${connectionId}`;
       }
     }
     return pathname === modifiedRoute;

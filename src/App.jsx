@@ -10,6 +10,7 @@ function App() {
   const location = useLocation()
   const route = location.pathname
   const isConnectionPage = route.startsWith("/connections");
+  const isConnectionProfilePage = route.startsWith("/connections/profile");
   useShowMessage()
 
   return (
@@ -20,6 +21,7 @@ function App() {
         <Outlet />
       </main>
       {!isConnectionPage && <Footer />}
+      {isConnectionProfilePage && <Footer />}
     </div>
   );
 }
