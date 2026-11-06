@@ -1,10 +1,10 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { LoadingBars } from "./LoadingBars";
 import { LoadingProgress } from "./LoadingProgress";
 import { useLoadingAnimation } from "./animation/useLoadingAnimation";
 import { useImagePreloader } from "./animation/useImagePreloader";
 
-export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
+export const LoadingScreen = ({ imageUrls, userLoading, loadingFinish, activeRoute }) => {
   const loaderRefs = useRef({
     overlay: null,
     bars: [],
@@ -17,11 +17,23 @@ export const LoadingScreen = ({ imageUrls, loadingFinish }) => {
 
   const preloader = useImagePreloader({
     imageUrls,
-    minimumDuration: 2500,
+    minimumDuration: 3000,
   });
 
   const loader = useLoadingAnimation(loaderRefs, { preloader, loadingFinish });
   preloader.getLoader(loader);
+
+  useEffect(() => {
+    if (activeRoute === '/feed') {
+      if (userLoading) return;
+
+      if (imageUrls.length === 0) {
+        preloader.finishEmpty();
+        return;
+      }
+
+    }
+  }, [userLoading, imageUrls, preloader, activeRoute]);
 
   return (
     <div

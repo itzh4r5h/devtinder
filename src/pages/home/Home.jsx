@@ -6,7 +6,7 @@ import { HowItWorks } from "./HowItWorks";
 export const Home = () => {
   const modified_mock_users = MOCK_USERS.map((user) => {
     const firstName = user.name.split(" ")[0].toLowerCase();
-    return { ...user, imageUrl: `/images/${firstName}.webp` };
+    return { ...user, profilePic: { url: `/images/${firstName}.webp` } };
   });
 
   return (

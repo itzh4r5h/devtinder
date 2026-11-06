@@ -6,29 +6,45 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
+import { useLocation } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers, sendConnectionReq } from "@/store/thunks/feedThunk";
 
 export const SwipeCards = ({ users }) => {
+  const location = useLocation()
+  const activeRoute = location.pathname
+  const { userLoading, currentPage, totalUsers } = useSelector(state => state.feed)
+  const dispatch = useDispatch()
   const [cards, setCards] = useState(users);
 
   const [loading, setLoading] = useState(true);
 
-  const imageUrls = cards.map((user) => user.imageUrl);
+  const imageUrls = useMemo(() => cards.map((user) => user.profilePic.url), [cards])
 
-  const refreshCards = () => {
+  const refreshCards = async () => {
     if (cards.length > 0) return;
     setLoading(true);
-    setCards(users);
+    if (activeRoute === '/feed') {
+      const result = await dispatch(getUsers(currentPage + 1))
+      setCards(result.payload.users)
+    }
+    else {
+      setCards(users)
+    }
   };
+
 
   return (
     <div className="relative select-none flex-1 w-full flex items-center justify-center">
       {loading ? (
         <LoadingScreen
           imageUrls={imageUrls}
+          userLoading={userLoading}
+          activeRoute={activeRoute}
           loadingFinish={() => {
             setLoading(false);
           }}
@@ -56,6 +72,7 @@ export const SwipeCards = ({ users }) => {
                     index={index}
                     cards={cards}
                     setCards={setCards}
+                    activeRoute={activeRoute}
                   />
                 );
               })}
@@ -65,16 +82,29 @@ export const SwipeCards = ({ users }) => {
               <h2 className="text-muted-foreground text-3xl leading-10">
                 you have swiped all devs
               </h2>
-              <p className="text-secondary text-lg">
-                click on refresh button to experience it again!
-              </p>
-              <Button
-                onClick={refreshCards}
-                variant="outline"
-                className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
-              >
-                <RotateCcw strokeWidth={3} className="size-6" />
-              </Button>
+              {
+                (totalUsers !== 0) && (activeRoute === '/feed') && <>
+                  <p className="text-secondary text-lg">
+                    click on refresh button for more </p>
+                  <Button
+                    onClick={refreshCards}
+                    variant="outline"
+                    className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
+                  >
+                    <RotateCcw strokeWidth={3} className="size-6" />
+                  </Button></>}
+              {activeRoute !== '/feed' && <>
+                <p className="text-secondary text-lg">
+                  click on refresh button to experience it again!</p>
+                <Button
+                  onClick={refreshCards}
+                  variant="outline"
+                  className="button-bg cursor-pointer font-bold capitalize rounded-full size-10 mt-10"
+                >
+                  <RotateCcw strokeWidth={3} className="size-6" />
+                </Button>
+              </>
+              }
             </div>
           )}
         </motion.div>
@@ -83,7 +113,7 @@ export const SwipeCards = ({ users }) => {
   );
 };
 
-const MotionCard = ({ user, index, cards, setCards }) => {
+const MotionCard = ({ user, index, cards, setCards, activeRoute }) => {
   const x = useMotionValue(0);
   const controls = useAnimationControls();
   const swipeDistance = Math.floor(Math.min(window.innerWidth * 0.19, 200));
@@ -126,6 +156,17 @@ const MotionCard = ({ user, index, cards, setCards }) => {
         ease: "easeOut",
       },
     });
+    if (activeRoute == '/feed') {
+      switch (direction) {
+        case "right":
+          handleInterested()
+          break;
+        case "left":
+          handleIgnored()
+          break;
+      }
+    }
+
 
     setCards((prev) => prev.filter((cardUser) => cardUser._id !== user._id));
 
@@ -136,9 +177,18 @@ const MotionCard = ({ user, index, cards, setCards }) => {
     if (Math.abs(x.get()) < swipeDistance) return;
 
     const direction = x.get() > 0 ? "right" : "left";
-    await swipeCard(direction, "drag");
+    await swipeCard(direction);
   };
 
+
+  const dispatch = useDispatch()
+  const handleInterested = () => {
+    dispatch(sendConnectionReq({ status: "interested", id: user._id }))
+  }
+
+  const handleIgnored = () => {
+    dispatch(sendConnectionReq({ status: "ignored", id: user._id }))
+  }
   return (
     <motion.article
       layout="position"
@@ -194,8 +244,8 @@ const MotionCard = ({ user, index, cards, setCards }) => {
             boxShadow: boxShadow,
             transition: "box-shadow 0.15s ease-out",
           }}
-          onInterested = {() => swipeCard("right")}
-          onIgnore = {() => swipeCard("left")}
+          onInterested={() => swipeCard("right")}
+          onIgnore={() => swipeCard("left")}
         />
       </motion.div>
     </motion.article>

@@ -9,7 +9,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink } from "react-router";
 
-export const ProfileMenu = () => {
+export const ProfileMenu = ({ handleSignout }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -31,25 +31,25 @@ export const ProfileMenu = () => {
         alignOffset={-6}
       >
         <NavLink to='/profile'>
-        {({isActive})=>{
-          return <DropdownMenuItem className={`${isActive && "active-bar"} text-md capitalize tracking-wide cursor-pointer dropdown-item px-3`}>
-            <UserIcon className="size-5" />
-            Profile
-          </DropdownMenuItem>
-        }}
-          
+          {({ isActive }) => {
+            return <DropdownMenuItem className={`${isActive && "active-bar"} text-md capitalize tracking-wide cursor-pointer dropdown-item px-3`}>
+              <UserIcon className="size-5" />
+              Profile
+            </DropdownMenuItem>
+          }}
+
         </NavLink>
 
         <NavLink to="/settings">
-         {({isActive})=>{
-          return  <DropdownMenuItem className={`${isActive && "active-bar"} text-md capitalize tracking-wide cursor-pointer dropdown-item px-3`}>
-            <SettingsIcon className="size-5" />
-            Settings
-          </DropdownMenuItem>
-         }}
+          {({ isActive }) => {
+            return <DropdownMenuItem className={`${isActive && "active-bar"} text-md capitalize tracking-wide cursor-pointer dropdown-item px-3`}>
+              <SettingsIcon className="size-5" />
+              Settings
+            </DropdownMenuItem>
+          }}
         </NavLink>
 
-        <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
+        <DropdownMenuItem onClick={handleSignout} className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
           <LogOutIcon className="size-5" />
           sign out
         </DropdownMenuItem>

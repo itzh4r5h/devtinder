@@ -10,14 +10,16 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileMenu } from "./ProfileMenu";
-import { Link, NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { motion } from "motion/react";
+import { useDispatch } from "react-redux";
+import { signout } from "@/store/thunks/authThunk";
 
 const NavLi = ({ Icon, name }) => {
   const location = useLocation();
   const activeRoute = location.pathname;
   const param = activeRoute.split("/")[2];
-  const reqStatus = param === "received" ? param : "received";
+  const reqStatus = param === "received" || param === 'sent' ? param : "received";
 
   return (
     <NavLink
@@ -61,6 +63,15 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   const forNav = `${isLoggedIn && "hidden"} md:flex gap-x-5 items-center`;
   const location = useLocation();
   const activeRoute = location.pathname;
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const handleSignout = () => {
+    dispatch(signout())
+    setTimeout(() => {
+      navigate('/signin', { replace: true })
+    }, 100)
+  }
+
 
   const linksAfterSignin = [
     {
@@ -77,15 +88,15 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
     },
     ...(forDrawer
       ? [
-          {
-            name: "profile",
-            icon: UserIcon,
-          },
-          {
-            name: "settings",
-            icon: SettingsIcon,
-          },
-        ]
+        {
+          name: "profile",
+          icon: UserIcon,
+        },
+        {
+          name: "settings",
+          icon: SettingsIcon,
+        },
+      ]
       : []),
   ];
 
@@ -117,6 +128,7 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
 
       {isLoggedIn && forDrawer && (
         <Button
+          onClick={handleSignout}
           variant="outline"
           size="lg"
           className="button-bg font-bold text-lg cursor-pointer capitalize w-ful mt-auto"
@@ -125,7 +137,7 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
         </Button>
       )}
 
-      {isLoggedIn && !forDrawer && <ProfileMenu />}
+      {isLoggedIn && !forDrawer && <ProfileMenu handleSignout={handleSignout} />}
     </ul>
   );
 };

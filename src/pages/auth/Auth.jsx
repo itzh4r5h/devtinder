@@ -7,16 +7,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { LeftContent } from "./LeftContent";
 import { Tabs } from "../../components/Tabs";
 import { Form } from "./Form";
 import { motion } from "motion/react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const Auth = () => {
+  const { isLoggedIn } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.user)
+  const navigate = useNavigate()
   const location = useLocation();
   const activeRoute = location.pathname;
-   const tabs = [
+  const tabs = [
     {
       name: "sign in",
       Icon: LogIn,
@@ -29,13 +34,30 @@ export const Auth = () => {
     },
   ];
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      switch (activeRoute) {
+        case "/signup":
+          navigate("/profile", { replace: true })
+          break;
+        case "/signin":
+          if (user.profileCompletionCount < 100) {
+            navigate("/profile", { replace: true })
+          } else {
+            navigate("/feed", { replace: true })
+          }
+          break;
+      }
+    }
+  }, [isLoggedIn, activeRoute, navigate, user?.profileCompletionCount])
+
   return (
     <section className="flex flex-wrap h-full">
       <LeftContent />
 
       <div className="flex px-0 py-5 sm:p-12 md:py-5 md:px-0 lg:p-12 justify-center items-center flex-1">
         <Card className="max-w-md card rounded-2xl border border-white/10 p-6 gap-5 w-full">
-          <Tabs activeRoute={activeRoute} tabs={tabs}/>
+          <Tabs activeRoute={activeRoute} tabs={tabs} />
           <CardHeader className="text-center p-0 items-center gap-2">
             <div className="size-12 rounded-xl bg-neutral-800 border-white/10 border border-solid flex justify-center items-center">
               <Terminal strokeWidth={2.5} className="size-6 active-icon" />

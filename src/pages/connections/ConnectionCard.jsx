@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import {
   EllipsisVertical,
   MessageSquareMore,
@@ -15,12 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
-import { NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 
-export const ConnecitonCard = ({ user }) => {
+export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
 
-  const isActive = pathname === `/connections/${user._id}`;
+  const isActive = pathname === `/connections/${connection.connectionId}`;
 
   return (
     <motion.div
@@ -43,7 +43,7 @@ export const ConnecitonCard = ({ user }) => {
       <CardContent className="flex p-0 gap-5 text-foreground items-center relative z-12">
         {/* // for now use user._id instead of connection id later replace it with connection id */}
         <NavLink
-          to={`/connections/${user._id}`}
+          to={`/connections/${connection.connectionId}`}
           className="flex gap-5 items-center flex-1"
         >
           <Button
@@ -52,16 +52,16 @@ export const ConnecitonCard = ({ user }) => {
             className="rounded-full cursor-pointer w-fit"
           >
             <Avatar className="size-14">
-              <AvatarImage src={user.imageUrl} alt={user.name} />
+              <AvatarImage src={connection.user.profilePic.url} alt={connection.user.name} />
               {/* to get two characters like from "john doe" it will be - "jd" */}
               <AvatarFallback>
-                {user.name.match(/\b\w/g).join("")}
+                {connection.user.name.match(/\b\w/g).join("")}
               </AvatarFallback>
             </Avatar>
           </Button>
 
           <div className="flex flex-col justify-center flex-1 cursor-pointer">
-            <h3 className="text-xl text-ellipsis line-clamp-1">{user.name}</h3>
+            <h3 className="text-xl text-ellipsis line-clamp-1 capitalize">{connection.user.name}</h3>
             <p className="text-muted-foreground text-ellipsis line-clamp-1 text-base">
               here comes the last message it it exists...
             </p>
@@ -81,11 +81,13 @@ export const ConnecitonCard = ({ user }) => {
             align="start"
             side="left"
           >
-            <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
-              <UserIcon className="size-5" />
-              view profile
-            </DropdownMenuItem>
 
+            <Link to={`/connections/profile/${connection.user._id}`}>
+              <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
+                <UserIcon className="size-5" />
+                view profile
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
               <MessageSquareMore className="size-5" />
               clear chat
