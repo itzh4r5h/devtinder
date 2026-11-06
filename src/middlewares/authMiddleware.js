@@ -16,23 +16,16 @@ export const authMiddleware = async ({ request }) => {
   const { isLoggedIn } = store.getState().auth;
   const { user } = store.getState().user;
 
-  if (!isConnectionsReceived && user.isProfileCompleted) {
+  if (isLoggedIn && (!isConnectionsReceived && user.isProfileCompleted)) {
     await store.dispatch(getConnections())
   }
 
-  const { connectionsData } = store.getState().connections
   const url = new URL(request.url);
   const pathname = url.pathname;
   if (isLoggedIn && user?.profileCompletionCount < 100 && pathname !== '/profile') {
     toast.info("please complete your profile first")
     throw redirect('/profile')
   }
-
-  const connectionId = request.url.split("/")[4];
-  const userId = request.url.split("/")[5];
-
-  const connectionIds = connectionsData.map((conn) => conn.connectionId);
-  const connectionUserIds = connectionsData.map((conn) => conn.user._id)
 
   const { signin, signup, feed, connections, profile, settings } = routes;
 
@@ -52,6 +45,14 @@ export const authMiddleware = async ({ request }) => {
   const isAllowed = allowedRoutes.some((route) => {
     let modifiedRoute = route;
     if (isLoggedIn) {
+      const { connectionsData } = store.getState().connections
+      const connectionId = request.url.split("/")[4];
+      const userId = request.url.split("/")[5];
+
+      const connectionIds = connectionsData.map((conn) => conn.connectionId);
+      const connectionUserIds = connectionsData.map((conn) => conn.user._id)
+
+
       const isConnectionProfileRoute = pathname.startsWith("/connections/profile");
       if (isConnectionProfileRoute && connectionUserIds.includes(userId)) {
         modifiedRoute += `/profile/${userId}`;
