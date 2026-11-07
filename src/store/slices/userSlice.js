@@ -20,9 +20,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     buildCases(builder, getUser, {
-      pending: (state) => {
-        state.user = null
-      },
       fulfilled: (state, action) => {
         state.user = action.payload
       },
