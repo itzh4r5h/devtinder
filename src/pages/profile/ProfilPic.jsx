@@ -37,7 +37,7 @@ export const ProfilPic = ({ user, uploaded, uploading, isConnectionProfileRoute 
       URL.revokeObjectURL(picUrl)
     }
 
-  }, [selectedPic, user.profilePic.url])
+  }, [selectedPic, user?.profilePic.url])
 
   useEffect(() => {
     if (uploaded) {
@@ -50,8 +50,8 @@ export const ProfilPic = ({ user, uploaded, uploading, isConnectionProfileRoute 
   }
   return (
     <Avatar className="size-80 relative">
-      <AvatarImage src={previewUrl || user.profilePic.url} alt="LR" />
-      <AvatarFallback className="text-9xl font-bold">{user.name[0].toUpperCase()}</AvatarFallback>
+      <AvatarImage src={previewUrl || user?.profilePic.url} alt="LR" />
+      <AvatarFallback className="text-9xl font-bold">{user?.name[0].toUpperCase()}</AvatarFallback>
       {!isConnectionProfileRoute && <>
         {previewUrl && !uploading ? <div className="absolute -right-12 bottom-0 flex gap-4 items-center text-foreground"  >
           <Button

@@ -84,13 +84,13 @@ export const EditProfile = () => {
 
   const { reset, register, control, handleSubmit, formState: { errors } } = useForm({
     resolver: joiResolver(schema), reValidateMode: 'onSubmit', defaultValues: {
-      name: user.name,
+      name: user?.name,
       gender: user?.gender || 'male',
       age: user?.age || '',
       role: user?.role || '',
       experience: user?.experience || "intermediate",
       description: user?.description || '',
-      tags: user.tags,
+      tags: user?.tags,
       socials: {
         github: user?.socials?.github || '',
         linkedin: user?.socials?.linkedin || '',
@@ -109,13 +109,13 @@ export const EditProfile = () => {
   useEffect(() => {
     if (open) {
       reset({
-        name: user.name,
+        name: user?.name,
         gender: user?.gender || 'male',
         age: user?.age || '',
         role: user?.role || '',
         experience: user?.experience || "intermediate",
         description: user?.description || '',
-        tags: user.tags,
+        tags: user?.tags,
         socials: {
           github: user?.socials?.github || '',
           linkedin: user?.socials?.linkedin || '',

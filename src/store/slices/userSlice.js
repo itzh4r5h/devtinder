@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buildCases } from "../handlers";
 import { getUser, updateProfile, updateProfilePic } from "../thunks/userThunk";
+import { signout } from "../thunks/authThunk";
 
 const userSlice = createSlice({
   name: 'user',
@@ -49,6 +50,12 @@ const userSlice = createSlice({
         state.uploading = false
       }
     })
+    buildCases(builder, signout, {
+      fulfilled: (state) => {
+        state.user = null
+      },
+    })
+
   }
 })
 

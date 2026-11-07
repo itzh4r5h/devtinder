@@ -65,11 +65,9 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   const activeRoute = location.pathname;
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const handleSignout = () => {
-    dispatch(signout())
-    setTimeout(() => {
-      navigate('/signin', { replace: true })
-    }, 100)
+  const handleSignout = async () => {
+    await dispatch(signout())
+    navigate('/signin', { replace: true })
   }
 
 

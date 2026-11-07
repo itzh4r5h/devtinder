@@ -1,6 +1,6 @@
 import { httpReq } from "@/api/httpReq";
 import { asyncThunkHandler } from "../handlers";
-import { clearUser, setUser } from "../slices/userSlice";
+import { setUser } from "../slices/userSlice";
 
 export const signup = asyncThunkHandler('auth/signup', async (userInfo, dispatch) => {
   const res = await httpReq.post('/auth/signup', userInfo)
@@ -22,9 +22,8 @@ export const signin = asyncThunkHandler('auth/signin', async (userInfo, dispatch
   return { message: data.message }
 })
 
-export const signout = asyncThunkHandler('auth/signout', async (_, dispatch) => {
+export const signout = asyncThunkHandler('auth/signout', async () => {
   const res = await httpReq.post('/auth/signout')
   const data = res.data
-  dispatch(clearUser())
   return { message: data.message }
 })

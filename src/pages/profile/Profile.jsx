@@ -21,13 +21,13 @@ export const Profile = () => {
   return (
     <section className="flex-1 flex flex-col items-center justify-center gap-5 py-5">
 
-      {!isConnectionProfileRoute && <ProfileCompletionProgress completionRate={user.profileCompletionCount} />}
+      {!isConnectionProfileRoute && <ProfileCompletionProgress completionRate={user?.profileCompletionCount} />}
 
       <div className="flex flex-wrap md:grid md:grid-cols-[4fr_8fr] items-center justify-center gap-5 w-full h-full flex-1">
         <Card className="card border border-white/10 rounded-3xl p-4 w-full h-full">
           <CardContent className="flex flex-col gap-5 p-0 justify-center items-center h-full">
             <h1 className="capitalize text-foreground text-3xl tracking-wide line-clamp-1 text-ellipsis">
-              {user.name}
+              {user?.name}
             </h1>
             <ProfilPic uploading={uploading} uploaded={uploaded} user={user} isConnectionProfileRoute={isConnectionProfileRoute} />
 
@@ -43,7 +43,7 @@ export const Profile = () => {
               <div className="flex gap-5 md:gap-10 items-center flex-wrap">
                 <Info title="role" desc={user?.role || "---"} />
                 <Info title="experience" desc={user?.experience || "---"} />
-                <Info title="connections" desc={user.connections} />
+                <Info title="connections" desc={user?.connections} />
               </div>
 
               <div className="flex-1 space-y-1">
@@ -61,7 +61,7 @@ export const Profile = () => {
                 </h4>
 
                 <div className="flex flex-wrap gap-2">
-                  {user.tags.length > 0 ? user.tags.map((tag, index) => {
+                  {user?.tags.length > 0 ? user?.tags.map((tag, index) => {
                     return (
                       <Badge
                         key={tag.toLowerCase() + index}
@@ -82,7 +82,7 @@ export const Profile = () => {
                 <Info title="age" desc={user?.age || "---"} />
                 <Info title="gender" desc={user?.gender || "---"} />
                 <span className="col-span-2">
-                  <Info title="joined on" desc={formatDate(user.createdAt)} />
+                  <Info title="joined on" desc={formatDate(user?.createdAt)} />
                 </span>
               </div>
 
@@ -93,7 +93,7 @@ export const Profile = () => {
                 </h4>
                 {user?.socials ?
                   <div className="flex items-center gap-6 text-foreground">
-                    <a href={`https://github.com/${user.socials.github}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://github.com/${user?.socials.github}`} target="_blank" rel="noopener noreferrer">
                       <Button
                         variant="outline"
                         className="button-bg cursor-pointer rounded-full size-10"
@@ -102,7 +102,7 @@ export const Profile = () => {
                       </Button>
                     </a>
 
-                    <a href={`https://linkedin.com/in/${user.socials.linkedin}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://linkedin.com/in/${user?.socials.linkedin}`} target="_blank" rel="noopener noreferrer">
                       <Button
                         variant="outline"
                         className="button-bg cursor-pointer rounded-full size-10"
@@ -111,7 +111,7 @@ export const Profile = () => {
                       </Button>
                     </a>
 
-                    <a href={`https://x.com/${user.socials.x}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://x.com/${user?.socials.x}`} target="_blank" rel="noopener noreferrer">
                       <Button
                         variant="outline"
                         className="button-bg cursor-pointer rounded-full size-10"

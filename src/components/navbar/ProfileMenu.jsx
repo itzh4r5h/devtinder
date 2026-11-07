@@ -8,8 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink } from "react-router";
+import { useSelector } from "react-redux";
 
 export const ProfileMenu = ({ handleSignout }) => {
+  const { user } = useSelector(state => state.user)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -20,8 +22,8 @@ export const ProfileMenu = ({ handleSignout }) => {
             className="rounded-full cursor-pointer"
           >
             <Avatar size="lg">
-              <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-              <AvatarFallback>LR</AvatarFallback>
+              <AvatarImage src={user?.profilePic.url} alt={user?.name} />
+              <AvatarFallback>{user?.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
           </Button>
         }

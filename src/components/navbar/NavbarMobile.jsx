@@ -7,15 +7,16 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
-import { Menu, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "../Logo";
 import { NavLinks } from "./NavLinks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSelector } from "react-redux";
 
-export const NavbarMobile = ({ isLoggedIn,direction="right" }) => {
+export const NavbarMobile = ({ isLoggedIn, direction = "right" }) => {
   const [open, setOpen] = useState(false);
-
+  const { user } = useSelector(state => state.user)
   return (
     <Drawer open={open} onOpenChange={setOpen} swipeDirection={direction}>
       <DrawerTrigger
@@ -26,8 +27,8 @@ export const NavbarMobile = ({ isLoggedIn,direction="right" }) => {
             className="rounded-full cursor-pointer"
           >
             <Avatar size="lg">
-              <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-              <AvatarFallback>LR</AvatarFallback>
+              <AvatarImage src={user?.profilePic.url} alt={user?.name} />
+              <AvatarFallback>{user?.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
           </Button>
         }
@@ -36,7 +37,7 @@ export const NavbarMobile = ({ isLoggedIn,direction="right" }) => {
       <DrawerContent className="card border-l border-border text-foreground">
         {/* header begins */}
         <DrawerHeader className="flex flex-row items-center justify-between">
-          <Logo/>
+          <Logo />
           <DrawerClose
             render={
               <Button variant="ghost" className="px-0">
