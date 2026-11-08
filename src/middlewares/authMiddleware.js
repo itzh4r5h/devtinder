@@ -1,76 +1,30 @@
-import { routes } from "@/constants/routes";
-import { store } from "@/store/store";
-import { checkIsUserLoggedIn } from "@/store/thunks/authThunk";
-import { getConnections } from "@/store/thunks/connectionThunk";
-import { redirect } from "react-router";
-import { toast } from "react-toastify";
+import { getMatchedRoute } from "@/lib/utils";
+import { authentication } from "./authentication";
+import { authorization } from "./authorization";
+import { resourceValidation } from "./resourceValidation";
 
 export const authMiddleware = async ({ request }) => {
-  const { isAuthChecked } = store.getState().auth
-  const { isConnectionsReceived } = store.getState().connections
+  const isLoggedIn = await authentication();
 
-  if (!isAuthChecked) {
-    await store.dispatch(checkIsUserLoggedIn("auth_check"))
+  const pathname = new URL(request.url).pathname;
+
+  // Match only once
+  const matchedRoute = getMatchedRoute(pathname);
+
+  if (!matchedRoute) {
+    throw new Response("Not Found", { status: 404 });
   }
 
-  const { isLoggedIn } = store.getState().auth;
-  const { user } = store.getState().user;
-
-  if (isLoggedIn && (!isConnectionsReceived && user.isProfileCompleted)) {
-    await store.dispatch(getConnections())
+  // Authorization
+  if (!authorization(matchedRoute, isLoggedIn)) {
+    throw new Response("Not Found", { status: 404 });
   }
 
-  const url = new URL(request.url);
-  const pathname = url.pathname;
-  if (isLoggedIn && user?.profileCompletionCount < 100 && pathname !== '/profile') {
-    toast.info("please complete your profile first")
-    throw redirect('/profile')
-  }
-
-  const { signin, signup, feed, connections, profile, settings } = routes;
-
-  const allowedRoutes = [
-    "/",
-    ...(!isLoggedIn ? [signup, signin] :
-      [feed,
-        "/requests/received",
-        "/requests/sent",
-        connections,
-        profile,
-        settings,
-      ]
-    )
-  ];
-
-  const isAllowed = allowedRoutes.some((route) => {
-    let modifiedRoute = route;
-    if (isLoggedIn) {
-      const { connectionsData } = store.getState().connections
-      const connectionId = request.url.split("/")[4];
-      const userId = request.url.split("/")[5];
-
-      const connectionIds = connectionsData.map((conn) => conn.connectionId);
-      const connectionUserIds = connectionsData.map((conn) => conn.user._id)
-
-
-      const isConnectionProfileRoute = pathname.startsWith("/connections/profile");
-      if (isConnectionProfileRoute && connectionUserIds.includes(userId)) {
-        modifiedRoute += `/profile/${userId}`;
-      }
-
-      const isConnectionRoute = pathname.startsWith("/connections");
-      if (isConnectionRoute && connectionIds.includes(connectionId)) {
-        modifiedRoute += `/${connectionId}`;
-      }
-    }
-    return pathname === modifiedRoute;
-  });
-
-  if (!isAllowed) {
-    throw new Response("Not Found", {
-      status: 404,
-    });
+  // Resource validation
+  const isValidResource = await resourceValidation(matchedRoute)
+  if (isLoggedIn && !isValidResource) {
+    throw new Response("Not Found", { status: 404 });
   }
 
   return null;
-};
+}

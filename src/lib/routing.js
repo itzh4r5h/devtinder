@@ -1,5 +1,4 @@
 import App from "@/App";
-import { routes } from "@/constants/routes";
 import { connectionLoader, getConnectionProfileData } from "@/loaders/connectionLoader";
 import { profileLoader } from "@/loaders/profileLoader";
 import { requestLoader } from "@/loaders/requestsLoader";
@@ -14,12 +13,10 @@ import { Requests } from "@/pages/requests/Requests";
 import { AccountSettings } from "@/pages/settings/AccountSettings";
 import { store } from "@/store/store";
 import { getUsers } from "@/store/thunks/feedThunk";
-
 import { createBrowserRouter } from "react-router";
 
-const { signin, signup, feed, requests, connections, connection_profile, connections_with_id, profile, settings } = routes
 
-export const router = createBrowserRouter([
+export const routes = [
   {
     path: "/",
     Component: App,
@@ -29,48 +26,83 @@ export const router = createBrowserRouter([
       {
         index: true,
         Component: Home,
+        handle: {
+          access: "public"
+        }
       },
       {
-        path: signin,
+        path: '/signin',
         Component: Auth,
+        handle: {
+          access: "guest"
+        }
       },
       {
-        path: signup,
+        path: '/signup',
         Component: Auth,
+        handle: {
+          access: "guest"
+        }
       },
       {
-        path: feed,
+        path: '/feed',
         Component: Feed,
-        loader: () => store.dispatch(getUsers())
+        loader: () => store.dispatch(getUsers()),
+        handle: {
+          access: "protected"
+        }
       },
       {
-        path: requests,
+        path: '/requests/:status',
         Component: Requests,
-        loader: requestLoader
+        loader: requestLoader,
+        handle: {
+          access: "protected",
+        }
       },
       {
-        path: connections,
+        path: '/connections',
         Component: Connections,
-        loader: connectionLoader
+        loader: connectionLoader,
+        handle: {
+          access: "protected"
+        }
       },
       {
-        path: connection_profile,
+        path: '/connections/profile/:userId',
         Component: Profile,
-        loader: getConnectionProfileData
+        loader: getConnectionProfileData,
+        handle: {
+          access: "protected",
+          resource: 'connection-profile'
+        }
       },
       {
-        path: connections_with_id,
+        path: '/connections/:connectionId',
         Component: Connections,
+        handle: {
+          access: "protected",
+          resource: 'connection'
+        }
       },
       {
-        path: profile,
+        path: '/profile',
         Component: Profile,
-        loader: profileLoader
+        loader: profileLoader,
+        handle: {
+          access: "protected"
+        }
       },
       {
-        path: settings,
+        path: '/settings',
         Component: AccountSettings,
+        handle: {
+          access: "protected"
+        }
       },
     ],
   },
-]);
+];
+
+
+export const router = createBrowserRouter(routes)

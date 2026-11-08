@@ -1,5 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
+import { matchRoutes } from "react-router";
+import { routes } from "./routing";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -31,4 +33,13 @@ export const getFirstErrorMessage = (errors) => {
   }
 
   return undefined;
+};
+
+
+export const getMatchedRoute = (pathname) => {
+  const matches = matchRoutes(routes, pathname);
+
+  if (!matches) return null
+
+  return matches[matches.length - 1];
 };

@@ -11,7 +11,6 @@ const connectionSlice = createSlice({
   extraReducers: (builder) => {
     buildCases(builder, getConnections, {
       pending: (state) => {
-        state.connectionsData = []
         state.isConnectionsReceived = false
       },
       fulfilled: (state, action) => {
