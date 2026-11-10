@@ -11,5 +11,5 @@ export const getConnectionProfileData = async ({ request }) => {
   const url = new URL(request.url);
   const userId = url.pathname.split("/")[3]
   const userData = connectionsData.filter((conn) => conn.user._id === userId)[0].user
-  return userData
+  return { connectionProfileData: userData }
 }
