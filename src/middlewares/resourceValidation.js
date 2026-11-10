@@ -13,7 +13,6 @@ export const resourceValidation = async (matchedRoute) => {
   }
 
   const { connectionsData } = store.getState().connections;
-  console.log(connectionsData)
 
   if (resource === "connection") {
     return connectionsData.some(
