@@ -1,7 +1,7 @@
 import { store } from "@/store/store";
 import { getReceviedRequests, getSentRequests } from "@/store/thunks/requestsThunk";
 
-export const requestLoader = async ({ params }) => {
+export const requestLoader = ({ params }) => {
   const allowedStatuses = ["received", "sent"];
 
   if (!allowedStatuses.includes(params.status)) {
@@ -10,13 +10,15 @@ export const requestLoader = async ({ params }) => {
     });
   }
   if (params.status === 'received') {
-    await store.dispatch(getReceviedRequests())
-    return
+    return {
+      requestsPromise: store.dispatch(getReceviedRequests()).unwrap()
+    }
   }
 
   if (params.status === 'sent') {
-    await store.dispatch(getSentRequests())
-    return
+    return {
+      requestsPromise: store.dispatch(getSentRequests()).unwrap()
+    }
   }
 
   return null

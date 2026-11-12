@@ -1,9 +1,10 @@
 import { store } from "@/store/store";
 import { getConnections } from "@/store/thunks/connectionThunk";
 
-export const connectionLoader = async () => {
-  await store.dispatch(getConnections())
-  return null
+export const connectionLoader = () => {
+  return {
+    connectionPromise: store.dispatch(getConnections()).unwrap()
+  }
 }
 
 export const getConnectionProfileData = async ({ request }) => {

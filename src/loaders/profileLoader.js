@@ -3,6 +3,6 @@ import { getUser } from "@/store/thunks/userThunk";
 
 export const profileLoader = () => {
   return {
-    userPromise: store.dispatch(getUser())
+    userPromise: store.dispatch(getUser()).unwrap()
   }
 }  
