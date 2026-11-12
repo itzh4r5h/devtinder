@@ -6,7 +6,7 @@ import {
   useAnimationControls,
 } from "motion/react";
 import { UserCard } from "../UserCard";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
 import { LoadingScreen } from "./loading/LoadingScreen";
@@ -36,6 +36,18 @@ export const SwipeCards = ({ users }) => {
       setCards(users)
     }
   };
+
+
+
+  useEffect(() => {
+    if (activeRoute === '/feed') {
+      const fetchUsers = async () => {
+        const result = await dispatch(getUsers())
+        setCards(result.payload.users)
+      }
+      fetchUsers()
+    }
+  }, [activeRoute])
 
 
   return (
