@@ -13,7 +13,9 @@ const app = express();
 // using essential middelwares
 app.use(cors({
   origin: process.env.FRONTEND_URL,
-  credentials: true
+  credentials: true,
+  // lets the frontend read the cooldown on 429 responses from the verification routes
+  exposedHeaders: ['Retry-After'],
 }))
 app.use(express.json())
 app.use(cookieParser())

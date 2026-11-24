@@ -1,6 +1,6 @@
 import { CustomError } from "../middlewares/error-middleware.js";
 import { User } from "../models/user-model.js";
-import { signinValidator, signupValidator, verifyEmailValidator } from "../joi-validators/auth-validators.js";
+import { resendVerificationValidator, signinValidator, signupValidator, verifyEmailValidator } from "../joi-validators/auth-validators.js";
 import { profileCompletion } from "../utils/profileCompletion.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { emailVerification } from "../email-templates/email-verification.js";
@@ -222,5 +222,60 @@ export const verifyEmail = async (req, res) => {
     success: true,
     message: "email verified successfully",
     user: userData
+  });
+};
+
+export const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const errorMessage = resendVerificationValidator({ email });
+
+  if (errorMessage) {
+    throw new CustomError(errorMessage, 400);
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const { token, tokenHash } = generateVerificationToken();
+  const now = Date.now();
+
+  // rate limit: only update if the user is unverified AND the cooldown has passed.
+  // doing the check and the update in one query means two requests sent at the
+  // same moment can't both get through
+  const user = await User.findOneAndUpdate(
+    {
+      email: normalizedEmail,
+      isVerified: false,
+      ...cooldownPassedFilter(now),
+    },
+    {
+      verificationTokenHash: tokenHash,
+      tokenExpiration: new Date(now + FIFTEEN_MINS),
+      lastVerificationSent: new Date(now),
+    },
+
+    { returnDocument: "after" },
+  );
+
+  if (!user) {
+    // update didn't happen, find out why
+    const existingUser = await User.findOne({ email: normalizedEmail });
+
+    if (!existingUser) {
+      throw new CustomError("account not found, please sign up", 404);
+    }
+
+    if (existingUser.isVerified) {
+      throw new CustomError("email already verified, please sign in", 400);
+    }
+
+    throwCooldownError(existingUser.lastVerificationSent, now, res);
+  }
+
+  await sendVerificationEmail(user, token);
+
+  res.status(200).json({
+    success: true,
+    message: "verification link sent, check your email!",
+    retryAfter: RESEND_COOLDOWN / 1000,
   });
 };

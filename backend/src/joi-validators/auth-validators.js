@@ -64,3 +64,15 @@ export const verifyEmailValidator = (data) => {
   const errorMessage = getOnlyErrorMessage(error);
   return errorMessage;
 };
+
+export const resendVerificationValidator = (data) => {
+
+  const schema = Joi.object({
+    email: Joi.string().trim().lowercase().email().required(),
+  });
+
+  const { error } = schema.validate(data);
+
+  const errorMessage = getOnlyErrorMessage(error);
+  return errorMessage;
+};
