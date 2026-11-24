@@ -1,6 +1,6 @@
 import { CustomError } from "../middlewares/error-middleware.js";
 import { User } from "../models/user-model.js";
-import { signinValidator, signupValidator } from "../joi-validators/auth-validators.js";
+import { signinValidator, signupValidator, verifyEmailValidator } from "../joi-validators/auth-validators.js";
 import { profileCompletion } from "../utils/profileCompletion.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { emailVerification } from "../email-templates/email-verification.js";
@@ -181,3 +181,46 @@ export const signout = async (req, res) => {
     message: 'signed out successfully'
   })
 }
+
+export const verifyEmail = async (req, res) => {
+  const { token } = req.body;
+
+  const errorMessage = verifyEmailValidator({ token });
+
+  if (errorMessage) {
+    throw new CustomError(errorMessage, 400);
+  }
+
+  // only the hash is stored in db, so hash the token from the link to look the user up
+  const tokenHash = crypto.createHash("sha256").update(token.trim()).digest("hex");
+
+  const user = await User.findOne({ verificationTokenHash: tokenHash });
+
+  if (!user) {
+    throw new CustomError("invalid or already used verification link", 400);
+  }
+
+  if (!user.tokenExpiration || user.tokenExpiration.getTime() < Date.now()) {
+    throw new CustomError("verification link expired, please request a new one", 400);
+  }
+
+  // mark as verified and clear the token fields, unsetting unverifiedExpiresAt
+  // also keeps the user safe from the ttl index
+  user.isVerified = true;
+  user.verificationTokenHash = undefined;
+  user.tokenExpiration = undefined;
+  user.unverifiedExpiresAt = undefined;
+  await user.save();
+
+  const userData = removePasswordFromUser(user);
+  const { profileCompletionCount } = profileCompletion(userData)
+  userData.profileCompletionCount = profileCompletionCount
+
+  // verifying the email logs the user in
+  setTokenInCookie(user, res);
+  res.status(200).json({
+    success: true,
+    message: "email verified successfully",
+    user: userData
+  });
+};

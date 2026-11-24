@@ -46,3 +46,21 @@ export const signinValidator = (data) => {
   const errorMessage = getOnlyErrorMessage(error);
   return errorMessage;
 };
+
+export const verifyEmailValidator = (data) => {
+
+  // token is 32 random bytes in hex, i.e. 64 hex characters
+  const schema = Joi.object({
+    token: Joi.string().trim().hex().length(64).required().messages({
+      "string.empty": "verification token is required",
+      "any.required": "verification token is required",
+      "string.hex": "invalid verification link",
+      "string.length": "invalid verification link",
+    }),
+  });
+
+  const { error } = schema.validate(data);
+
+  const errorMessage = getOnlyErrorMessage(error);
+  return errorMessage;
+};
