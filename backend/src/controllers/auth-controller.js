@@ -161,6 +161,11 @@ export const signin = async (req, res) => {
     throw new CustomError("invalid credentials", 401);
   }
 
+  // checked after the password so verification status isn't revealed without valid credentials
+  if (!user.isVerified) {
+    throw new CustomError("please verify your email first, check your inbox or request a new link", 403);
+  }
+
   const userData = removePasswordFromUser(user);
   const { profileCompletionCount } = profileCompletion(userData)
   userData.profileCompletionCount = profileCompletionCount
