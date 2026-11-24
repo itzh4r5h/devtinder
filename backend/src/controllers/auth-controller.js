@@ -26,16 +26,16 @@ const removePasswordFromUser = (user) => {
 };
 
 export const signup = async (req, res) => {
-  const { username, name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   // will get either error message or undefined
-  const errorMessage = signupValidator({ username, name, email, password });
+  const errorMessage = signupValidator({ name, email, password });
 
   if (errorMessage) {
     throw new CustomError(errorMessage, 400);
   }
 
-  const user = await User.create({ username, name, email, password });
+  const user = await User.create({ name, email, password });
 
   const userData = removePasswordFromUser(user);
   const { profileCompletionCount } = profileCompletion(userData)

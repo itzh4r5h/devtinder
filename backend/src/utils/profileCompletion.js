@@ -1,6 +1,5 @@
 export const profileCompletion = (user) => {
   const profileFields = [
-    'username',
     'name',
     'email',
     'profilePic',
