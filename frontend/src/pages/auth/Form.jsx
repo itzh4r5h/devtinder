@@ -1,9 +1,9 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { EyeOff, Flame, Lock, Mail, AtSign, User } from "lucide-react";
+import { EyeOff, Flame, Lock, Mail, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useMemo } from "react";
 import { authFormValidator } from "@/joi-validators/authFormValidator";
 import { useForm } from "react-hook-form";
@@ -19,12 +19,18 @@ export const Form = ({ activeRoute }) => {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: joiResolver(schema), reValidateMode: 'onSubmit' })
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const submitForm = (data) => {
+  const submitForm = async (data) => {
     switch (activeRoute) {
-      case '/signup':
-        dispatch(signup(data))
+      case '/signup': {
+        const result = await dispatch(signup(data))
+        // verification link was sent, show the "check your inbox" page
+        if (signup.fulfilled.match(result)) {
+          navigate('/resend-verification', { state: { email: data.email } })
+        }
         break;
+      }
       case '/signin':
         dispatch(signin(data))
         break;
@@ -42,25 +48,6 @@ export const Form = ({ activeRoute }) => {
       <FieldGroup>
         {activeRoute === "/signup" && (
           <>
-            <Field>
-              <FieldLabel
-                htmlFor="username"
-                className="text-foreground text-base"
-              >
-                Username
-              </FieldLabel>
-              <div className="relative">
-                <AtSign className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
-                <Input
-                  {...register("username", { required: true })}
-                  id="username"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="itzh4r5h"
-                  className="border-white/10 border-0 border-solid pl-9 text-foreground font-medium tracking-wide lowercase"
-                />
-              </div>
-            </Field>
             <Field>
               <FieldLabel htmlFor="name" className="text-foreground text-base">
                 Name
@@ -112,12 +99,20 @@ export const Form = ({ activeRoute }) => {
           </div>
         </Field>
         {activeRoute === "/signin" && (
-          <Link
-            to="/forgot-password"
-            className="text-secondary capitalize cursor-pointer font-medium text-sm leading-5 self-end tracking-wide"
-          >
-            forgot password ?
-          </Link>
+          <div className="flex items-center justify-between gap-4">
+            <Link
+              to="/resend-verification"
+              className="text-secondary capitalize cursor-pointer font-medium text-sm leading-5 tracking-wide"
+            >
+              verify email
+            </Link>
+            <Link
+              to="/forgot-password"
+              className="text-secondary capitalize cursor-pointer font-medium text-sm leading-5 tracking-wide"
+            >
+              forgot password ?
+            </Link>
+          </div>
         )}
         <Button
           type="submit"

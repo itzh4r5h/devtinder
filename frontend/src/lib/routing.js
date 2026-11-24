@@ -12,6 +12,9 @@ import { Profile } from "@/pages/profile/Profile";
 import { Requests } from "@/pages/requests/Requests";
 import { AccountSettings } from "@/pages/settings/AccountSettings";
 import { createBrowserRouter } from "react-router";
+import { verifyEmailLoader } from "@/loaders/verifyEmailLoader";
+import { VerifyEmail } from "@/pages/auth/VerifyEmail";
+import { ResendVerification } from "@/pages/auth/ResendVerification";
 
 
 export const routes = [
@@ -38,6 +41,22 @@ export const routes = [
       {
         path: '/signup',
         Component: Auth,
+        handle: {
+          access: "guest"
+        }
+      },
+      {
+        // opened from the link in the verification email
+        path: '/verify-email',
+        Component: VerifyEmail,
+        loader: verifyEmailLoader,
+        handle: {
+          access: "guest"
+        }
+      },
+      {
+        path: '/resend-verification',
+        Component: ResendVerification,
         handle: {
           access: "guest"
         }

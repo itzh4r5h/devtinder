@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 
 const { Schema } = mongoose;
 
+const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+
 const userSchema = new Schema(
   {
     name: {
@@ -14,15 +16,6 @@ const userSchema = new Schema(
       maxLength: [20, "name cannot exceed 20 characters"],
       trim: true,
       lowercase: true,
-    },
-    username: {
-      type: String,
-      required: [true, "username is required"],
-      minLength: [5, "username must be at least 5 characters"],
-      maxLength: [10, "username cannot exceed 10 characters"],
-      trim: true,
-      lowercase: true,
-      unique: [true, "username already exists"]
     },
     email: {
       type: String,
@@ -135,11 +128,46 @@ const userSchema = new Schema(
     isProfileCompleted: {
       type: Boolean,
       default: false,
-    }
+    },
+
+    // ---------- email verification ----------
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    // sha256 hash of the token sent in the email (raw token is never stored)
+    verificationTokenHash: {
+      type: String,
+      select: false,
+    },
+    // when the current verification token stops being valid
+    tokenExpiration: {
+      type: Date,
+    },
+    // when the last verification email was sent, used for rate limiting resends
+    lastVerificationSent: {
+      type: Date,
+    },
+    // deadline to verify the account; the TTL index below deletes the user
+    // once this date passes, but only while isVerified is false
+    unverifiedExpiresAt: {
+      type: Date,
+      default: () => new Date(Date.now() + SEVEN_DAYS),
+    },
   }
   ,
   {
     timestamps: true,
+  },
+);
+
+// TTL index: delete users who haven't verified their email by unverifiedExpiresAt.
+// partialFilterExpression keeps verified users out of the index, so they are never deleted.
+userSchema.index(
+  { unverifiedExpiresAt: 1 },
+  {
+    expireAfterSeconds: 0,
+    partialFilterExpression: { isVerified: false },
   },
 );
 

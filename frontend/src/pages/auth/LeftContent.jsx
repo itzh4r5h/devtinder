@@ -2,7 +2,8 @@ import { Atom, Braces, Cpu, Terminal, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { motion } from "motion/react";
 
-export const LeftContent = () => {
+// iconPositions lets a page move specific floating icons, e.g. { atom: "top-[12%] left-[30%]" }
+export const LeftContent = ({ iconPositions = {} }) => {
   return (
     <motion.div
       layout
@@ -14,7 +15,7 @@ export const LeftContent = () => {
       }}
       className="hidden md:flex relative bg-transparent md:py-5 md:px-0 lg:p-12 flex-col justify-center overflow-hidden flex-1"
     >
-      <Icons />
+      <Icons iconPositions={iconPositions} />
       {/* circle begin */}
       <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-72 bg-[radial-gradient(circle,oklch(0.627_0.265_303.9/.35),transparent_70%)] blur-2xl rounded-full absolute" />
       {/* circle end */}
@@ -52,37 +53,45 @@ export const LeftContent = () => {
   );
 };
 
-const Icons = () => {
+const Icons = ({ iconPositions }) => {
   const icons = [
     {
+      id: "atom",
       Icon: Atom,
-      boxCss: "top-[12%] left-[18%] size-14",
+      position: "top-[12%] left-[18%]",
+      size: "size-14",
       iconCss: "size-7 text-[oklch(0.696_0.17_162.48)]",
     },
     {
+      id: "cpu",
       Icon: Cpu,
-      boxCss: "md:top-[20%] lg:top-[28%] right-[16%] size-12",
+      position: "md:top-[20%] lg:top-[28%] right-[16%]",
+      size: "size-12",
       iconCss: "size-6 text-[oklch(0.769_0.188_70.08)]",
     },
     {
+      id: "terminal",
       Icon: Terminal,
-      boxCss: "bottom-[15%] left-[24%] size-12",
+      position: "bottom-[15%] left-[24%]",
+      size: "size-12",
       iconCss: "size-6 text-[oklch(0.696_0.17_162.48)]",
     },
     {
+      id: "braces",
       Icon: Braces,
-      boxCss: "md:bottom-[28%] lg:bottom-[32%] right-[22%] size-10",
+      position: "md:bottom-[28%] lg:bottom-[32%] right-[22%]",
+      size: "size-10",
       iconCss: "size-5 text-secondary",
     },
   ];
 
   return (
     <>
-      {icons.map(({ Icon, boxCss, iconCss }) => {
+      {icons.map(({ id, Icon, position, size, iconCss }) => {
         return (
           <div
-            key={iconCss}
-            className={`${boxCss} rounded-2xl bg-neutral-900/60 border-white/10 border border-solid flex absolute justify-center items-center cursor-pointer z-100`}
+            key={id}
+            className={`${iconPositions[id] ?? position} ${size} rounded-2xl bg-neutral-900/60 border-white/10 border border-solid flex absolute justify-center items-center cursor-pointer z-100`}
           >
             <Icon className={`${iconCss}`} />
           </div>
