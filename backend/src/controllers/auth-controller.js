@@ -2,6 +2,55 @@ import { CustomError } from "../middlewares/error-middleware.js";
 import { User } from "../models/user-model.js";
 import { signinValidator, signupValidator } from "../joi-validators/auth-validators.js";
 import { profileCompletion } from "../utils/profileCompletion.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import { emailVerification } from "../email-templates/email-verification.js";
+import crypto from "crypto";
+
+const FIFTEEN_MINS = 15 * 60 * 1000;
+const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+// minimum gap between two verification emails for the same account
+const RESEND_COOLDOWN = 60 * 1000;
+
+// creates a random token for the email link and returns it with its sha256 hash
+// only the hash is stored in db, the raw token goes in the email
+const generateVerificationToken = () => {
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  return { token, tokenHash };
+};
+
+// sends the verification email, throws CustomError if resend fails
+const sendVerificationEmail = async (user, token) => {
+  const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+  const resendUrl = `${process.env.FRONTEND_URL}/resend-verification`;
+
+  const error = await sendEmail({
+    from: "no-reply",
+    to: user.email,
+    subject: "Verify your DevTinder account",
+    htmlBody: emailVerification({ name: user.name, verificationUrl, resendUrl }),
+  });
+
+  if (error) {
+    throw new CustomError("failed to send verification email, please try again", 500);
+  }
+};
+
+// mongo filter that matches users whose cooldown has passed (or who never got an email)
+const cooldownPassedFilter = (now) => ({
+  $or: [
+    { lastVerificationSent: { $exists: false } },
+    { lastVerificationSent: { $lte: new Date(now - RESEND_COOLDOWN) } },
+  ],
+});
+
+// throws a 429 with how long the user has to wait, also sets the Retry-After header
+const throwCooldownError = (lastVerificationSent, now, res) => {
+  const waitMs = (lastVerificationSent?.getTime() ?? now) + RESEND_COOLDOWN - now;
+  const waitSecs = Math.max(1, Math.ceil(waitMs / 1000));
+  res.set("Retry-After", String(waitSecs));
+  throw new CustomError(`please wait ${waitSecs} seconds before requesting a new link`, 429);
+};
 
 const setTokenInCookie = (user, res) => {
   const token = user.generateJWT();
@@ -21,6 +70,7 @@ const setTokenInCookie = (user, res) => {
 const removePasswordFromUser = (user) => {
   const userData = user.toObject();
   delete userData.password;
+  delete userData.verificationTokenHash;
 
   return userData;
 };
@@ -35,17 +85,58 @@ export const signup = async (req, res) => {
     throw new CustomError(errorMessage, 400);
   }
 
-  const user = await User.create({ name, email, password });
+  let user = await User.findOne({ email });
 
-  const userData = removePasswordFromUser(user);
-  const { profileCompletionCount } = profileCompletion(userData)
-  userData.profileCompletionCount = profileCompletionCount
+  if (user?.isVerified) {
+    throw new CustomError("account already exists", 409);
+  }
 
-  setTokenInCookie(user, res);
+  const { token, tokenHash } = generateVerificationToken();
+  const now = Date.now();
+  const verificationFields = {
+    verificationTokenHash: tokenHash,
+    tokenExpiration: new Date(now + FIFTEEN_MINS),
+    lastVerificationSent: new Date(now),
+  };
+
+  if (user) {
+    // rate limit: claim the send slot first, in one query, so repeated or parallel
+    // signups can't send more than one email per cooldown (or change the password)
+    const claimed = await User.findOneAndUpdate(
+      { _id: user._id, isVerified: false, ...cooldownPassedFilter(now) },
+      { lastVerificationSent: new Date(now) },
+    );
+
+    if (!claimed) {
+      const latest = await User.findById(user._id);
+
+      if (latest?.isVerified) {
+        throw new CustomError("account already exists", 409);
+      }
+
+      throwCooldownError(latest?.lastVerificationSent, now, res);
+    }
+
+    // email exists but was never verified, so overwrite it with the new signup details
+    user.set({
+      name,
+      password, // re-hashed by the pre save hook
+      ...verificationFields,
+      unverifiedExpiresAt: new Date(now + SEVEN_DAYS),
+    });
+    await user.save();
+  } else {
+    user = await User.create({ name, email, password, ...verificationFields });
+  }
+
+  await sendVerificationEmail(user, token);
+
+  // no cookie here, the user gets logged in only after verifying the email
   res.status(201).json({
     success: true,
-    message: 'signed up successfully',
-    user: userData
+    message: 'verification link sent, check your email!',
+    // seconds until another email can be requested, lets the frontend show a countdown
+    retryAfter: RESEND_COOLDOWN / 1000,
   });
 };
 
