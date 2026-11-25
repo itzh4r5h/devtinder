@@ -65,19 +65,8 @@ export const verifyEmailValidator = (data) => {
   return errorMessage;
 };
 
-export const resendVerificationValidator = (data) => {
-
-  const schema = Joi.object({
-    email: Joi.string().trim().lowercase().email().required(),
-  });
-
-  const { error } = schema.validate(data);
-
-  const errorMessage = getOnlyErrorMessage(error);
-  return errorMessage;
-};
-
-export const forgotPasswordValidator = (data) => {
+// used by routes that only need an email, like resend verification and forgot password
+export const emailValidator = (data) => {
 
   const schema = Joi.object({
     email: Joi.string().trim().lowercase().email().required(),

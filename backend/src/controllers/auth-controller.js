@@ -1,6 +1,6 @@
 import { CustomError } from "../middlewares/error-middleware.js";
 import { User } from "../models/user-model.js";
-import { forgotPasswordValidator, resendVerificationValidator, resetPasswordValidator, signinValidator, signupValidator, verifyEmailValidator } from "../joi-validators/auth-validators.js";
+import { emailValidator, resetPasswordValidator, signinValidator, signupValidator, verifyEmailValidator } from "../joi-validators/auth-validators.js";
 import { profileCompletion } from "../utils/profileCompletion.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { emailVerification } from "../email-templates/email-verification.js";
@@ -257,7 +257,7 @@ export const verifyEmail = async (req, res) => {
 export const resendVerificationEmail = async (req, res) => {
   const { email } = req.body;
 
-  const errorMessage = resendVerificationValidator({ email });
+  const errorMessage = emailValidator({ email });
 
   if (errorMessage) {
     throw new CustomError(errorMessage, 400);
@@ -312,7 +312,7 @@ export const resendVerificationEmail = async (req, res) => {
 export const sendForgotPasswordOtp = async (req, res) => {
   const { email } = req.body;
 
-  const errorMessage = forgotPasswordValidator({ email });
+  const errorMessage = emailValidator({ email });
 
   if (errorMessage) {
     throw new CustomError(errorMessage, 400);
