@@ -7,6 +7,14 @@ const { Schema } = mongoose;
 
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
+const hideResetOtpFields = (doc, ret) => {
+  delete ret.resetPasswordOtpHash;
+  delete ret.resetPasswordOtpExpiration;
+  delete ret.resetPasswordOtpAttempts;
+  delete ret.lastResetOtpSent;
+  return ret;
+};
+
 const userSchema = new Schema(
   {
     name: {
@@ -154,10 +162,36 @@ const userSchema = new Schema(
       type: Date,
       default: () => new Date(Date.now() + SEVEN_DAYS),
     },
+
+    // ---------- forgot password ----------
+    // sha256 hash of the 6 character otp sent in the email (raw otp is never stored)
+    resetPasswordOtpHash: {
+      type: String,
+      select: false,
+    },
+    // when the current reset otp stops being valid
+    resetPasswordOtpExpiration: {
+      type: Date,
+      select: false,
+    },
+    // wrong otp attempts for the current otp, stops brute forcing it
+    resetPasswordOtpAttempts: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
+    // when the last reset otp email was sent, used for rate limiting
+    lastResetOtpSent: {
+      type: Date,
+      select: false,
+    },
   }
   ,
   {
     timestamps: true,
+    // never send the reset otp fields in any response, even if they were selected
+    toJSON: { transform: hideResetOtpFields },
+    toObject: { transform: hideResetOtpFields },
   },
 );
 

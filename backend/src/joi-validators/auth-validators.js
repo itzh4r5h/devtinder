@@ -76,3 +76,35 @@ export const resendVerificationValidator = (data) => {
   const errorMessage = getOnlyErrorMessage(error);
   return errorMessage;
 };
+
+export const forgotPasswordValidator = (data) => {
+
+  const schema = Joi.object({
+    email: Joi.string().trim().lowercase().email().required(),
+  });
+
+  const { error } = schema.validate(data);
+
+  const errorMessage = getOnlyErrorMessage(error);
+  return errorMessage;
+};
+
+export const resetPasswordValidator = (data) => {
+
+  const schema = Joi.object({
+    email: Joi.string().trim().lowercase().email().required(),
+    // otp is 6 letters/digits, case doesn't matter
+    otp: Joi.string().trim().alphanum().length(6).required().messages({
+      "string.empty": "otp is required",
+      "any.required": "otp is required",
+      "string.alphanum": "invalid otp",
+      "string.length": "otp must be 6 characters",
+    }),
+    ...passwordObj,
+  });
+
+  const { error } = schema.validate(data);
+
+  const errorMessage = getOnlyErrorMessage(error);
+  return errorMessage;
+};
