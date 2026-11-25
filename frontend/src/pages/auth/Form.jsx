@@ -1,6 +1,7 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { EyeOff, Flame, Lock, Mail, User } from "lucide-react";
+import { Flame, Mail, User } from "lucide-react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useMemo } from "react";
@@ -85,17 +86,10 @@ export const Form = ({ activeRoute }) => {
           <FieldLabel htmlFor="password" className="text-foreground text-base">
             Password
           </FieldLabel>
-          <div className="relative">
-            <Lock className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
-            <Input
-              {...register("password", { required: true })}
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              className="border-white/10 border-0 border-solid px-9 text-foreground"
-            />
-            <EyeOff className="top-1/2 -translate-y-1/2 size-4 text-muted-foreground absolute right-3" />
-          </div>
+          <PasswordInput
+            {...register("password", { required: true })}
+            id="password"
+          />
         </Field>
         {activeRoute === "/signin" && (
           <div className="flex items-center justify-between gap-4">
