@@ -15,6 +15,7 @@ import { createBrowserRouter } from "react-router";
 import { verifyEmailLoader } from "@/loaders/verifyEmailLoader";
 import { VerifyEmail } from "@/pages/auth/VerifyEmail";
 import { ResendVerification } from "@/pages/auth/ResendVerification";
+import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 
 
 export const routes = [
@@ -57,6 +58,13 @@ export const routes = [
       {
         path: '/resend-verification',
         Component: ResendVerification,
+        handle: {
+          access: "guest"
+        }
+      },
+      {
+        path: '/forgot-password',
+        Component: ForgotPassword,
         handle: {
           access: "guest"
         }

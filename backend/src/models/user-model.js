@@ -12,6 +12,7 @@ const hideResetOtpFields = (doc, ret) => {
   delete ret.resetPasswordOtpExpiration;
   delete ret.resetPasswordOtpAttempts;
   delete ret.lastResetOtpSent;
+  delete ret.passwordChangedAt;
   return ret;
 };
 
@@ -185,6 +186,11 @@ const userSchema = new Schema(
       type: Date,
       select: false,
     },
+    // when the password was last reset, tokens issued before this are rejected
+    passwordChangedAt: {
+      type: Date,
+      select: false,
+    },
   }
   ,
   {
@@ -228,5 +234,12 @@ userSchema.methods.generateJWT = function() {
   return token
 };
 
+
+// true if the jwt was issued before the password was last changed
+// iat is in seconds, so compare in seconds too (a token from the same second still passes)
+userSchema.methods.isTokenIssuedBeforePasswordChange = function(tokenIssuedAt) {
+  if (!this.passwordChangedAt) return false;
+  return tokenIssuedAt < Math.floor(this.passwordChangedAt.getTime() / 1000);
+};
 
 export const User = mongoose.model("User", userSchema);

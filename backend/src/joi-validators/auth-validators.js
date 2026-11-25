@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { getOnlyErrorMessage } from "../utils/cleanup-helpers.js";
+import { NAME_PATTERN, NAME_PATTERN_MESSAGE } from "../constants/name-pattern.js";
 
 const passwordObj = {
   password: Joi.string()
@@ -7,7 +8,7 @@ const passwordObj = {
     .max(20)
     .pattern(
       new RegExp(
-        "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$",
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$",
       ),
     )
     .required()
@@ -23,7 +24,9 @@ const passwordObj = {
 export const signupValidator = (data) => {
 
   const schema = Joi.object({
-    name: Joi.string().min(3).max(30).required().trim().lowercase(),
+    name: Joi.string().trim().pattern(NAME_PATTERN).min(3).max(20).required().lowercase().messages({
+      "string.pattern.base": NAME_PATTERN_MESSAGE,
+    }),
     email: Joi.string().trim().lowercase().email().required(),
     ...passwordObj,
   });
@@ -38,7 +41,13 @@ export const signinValidator = (data) => {
 
   const schema = Joi.object({
     email: Joi.string().trim().lowercase().email().required(),
-    ...passwordObj,
+    // only check that a password was sent, strength rules apply at signup and reset.
+    // otherwise changing the rules would lock out users with older passwords
+    password: Joi.string().max(20).required().messages({
+      "string.empty": "password is required",
+      "any.required": "password is required",
+      "string.max": "invalid credentials",
+    }),
   });
 
   const { error } = schema.validate(data);
