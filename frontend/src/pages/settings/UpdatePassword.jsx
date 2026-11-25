@@ -1,6 +1,6 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { EyeOff, Lock,  Save } from "lucide-react";
+import { Save } from "lucide-react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -22,16 +22,7 @@ export const UpdatePassword = () => {
               >
                 Current Password
               </FieldLabel>
-              <div className="relative">
-                <Lock className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
-                <Input
-                  id="current_password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="border-white/10 border-0 border-solid px-9 text-foreground"
-                />
-                <EyeOff className="top-1/2 -translate-y-1/2 size-4 text-muted-foreground absolute right-3" />
-              </div>
+              <PasswordInput id="current_password" />
             </Field>
             <Field>
               <FieldLabel
@@ -40,16 +31,7 @@ export const UpdatePassword = () => {
               >
                 New Password
               </FieldLabel>
-              <div className="relative">
-                <Lock className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
-                <Input
-                  id="new_password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="border-white/10 border-0 border-solid px-9 text-foreground"
-                />
-                <EyeOff className="top-1/2 -translate-y-1/2 size-4 text-muted-foreground absolute right-3" />
-              </div>
+              <PasswordInput id="new_password" />
             </Field>
             <Field>
               <FieldLabel
@@ -58,16 +40,7 @@ export const UpdatePassword = () => {
               >
                 Confirm New Password
               </FieldLabel>
-              <div className="relative">
-                <Lock className="top-1/2 -translate-y-1/2 size-4 text-foreground absolute left-3" />
-                <Input
-                  id="confirm_new_password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="border-white/10 border-0 border-solid px-9 text-foreground"
-                />
-                <EyeOff className="top-1/2 -translate-y-1/2 size-4 text-muted-foreground absolute right-3" />
-              </div>
+              <PasswordInput id="confirm_new_password" />
             </Field>
 
             <Button
