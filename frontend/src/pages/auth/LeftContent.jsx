@@ -58,7 +58,7 @@ const Icons = ({ iconPositions }) => {
     {
       id: "atom",
       Icon: Atom,
-      position: "top-[12%] left-[18%]",
+      position: "top-[10%] left-[18%]",
       size: "size-14",
       iconCss: "size-7 text-[oklch(0.696_0.17_162.48)]",
     },
@@ -72,7 +72,7 @@ const Icons = ({ iconPositions }) => {
     {
       id: "terminal",
       Icon: Terminal,
-      position: "bottom-[15%] left-[24%]",
+      position: "bottom-[10%] left-[24%]",
       size: "size-12",
       iconCss: "size-6 text-[oklch(0.696_0.17_162.48)]",
     },
