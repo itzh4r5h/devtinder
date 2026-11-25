@@ -1,6 +1,5 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { EyeOff, Flame, Lock, Mail, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
@@ -123,27 +122,6 @@ export const Form = ({ activeRoute }) => {
           <Flame className="size-6" /> sign
           {activeRoute === "/signin" ? " in" : " up"}
         </Button>
-        <div className="flex items-center gap-4">
-          <Separator className="bg-white/10 flex-1" />
-          <span className="whitespace-nowrap text-muted-foreground text-sm leading-4">
-            Or continue with
-          </span>
-          <Separator className="bg-white/10 flex-1" />
-        </div>
-        <div className="grid grid-cols-2 gap-8">
-          <Button
-            variant="outline"
-            className="active-bar text-foreground border-white/10 cursor-pointer border border-solid gap-2"
-          >
-            GitHub
-          </Button>
-          <Button
-            variant="outline"
-            className="active-bar text-foreground border-white/10 cursor-pointer border border-solid gap-2"
-          >
-            Google
-          </Button>
-        </div>
       </FieldGroup>
     </form>
   );
