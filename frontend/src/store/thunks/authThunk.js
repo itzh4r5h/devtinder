@@ -1,16 +1,17 @@
 import { httpReq } from "@/api/httpReq";
 import { asyncThunkHandler } from "../handlers";
 import { setUser } from "../slices/userSlice";
-import { setResendAvailableAt } from "../slices/authSlice";
+import { setResendAvailableAt, setResetOtpAvailableAt } from "../slices/authSlice";
 
 // converts the backend's retryAfter (seconds) into a timestamp the countdown can use
 const toAvailableAt = (retryAfterSecs) => Date.now() + Number(retryAfterSecs) * 1000
 
-// on a 429 the backend sends a Retry-After header, store it so the countdown is right
-const rememberCooldown = (error, dispatch) => {
+// on a 429 the backend sends a Retry-After header, store it so the countdown is right.
+// setAction is the slice action that stores that cooldown
+const rememberCooldown = (error, dispatch, setAction = setResendAvailableAt) => {
   const retryAfter = error.response?.headers?.["retry-after"]
   if (error.response?.status === 429 && retryAfter) {
-    dispatch(setResendAvailableAt(toAvailableAt(retryAfter)))
+    dispatch(setAction(toAvailableAt(retryAfter)))
   }
 }
 
@@ -61,4 +62,22 @@ export const signout = asyncThunkHandler('auth/signout', async () => {
   const res = await httpReq.post('/auth/signout')
   const data = res.data
   return { message: data.message }
+})
+
+// sends the 6 character reset otp to the email
+export const sendForgotPasswordOtp = asyncThunkHandler('auth/forgot_password', async (email, dispatch) => {
+  try {
+    const res = await httpReq.post('/auth/forgot-password', { email })
+    const data = res.data
+    return { message: data.message, data: { email, resetOtpAvailableAt: toAvailableAt(data.retryAfter) } }
+  } catch (error) {
+    rememberCooldown(error, dispatch, setResetOtpAvailableAt)
+    throw error
+  }
+})
+
+// resetting doesn't log the user in, they sign in with the new password after
+export const resetPassword = asyncThunkHandler('auth/reset_password', async ({ email, otp, password }) => {
+  const res = await httpReq.post('/auth/reset-password', { email, otp, password })
+  return { message: res.data.message, data: { success: true } }
 })
