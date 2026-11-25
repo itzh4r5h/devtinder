@@ -42,7 +42,8 @@ const generateResetOtp = () => {
 const hashOtp = (otp) => crypto.createHash("sha256").update(otp.trim().toUpperCase()).digest("hex");
 
 // sends the verification email, throws CustomError if resend fails
-const sendVerificationEmail = async (user, token) => {
+// lastSent is the date saved as lastVerificationSent for this send
+const sendVerificationEmail = async (user, token, lastSent) => {
   const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
   const resendUrl = `${process.env.FRONTEND_URL}/resend-verification`;
 
@@ -54,6 +55,12 @@ const sendVerificationEmail = async (user, token) => {
   });
 
   if (error) {
+    // email never went out, so don't make the user wait for the cooldown.
+    // only clear it if no newer send has happened since
+    await User.updateOne(
+      { _id: user._id, lastVerificationSent: lastSent },
+      { $unset: { lastVerificationSent: 1 } },
+    );
     throw new CustomError("failed to send verification email, please try again", 500);
   }
 };
@@ -153,7 +160,7 @@ export const signup = async (req, res) => {
     user = await User.create({ name, email, password, ...verificationFields });
   }
 
-  await sendVerificationEmail(user, token);
+  await sendVerificationEmail(user, token, new Date(now));
 
   // no cookie here, the user gets logged in only after verifying the email
   res.status(201).json({
@@ -300,7 +307,7 @@ export const resendVerificationEmail = async (req, res) => {
     throwCooldownError(existingUser.lastVerificationSent, now, res);
   }
 
-  await sendVerificationEmail(user, token);
+  await sendVerificationEmail(user, token, new Date(now));
 
   res.status(200).json({
     success: true,
@@ -363,6 +370,12 @@ export const sendForgotPasswordOtp = async (req, res) => {
   });
 
   if (error) {
+    // email never went out, so remove this otp and don't make the user wait for the cooldown.
+    // only if no newer otp has been sent since
+    await User.updateOne(
+      { _id: user._id, lastResetOtpSent: new Date(now) },
+      { $unset: { lastResetOtpSent: 1, resetPasswordOtpHash: 1, resetPasswordOtpExpiration: 1 } },
+    );
     throw new CustomError("failed to send otp, please try again", 500);
   }
 
@@ -425,6 +438,8 @@ export const resetPassword = async (req, res) => {
   user.resetPasswordOtpHash = undefined;
   user.resetPasswordOtpExpiration = undefined;
   user.resetPasswordOtpAttempts = 0;
+  // logs out every session that was signed in before this reset
+  user.passwordChangedAt = new Date();
   await user.save();
 
   res.status(200).json({

@@ -9,11 +9,12 @@ export const isAuthorized = async (req, res, next) => {
     throw new CustomError("invalid session, please signin!", 401);
   }
 
-  const { id } = jwt.verify(token, process.env.JWT_SECRET);
+  const { id, iat } = jwt.verify(token, process.env.JWT_SECRET);
 
-  const user = await User.findById(id);
+  const user = await User.findById(id).select("+passwordChangedAt");
 
-  if (!user) {
+  // also reject tokens issued before a password reset, so old sessions are logged out
+  if (!user || user.isTokenIssuedBeforePasswordChange(iat)) {
     throw new CustomError("invalid session, please signin!", 401);
   }
 

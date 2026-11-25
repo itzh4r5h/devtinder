@@ -1,13 +1,15 @@
 import Joi from "joi";
 import { getOnlyErrorMessage } from "../utils/cleanup-helpers.js";
 import { TAG_LABELS } from "../constants/tags.js";
+import { NAME_PATTERN, NAME_PATTERN_MESSAGE } from "../constants/name-pattern.js";
 
 const ALLOWED_TAGS = Object.keys(TAG_LABELS)
 
 export const profileUpdateValidator = (data) => {
   const schema = Joi.object({
 
-    name: Joi.string().trim().min(3).max(20).lowercase().required().messages({
+    name: Joi.string().trim().pattern(NAME_PATTERN).min(3).max(20).lowercase().required().messages({
+      "string.pattern.base": NAME_PATTERN_MESSAGE,
       "string.empty": "name is required",
       "string.min": "name must be at least 3 characters",
       "string.max": "name cann't exceed 20 characters",
