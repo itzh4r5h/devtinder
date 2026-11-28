@@ -1,12 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import {
-  EllipsisVertical,
-  MessageSquareMore,
-  Unplug,
-  UserIcon,
-} from "lucide-react";
+import { EllipsisVertical, Unplug } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -15,14 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
-import { Link, NavLink, useLocation } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { useSelector } from "react-redux";
 import { Badge } from "@/components/ui/badge";
 import { formatListTime } from "@/lib/chat-utils";
 import { usePresence } from "@/hooks/usePresence";
-import { useState } from "react";
 import { OnlineDot } from "./chat/OnlineDot";
-import { ClearChatDialog } from "./chat/ClearChatDialog";
 
 export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
@@ -34,7 +27,6 @@ export const ConnecitonCard = ({ connection }) => {
   const lastMessage = conversation?.lastMessage;
   const unread = conversation?.unread ?? 0;
   const { online } = usePresence(connection.user._id);
-  const [clearOpen, setClearOpen] = useState(false);
 
   return (
     <motion.div
@@ -119,21 +111,7 @@ export const ConnecitonCard = ({ connection }) => {
             align="start"
             side="left"
           >
-
-            <Link to={`/connections/profile/${connection.user._id}`}>
-              <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
-                <UserIcon className="size-5" />
-                view profile
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem
-              onClick={() => setClearOpen(true)}
-              className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3"
-            >
-              <MessageSquareMore className="size-5" />
-              clear chat
-            </DropdownMenuItem>
-
+            {/* view profile and clear chat live in the chat header menu */}
             <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer px-3 data-highlighted:bg-red-600 focus:bg-red-600  text-red-600 font-bold">
               <Unplug className="size-5" />
               disconnect
@@ -141,8 +119,6 @@ export const ConnecitonCard = ({ connection }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </CardContent>
-
-      <ClearChatDialog user={connection.user} open={clearOpen} onOpenChange={setClearOpen} />
     </motion.div>
   );
 };
