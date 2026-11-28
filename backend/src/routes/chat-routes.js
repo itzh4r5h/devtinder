@@ -2,7 +2,6 @@ import express from "express";
 import { isAuthorized } from "../middlewares/auth-middleware.js";
 import { asyncHandler } from "../middlewares/async-handler.js";
 import { checkProfileCompletion } from "../middlewares/check-profile-completion.js";
-import { hasConnections } from "../middlewares/has-connections.js";
 import {
   viewConversations,
   viewMessages,
@@ -10,8 +9,8 @@ import {
 
 export const chatRouter = express.Router();
 
-// every chat route needs a logged in user with a completed profile and at least one connection
-chatRouter.use(isAuthorized, checkProfileCompletion, hasConnections);
+// every chat route needs a logged in user with a completed profile
+chatRouter.use(isAuthorized, checkProfileCompletion);
 
 // for listing all conversations with last message and unread count
 chatRouter.get("/conversations", asyncHandler(viewConversations));

@@ -25,7 +25,7 @@
 
 
 ### Chat - prefix (/api/v1/chat)
-Only for logged in users with a completed profile and at least 1 connection. Chat works only between accepted connections.
+Only for logged in users with a completed profile. Chat works only between accepted connections.
 - GET /conversations - all conversations with the other user, last message and unread count
 - GET /:userId/messages?before=<messageId>&limit=30 - messages with a connection (oldest -> newest, use `nextCursor` as `before` for older ones)
 

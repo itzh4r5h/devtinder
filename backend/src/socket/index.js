@@ -29,9 +29,6 @@ const authenticateSocket = async (socket, next) => {
     if (!user.isProfileCompleted) {
       throw new CustomError("please, complete your profile first", 403);
     }
-    if (!user.connections || user.connections < 1) {
-      throw new CustomError("connect with someone to start chatting", 403);
-    }
 
     socket.data.userId = user._id.toString();
     socket.data.tokenExp = payload.exp;
