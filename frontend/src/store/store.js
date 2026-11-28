@@ -5,6 +5,7 @@ import { userReducer } from "./slices/userSlice";
 import { feedReducer } from "./slices/feedSlice";
 import { requestsReducer } from "./slices/requestsSlice";
 import { connectionReducer } from "./slices/connectionSlice";
+import { chatReducer } from "./slices/chatSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     feed: feedReducer,
     requests: requestsReducer,
     connections: connectionReducer,
+    chat: chatReducer,
   }
 })

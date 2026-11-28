@@ -16,11 +16,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
 import { Link, NavLink, useLocation } from "react-router";
+import { useSelector } from "react-redux";
+import { Badge } from "@/components/ui/badge";
+import { formatListTime } from "@/lib/chat-utils";
 
 export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
 
   const isActive = pathname === `/connections/${connection.connectionId}`;
+  const myId = useSelector((state) => state.user.user?._id);
+  const conversation = useSelector((state) => state.chat.conversations[connection.user._id]);
+  const isTyping = useSelector((state) => Boolean(state.chat.typing[connection.user._id]));
+  const lastMessage = conversation?.lastMessage;
+  const unread = conversation?.unread ?? 0;
 
   return (
     <motion.div
@@ -60,11 +68,34 @@ export const ConnecitonCard = ({ connection }) => {
             </Avatar>
           </Button>
 
-          <div className="flex flex-col justify-center flex-1 cursor-pointer">
-            <h3 className="text-xl text-ellipsis line-clamp-1 capitalize">{connection.user.name}</h3>
-            <p className="text-muted-foreground text-ellipsis line-clamp-1 text-base">
-              here comes the last message it it exists...
-            </p>
+          <div className="flex flex-col justify-center flex-1 min-w-0 cursor-pointer">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-xl text-ellipsis line-clamp-1 capitalize">{connection.user.name}</h3>
+              {lastMessage && (
+                <time
+                  dateTime={lastMessage.createdAt}
+                  className={`shrink-0 text-xs ${unread > 0 ? "text-secondary" : "text-muted-foreground"}`}
+                >
+                  {formatListTime(lastMessage.createdAt)}
+                </time>
+              )}
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              {isTyping ? (
+                <p className="text-secondary line-clamp-1 text-base">typing...</p>
+              ) : (
+                <p className={`text-ellipsis line-clamp-1 text-base ${unread > 0 ? "text-foreground" : "text-muted-foreground"}`}>
+                  {lastMessage
+                    ? `${lastMessage.sender === myId ? "you: " : ""}${lastMessage.text}`
+                    : "no messages yet, say hi!"}
+                </p>
+              )}
+              {unread > 0 && (
+                <Badge className="button-bg shrink-0 text-foreground tabular-nums" aria-label={`${unread} unread messages`}>
+                  {unread > 99 ? "99+" : unread}
+                </Badge>
+              )}
+            </div>
           </div>
         </NavLink>
 
