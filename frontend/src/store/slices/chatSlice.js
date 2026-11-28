@@ -10,6 +10,10 @@ const emptyThread = () => ({
   // idle | loading | loaded | error
   status: "idle",
   loadingOlder: false,
+  // messages at or before this were cleared by us (one-sided clear chat)
+  clearedAt: null,
+  // the in-flight "load older" request, a clear chat cancels it
+  olderRequestId: null,
 })
 
 const initialState = {
@@ -22,6 +26,8 @@ const initialState = {
   threads: {},
   // other user's id -> true while they are typing
   typing: {},
+  // connection's user id -> { online, lastSeenAt }
+  presence: {},
   // the thread that is open on screen, new messages there don't count as unread
   activeChatUserId: null,
   // idle | connecting | connected | disconnected | unavailable
@@ -59,6 +65,10 @@ const mergeMessages = (current, incoming) => {
   const sent = [...byId.values()].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
   return [...sent, ...current.filter(isPending)]
 }
+
+// drops messages a fetch started before a clear chat may still bring back
+const afterClear = (messages, clearedAt) =>
+  clearedAt ? messages.filter((m) => new Date(m.createdAt) > new Date(clearedAt)) : messages
 
 const setLastMessage = (conversation, message) => {
   const current = conversation.lastMessage
@@ -180,6 +190,43 @@ const chatSlice = createSlice({
       })
     },
 
+    // ack of our own chat:clear, or chat:cleared from our other tabs (only has conversationId)
+    chatCleared: (state, action) => {
+      const { conversationId, clearedAt } = action.payload
+      const userId = action.payload.userId ?? state.conversationUsers[conversationId]
+      if (!userId || !clearedAt) return
+
+      const conversation = getConversation(state, userId, conversationId)
+      conversation.lastMessage = null
+      conversation.unread = 0
+
+      const thread = getThread(state, userId)
+      thread.clearedAt = clearedAt
+      thread.messages = thread.messages.filter((m) => isPending(m) || new Date(m.createdAt) > new Date(clearedAt))
+      // older pages are all cleared now
+      thread.hasMore = false
+      thread.nextCursor = null
+      thread.loadingOlder = false
+      thread.olderRequestId = null
+    },
+
+    // presence:list ack, the full state for all connections
+    setPresenceList: (state, action) => {
+      const presence = {}
+      action.payload.forEach(({ userId, online, lastSeenAt }) => {
+        presence[userId] = { online, lastSeenAt }
+      })
+      state.presence = presence
+    },
+    presenceChanged: (state, action) => {
+      const { userId, online, lastSeenAt } = action.payload
+      const current = state.presence[userId]
+      state.presence[userId] = {
+        online,
+        lastSeenAt: lastSeenAt ?? current?.lastSeenAt ?? null,
+      }
+    },
+
     resetChat: () => initialState,
   },
   extraReducers: (builder) => {
@@ -199,7 +246,10 @@ const chatSlice = createSlice({
       pending: (state, action) => {
         const { userId, before } = action.meta.arg
         const thread = getThread(state, userId)
-        if (before) thread.loadingOlder = true
+        if (before) {
+          thread.loadingOlder = true
+          thread.olderRequestId = action.meta.requestId
+        }
         // a refetch of an already loaded thread (e.g. after reconnect) stays quiet
         else if (thread.status !== "loaded") thread.status = "loading"
       },
@@ -208,7 +258,14 @@ const chatSlice = createSlice({
         const { conversationId, messages, hasMore, nextCursor } = action.payload
         const thread = getThread(state, userId)
 
-        thread.messages = mergeMessages(thread.messages, messages)
+        // an older page requested before a clear chat only holds cleared messages
+        if (before) {
+          if (thread.olderRequestId !== action.meta.requestId) return
+          thread.olderRequestId = null
+          thread.loadingOlder = false
+        }
+
+        thread.messages = mergeMessages(thread.messages, afterClear(messages, thread.clearedAt))
         // the cursor only moves when paging up or on the first load,
         // a refresh of the latest page must not lose the older pages' cursor
         if (before || thread.status !== "loaded") {
@@ -216,15 +273,20 @@ const chatSlice = createSlice({
           thread.nextCursor = nextCursor
         }
         thread.status = "loaded"
-        thread.loadingOlder = false
 
         if (conversationId) getConversation(state, userId, conversationId)
       },
       rejected: (state, action) => {
         const { userId, before } = action.meta.arg
         const thread = getThread(state, userId)
-        if (before) thread.loadingOlder = false
-        else if (thread.status !== "loaded") thread.status = "error"
+        if (before) {
+          if (thread.olderRequestId === action.meta.requestId) {
+            thread.loadingOlder = false
+            thread.olderRequestId = null
+          }
+        } else if (thread.status !== "loaded") {
+          thread.status = "error"
+        }
       },
     })
 
@@ -245,6 +307,9 @@ export const {
   messageReceived,
   messagesRead,
   markConversationRead,
+  chatCleared,
+  setPresenceList,
+  presenceChanged,
   resetChat,
 } = chatSlice.actions
 export const chatReducer = chatSlice.reducer

@@ -138,6 +138,12 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    // when the user's last socket disconnected, only shared with their connections
+    lastSeenAt: {
+      type: Date,
+      default: null,
+      select: false,
+    },
 
     // ---------- email verification ----------
     isVerified: {

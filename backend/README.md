@@ -33,7 +33,10 @@ Only for logged in users with a completed profile. Chat works only between accep
 - emit `chat:send` `{ toUserId, text }` -> ack `{ success, message }`
 - emit `chat:typing` `{ toUserId }`
 - emit `chat:read` `{ userId }` -> ack `{ success, conversationId, readAt }`
-- listen `chat:message`, `chat:typing` `{ userId }`, `chat:read` `{ conversationId, userId, readAt }`
+- emit `chat:clear` `{ userId }` -> ack `{ success, conversationId, clearedAt }` - clears the chat only for you; once both users have cleared, messages older than both clears are deleted from the db
+- emit `presence:list` -> ack `{ success, users: [{ userId, online, lastSeenAt }] }` - status of all your connections
+- listen `chat:message`, `chat:typing` `{ userId }`, `chat:read` `{ conversationId, userId, readAt }`, `chat:cleared` `{ conversationId, clearedAt }` (your other tabs)
+- listen `presence:online` `{ userId }`, `presence:offline` `{ userId, lastSeenAt }` - only sent to your connections
 
 #### Encryption
 Messages are encrypted with AES-256-GCM before being stored. Each conversation has its own key derived (HKDF-SHA256) from `CHAT_ENCRYPTION_KEY`.

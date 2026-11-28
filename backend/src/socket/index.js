@@ -2,7 +2,8 @@ import { Server } from "socket.io";
 import { parseCookie } from "cookie";
 import { getUserFromToken } from "../middlewares/auth-middleware.js";
 import { CustomError } from "../middlewares/error-middleware.js";
-import { assertConnected, markRead, sendMessage } from "../services/chat-service.js";
+import { assertConnected, clearChat, markRead, sendMessage } from "../services/chat-service.js";
+import { getConnectionIds, getLastSeen, setLastSeen } from "../services/presence-service.js";
 import { sendMessageValidator, userIdValidator } from "../joi-validators/chat-validators.js";
 
 // max chat:send events per socket inside the window
@@ -14,6 +15,29 @@ const TYPING_CACHE_MS = 60 * 1000;
 let io = null;
 
 const userRoom = (userId) => `user:${userId}`;
+
+// ==================================== PRESENCE ====================================
+// a user is online while they have at least one socket in their room (single server only)
+const isOnline = (userId) => (io.sockets.adapter.rooms.get(userRoom(userId))?.size ?? 0) > 0;
+
+// presence is only shared with the user's accepted connections
+const emitToConnections = async (userId, event, data) => {
+  const ids = await getConnectionIds(userId);
+  if (ids.length) io.to(ids.map(userRoom)).emit(event, data);
+};
+
+const goOnline = (userId) =>
+  emitToConnections(userId, "presence:online", { userId }).catch(console.error);
+
+const goOffline = async (userId) => {
+  try {
+    const lastSeenAt = new Date();
+    await setLastSeen(userId, lastSeenAt);
+    await emitToConnections(userId, "presence:offline", { userId, lastSeenAt });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // ==================================== HANDSHAKE AUTH ====================================
 const authenticateSocket = async (socket, next) => {
@@ -59,6 +83,9 @@ const handle = (socket, handler) => async (payload, ack) => {
 const onConnection = (socket) => {
   const { userId, tokenExp } = socket.data;
   socket.join(userRoom(userId));
+
+  // first tab/device of this user - tell their connections
+  if (io.sockets.adapter.rooms.get(userRoom(userId))?.size === 1) goOnline(userId);
 
   // drop the socket when the jwt expires
   const expiryTimer = tokenExp
@@ -125,8 +152,42 @@ const onConnection = (socket) => {
     }),
   );
 
+  socket.on(
+    "chat:clear",
+    handle(socket, async ({ userId: otherUserId }) => {
+      const { error, value } = userIdValidator({ userId: otherUserId });
+      if (error) throw new CustomError(error, 400);
+
+      const result = await clearChat(userId, value.userId);
+      // one-sided: only this user's other tabs/devices hear about it
+      if (result.conversationId) {
+        socket.to(userRoom(userId)).emit("chat:cleared", result);
+      }
+      return result;
+    }),
+  );
+
+  // online status + last seen of all this user's connections
+  socket.on(
+    "presence:list",
+    handle(socket, async () => {
+      const ids = await getConnectionIds(userId);
+      const lastSeen = await getLastSeen(ids);
+
+      return {
+        users: ids.map((id) => ({
+          userId: id,
+          online: isOnline(id),
+          lastSeenAt: lastSeen[id] ?? null,
+        })),
+      };
+    }),
+  );
+
   socket.on("disconnect", () => {
     if (expiryTimer) clearTimeout(expiryTimer);
+    // the socket has already left its rooms here, so an empty room means the last one closed
+    if (!isOnline(userId)) goOffline(userId);
   });
 };
 

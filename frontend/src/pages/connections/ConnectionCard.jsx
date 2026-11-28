@@ -1,12 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import {
-  EllipsisVertical,
-  MessageSquareMore,
-  Unplug,
-  UserIcon,
-} from "lucide-react";
+import { EllipsisVertical, Unplug } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -15,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
-import { Link, NavLink, useLocation } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { useSelector } from "react-redux";
 import { Badge } from "@/components/ui/badge";
 import { formatListTime } from "@/lib/chat-utils";
+import { usePresence } from "@/hooks/usePresence";
+import { OnlineDot } from "./chat/OnlineDot";
 
 export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
@@ -29,6 +26,7 @@ export const ConnecitonCard = ({ connection }) => {
   const isTyping = useSelector((state) => Boolean(state.chat.typing[connection.user._id]));
   const lastMessage = conversation?.lastMessage;
   const unread = conversation?.unread ?? 0;
+  const { online } = usePresence(connection.user._id);
 
   return (
     <motion.div
@@ -65,6 +63,7 @@ export const ConnecitonCard = ({ connection }) => {
               <AvatarFallback>
                 {connection.user.name.match(/\b\w/g).join("")}
               </AvatarFallback>
+              {online && <OnlineDot />}
             </Avatar>
           </Button>
 
@@ -112,18 +111,7 @@ export const ConnecitonCard = ({ connection }) => {
             align="start"
             side="left"
           >
-
-            <Link to={`/connections/profile/${connection.user._id}`}>
-              <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
-                <UserIcon className="size-5" />
-                view profile
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
-              <MessageSquareMore className="size-5" />
-              clear chat
-            </DropdownMenuItem>
-
+            {/* view profile and clear chat live in the chat header menu */}
             <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer px-3 data-highlighted:bg-red-600 focus:bg-red-600  text-red-600 font-bold">
               <Unplug className="size-5" />
               disconnect

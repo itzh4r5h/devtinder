@@ -45,6 +45,13 @@ const conversationSchema = new Schema(
       of: Number,
       default: {},
     },
+    // when each participant last cleared the chat, keyed by user id
+    // messages created at or before it are hidden for that user only
+    clearedAt: {
+      type: Map,
+      of: Date,
+      default: {},
+    },
   },
   { timestamps: true },
 );
