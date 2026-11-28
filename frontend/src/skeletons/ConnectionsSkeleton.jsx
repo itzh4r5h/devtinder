@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const ConnectionsSkeleton = () => {
   return (
 
-    <section className="w-full h-full min-h-[calc(100dvh-5rem)] grid grid-cols-1 md:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)] gap-3">
+    <section className="w-full flex-1 min-h-0 py-3 grid grid-cols-1 md:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)] gap-3">
       {/* Left: Conversation list */}
 
       <div className="flex flex-col gap-3 rounded-xl overflow-y-scroll scrollbar-none min-h-0">

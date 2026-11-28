@@ -2,21 +2,27 @@ import jwt from "jsonwebtoken";
 import { CustomError } from "./error-middleware.js";
 import { User } from "../models/user-model.js";
 
-export const isAuthorized = async (req, res, next) => {
-  const token = req.cookies?.token;
-
+// shared by the http auth middleware and the socket handshake
+// returns the user and the decoded token, throws if the session is invalid
+export const getUserFromToken = async (token) => {
   if (!token) {
     throw new CustomError("invalid session, please signin!", 401);
   }
 
-  const { id, iat } = jwt.verify(token, process.env.JWT_SECRET);
+  const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-  const user = await User.findById(id).select("+passwordChangedAt");
+  const user = await User.findById(payload.id).select("+passwordChangedAt");
 
   // also reject tokens issued before a password reset, so old sessions are logged out
-  if (!user || user.isTokenIssuedBeforePasswordChange(iat)) {
+  if (!user || user.isTokenIssuedBeforePasswordChange(payload.iat)) {
     throw new CustomError("invalid session, please signin!", 401);
   }
+
+  return { user, payload };
+};
+
+export const isAuthorized = async (req, res, next) => {
+  const { user } = await getUserFromToken(req.cookies?.token);
 
   req.user = user;
 

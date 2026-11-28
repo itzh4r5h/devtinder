@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button";
 import { ProfileMenu } from "./ProfileMenu";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signout } from "@/store/thunks/authThunk";
 
-const NavLi = ({ Icon, name }) => {
+const NavLi = ({ Icon, name, badge = 0 }) => {
   const location = useLocation();
   const activeRoute = location.pathname;
   const param = activeRoute.split("/")[2];
@@ -37,6 +37,14 @@ const NavLi = ({ Icon, name }) => {
                 className={`size-5 ${isActive && "active-icon"}`}
               />
               <span className="text-lg capitalize tracking-wide">{name}</span>
+              {badge > 0 && (
+                <span
+                  className="button-bg min-w-5 h-5 px-1.5 rounded-full text-xs font-bold text-foreground flex items-center justify-center tabular-nums"
+                  aria-label={`${badge} unread messages`}
+                >
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
             </div>
 
             {isActive ? (
@@ -65,6 +73,10 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
   const activeRoute = location.pathname;
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  // total unread chat messages, shown on the connections link
+  const totalUnread = useSelector((state) =>
+    Object.values(state.chat.conversations).reduce((sum, conv) => sum + (conv.unread || 0), 0)
+  )
   const handleSignout = async () => {
     await dispatch(signout())
     navigate('/signin', { replace: true })
@@ -120,7 +132,7 @@ export const NavLinks = ({ forDrawer, isLoggedIn }) => {
       {isLoggedIn &&
         linksAfterSignin.map((link) => (
           <li className="w-fit" key={link.name}>
-            <NavLi Icon={link.icon} name={link.name} />
+            <NavLi Icon={link.icon} name={link.name} badge={link.name === "connections" ? totalUnread : 0} />
           </li>
         ))}
 
