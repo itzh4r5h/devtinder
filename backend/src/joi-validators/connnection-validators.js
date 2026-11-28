@@ -2,7 +2,7 @@ import Joi from "joi";
 import mongoose from "mongoose";
 import { getOnlyErrorMessage } from "../utils/cleanup-helpers.js";
 
-const validateMongoId = (id, helpers) => {
+export const validateMongoId = (id, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return helpers.error("any.invalid");
   }
