@@ -8,7 +8,10 @@ import { SocketContext } from "./socketContext";
 import { setIsLoggedIn } from "@/store/slices/authSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import {
+  chatCleared,
   messageReceived,
+  presenceChanged,
+  setPresenceList,
   messagesRead,
   resetChat,
   setSocketStatus,
@@ -30,9 +33,24 @@ export const SocketProvider = ({ children }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
   const myId = useSelector((state) => state.user.user?._id)
   const isProfileCompleted = useSelector((state) => state.user.user?.isProfileCompleted)
+  // presence only covers connections known when presence:list ran, so refetch when they change
+  const connectionIds = useSelector((state) =>
+    state.connections.connectionsData.map((conn) => conn.user._id).sort().join(",")
+  )
 
   // the backend refuses the handshake for an incomplete profile anyway
   const canChat = Boolean(isLoggedIn && myId && isProfileCompleted)
+
+  // starting online state of all connections, asked on every (re)connect
+  const requestPresence = useCallback(
+    (socket) => {
+      // the server's handlers read (payload, ack), so an empty payload is needed
+      socket.timeout(ACK_TIMEOUT_MS).emit("presence:list", {}, (err, res) => {
+        if (!err && res?.success) dispatch(setPresenceList(res.users))
+      })
+    },
+    [dispatch]
+  )
 
   const onSessionExpired = useEffectEvent((message) => {
     toast.error(message || "session expired, please signin!")
@@ -66,6 +84,7 @@ export const SocketProvider = ({ children }) => {
 
     socket.on("connect", () => {
       dispatch(setSocketStatus({ status: "connected" }))
+      requestPresence(socket)
       if (hasConnected) resync()
       hasConnected = true
     })
@@ -128,6 +147,19 @@ export const SocketProvider = ({ children }) => {
       dispatch(messagesRead({ ...event, myId }))
     })
 
+    // we cleared a chat in another tab
+    socket.on("chat:cleared", ({ conversationId, clearedAt }) => {
+      dispatch(chatCleared({ conversationId, clearedAt }))
+    })
+
+    socket.on("presence:online", ({ userId }) => {
+      dispatch(presenceChanged({ userId, online: true }))
+    })
+
+    socket.on("presence:offline", ({ userId, lastSeenAt }) => {
+      dispatch(presenceChanged({ userId, online: false, lastSeenAt }))
+    })
+
     dispatch(setSocketStatus({ status: "connecting" }))
     dispatch(getConversations())
     socket.connect()
@@ -140,7 +172,13 @@ export const SocketProvider = ({ children }) => {
       socketRef.current = null
       dispatch(resetChat())
     }
-  }, [canChat, myId, dispatch, store])
+  }, [canChat, myId, dispatch, store, requestPresence])
+
+  // connections changed (e.g. a request was accepted), get their presence too
+  useEffect(() => {
+    const socket = socketRef.current
+    if (socket?.connected && connectionIds) requestPresence(socket)
+  }, [connectionIds, requestPresence])
 
   // resolves with the server's ack ({ success, ... }), never rejects
   const emitWithAck = useCallback(

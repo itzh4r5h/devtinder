@@ -19,6 +19,10 @@ import { Link, NavLink, useLocation } from "react-router";
 import { useSelector } from "react-redux";
 import { Badge } from "@/components/ui/badge";
 import { formatListTime } from "@/lib/chat-utils";
+import { usePresence } from "@/hooks/usePresence";
+import { useState } from "react";
+import { OnlineDot } from "./chat/OnlineDot";
+import { ClearChatDialog } from "./chat/ClearChatDialog";
 
 export const ConnecitonCard = ({ connection }) => {
   const { pathname } = useLocation();
@@ -29,6 +33,8 @@ export const ConnecitonCard = ({ connection }) => {
   const isTyping = useSelector((state) => Boolean(state.chat.typing[connection.user._id]));
   const lastMessage = conversation?.lastMessage;
   const unread = conversation?.unread ?? 0;
+  const { online } = usePresence(connection.user._id);
+  const [clearOpen, setClearOpen] = useState(false);
 
   return (
     <motion.div
@@ -65,6 +71,7 @@ export const ConnecitonCard = ({ connection }) => {
               <AvatarFallback>
                 {connection.user.name.match(/\b\w/g).join("")}
               </AvatarFallback>
+              {online && <OnlineDot />}
             </Avatar>
           </Button>
 
@@ -119,7 +126,10 @@ export const ConnecitonCard = ({ connection }) => {
                 view profile
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3">
+            <DropdownMenuItem
+              onClick={() => setClearOpen(true)}
+              className="text-md capitalize tracking-wide cursor-pointer dropdown-item px-3"
+            >
               <MessageSquareMore className="size-5" />
               clear chat
             </DropdownMenuItem>
@@ -131,6 +141,8 @@ export const ConnecitonCard = ({ connection }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </CardContent>
+
+      <ClearChatDialog user={connection.user} open={clearOpen} onOpenChange={setClearOpen} />
     </motion.div>
   );
 };

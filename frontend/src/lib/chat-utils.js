@@ -71,3 +71,16 @@ export const buildThreadRows = (messages) => {
 
 // "john doe" -> "jd"
 export const getInitials = (name = "") => (name.match(/\b\w/g) || []).join("").slice(0, 2)
+
+// "last seen just now / 5m ago / today at 09:30 / yesterday at 09:30 / 12 Nov at 09:30"
+export const formatLastSeen = (date, now = Date.now()) => {
+  const diffMs = now - new Date(date).getTime()
+  if (diffMs < 60 * 1000) return "last seen just now"
+  if (diffMs < 60 * 60 * 1000) return `last seen ${Math.floor(diffMs / 60000)}m ago`
+
+  const diffDays = Math.round((startOfDay(now) - startOfDay(date)) / DAY_MS)
+  if (diffDays === 0) return `last seen today at ${formatTime(date)}`
+  if (diffDays === 1) return `last seen yesterday at ${formatTime(date)}`
+  const day = new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+  return `last seen ${day} at ${formatTime(date)}`
+}
