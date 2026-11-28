@@ -100,6 +100,10 @@ export const getMessages = async (userId, otherUserId, { before, limit }) => {
   const filter = { conversation: conversation._id };
   if (before) filter._id = { $lt: before };
 
+  // hide everything this user cleared
+  const clearedAt = conversation.clearedAt?.get(userId.toString());
+  if (clearedAt) filter.createdAt = { $gt: clearedAt };
+
   const docs = await Message.find(filter)
     .sort({ _id: -1 })
     .limit(limit + 1)
@@ -131,11 +135,13 @@ export const listConversations = async (userId) => {
   return conversations.map((conversation) => {
     const user = conversation.participants.find((p) => p._id.toString() !== id);
     const last = conversation.lastMessage;
+    const clearedAt = conversation.clearedAt?.[id];
+    const isLastCleared = last && clearedAt && last.createdAt <= clearedAt;
 
     return {
       conversationId: conversation._id,
       user,
-      lastMessage: last
+      lastMessage: last && !isLastCleared
         ? {
           sender: last.sender,
           text: decryptMessage(last, conversation._id) ?? UNAVAILABLE_MESSAGE,
@@ -168,4 +174,42 @@ export const markRead = async (userId, otherUserId) => {
   );
 
   return { conversationId: conversation._id, readAt };
+};
+
+// ==================================== CLEAR CHAT (one-sided) ====================================
+// hides every message up to now for this user only; once both users have cleared,
+// messages neither of them can see anymore are deleted from the db
+export const clearChat = async (userId, otherUserId) => {
+  await assertConnected(userId, otherUserId);
+
+  const clearedAt = new Date();
+
+  const conversation = await Conversation.findOneAndUpdate(
+    { participantsKey: getParticipantsKey(userId, otherUserId) },
+    {
+      $set: {
+        [`clearedAt.${userId}`]: clearedAt,
+        [`unread.${userId}`]: 0,
+      },
+    },
+    { returnDocument: "after" },
+  );
+
+  if (!conversation) {
+    return { conversationId: null, clearedAt: null };
+  }
+
+  const otherClearedAt = conversation.clearedAt?.get(otherUserId.toString());
+  if (otherClearedAt) {
+    // both cleared - nobody can see anything older than the earlier clear
+    const cutoff = otherClearedAt < clearedAt ? otherClearedAt : clearedAt;
+
+    await Message.deleteMany({ conversation: conversation._id, createdAt: { $lte: cutoff } });
+    await Conversation.updateOne(
+      { _id: conversation._id, "lastMessage.createdAt": { $lte: cutoff } },
+      { $set: { lastMessage: null } },
+    );
+  }
+
+  return { conversationId: conversation._id, clearedAt };
 };
