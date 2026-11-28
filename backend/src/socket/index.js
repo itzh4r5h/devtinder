@@ -15,11 +15,6 @@ let io = null;
 
 const userRoom = (userId) => `user:${userId}`;
 
-// used by the REST controller to push messages to connected clients
-export const emitToUser = (userId, event, data) => {
-  io?.to(userRoom(userId)).emit(event, data);
-};
-
 // ==================================== HANDSHAKE AUTH ====================================
 const authenticateSocket = async (socket, next) => {
   try {
